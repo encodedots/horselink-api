@@ -1,0 +1,9 @@
+.env
+node_modules/*
+gsheetcredentials.json
+package-lock.json
+src/uploads/*
+.idea/*
+package-lock.json
+src/cert/*
+rootkey.csv
