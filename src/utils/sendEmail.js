@@ -1,6 +1,5 @@
 import nodemailer from 'nodemailer';
 import ejs from 'ejs';
-import myJson from '../views/language.json';
 import constants from './constants';
 const dotenv = require('dotenv').config();
 
