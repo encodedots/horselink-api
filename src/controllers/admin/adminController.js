@@ -1,6 +1,6 @@
 import { AdminUserService } from '../../services/admin/adminUsersService';
 import messages from '../../utils/message';
-import { sendErrorResponse, sendSuccessResponse } from "../../utils/sendResponse";
+import { adminSendErrorResponse, adminSendSuccessResponse } from "../../utils/sendResponse";
 import { isValidInteger, isValidString } from '../../utils/validation';
 
 const _adminUserService = new AdminUserService();
@@ -21,17 +21,17 @@ export class AdminUserController {
 
             // Validate input data
             if (!req || !isValidInteger(id))
-                return sendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+                return adminSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
             // Call Service to get admin details
             var output = await _adminUserService.getAdminById(id);
 
             // Return response
-            return sendSuccessResponse(res, 200, output, messages.RETRIEVE_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, messages.RETRIEVE_SUCCESSFULLY);
 
         } catch (e) {
             // Send error message on fail
-            return sendErrorResponse(res, 500, messages.SERVER_ERROR, e);
+            return adminSendErrorResponse(res, 500, messages.SERVER_ERROR, e);
         }
     }
 
@@ -48,21 +48,23 @@ export class AdminUserController {
      */
     async adminLogin(req, res) {
         var input = req.body;
-
         try {
             // Validate input data
             if (input == null || (input && (!isValidString(input.email) || !isValidString(input.password))))
-                return sendErrorResponse(res, 201, messages.INVALID_PARAMETERS, null);
+                return adminSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
             // Call service to get login user token and details
             var output = "";
             output = await _adminUserService.adminLogin(input);
             if (output == null)
-                return sendErrorResponse(res, 201, messages.NOT_FOUND, null);
+                return adminSendErrorResponse(res, 201, messages.NOT_FOUND);
+
+            if (output["status"] == false)
+                return adminSendErrorResponse(res, 201, output["error"]);
 
             // Return response
-            return sendSuccessResponse(res, 200, {
-                token: output.token.plainTextToken,
+            return adminSendSuccessResponse(res, 200, {
+                token: output.token,
                 user: {
                     id: output.user.id,
                     name: output.user.name,
@@ -70,7 +72,31 @@ export class AdminUserController {
                 },
             }, messages.LOGIN_SUCCESSFULLY);
         } catch (e) {
-            return sendErrorResponse(res, 500, messages.SERVER_ERROR, e);
+            return adminSendErrorResponse(res, 500, messages.SERVER_ERROR, e);
+        }
+    }
+
+    async logout(req, res) {
+        var input = req.body;
+        try {
+            console.log("input",input);
+            // Validate input data
+            if (input == null || !isValidString(input.email))
+                return adminSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+            // Call sevice to logout user from the system
+            var output = await _adminUserService.logout(input);
+            if (output == null)
+                return adminSendErrorResponse(res, 201, messages.SOMETHING_WENT_WRONG);
+
+            if (output["status"] == false)
+                return adminSendErrorResponse(res, 201, output["error"]);
+
+            // Return response 
+            return adminSendSuccessResponse(res, 200, output, messages.LOGOUT_SUCCESSFULLY);
+        } catch (e) {
+            // Return error
+            return adminSendErrorResponse(res, 500,messages.SERVER_ERROR,e);
         }
     }
 

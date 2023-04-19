@@ -9,30 +9,6 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
-      // user.hasOne(models.businesses);
-
-      // user.hasMany(models.userSportType);
-
-      // user.hasMany(models.userPostLikes);
-
-      // user.hasMany(models.userFollow, {
-      //   foreignKey: 'followedUserId',
-      //   as: 'followedUserDetails',
-      //   onDelete: 'SET NULL',
-      // });
-
-      // user.hasMany(models.userDocuments, {
-      //   foreignKey: 'userId',
-      //   as: 'userDocuments',
-      //   onDelete: 'SET NULL',
-      // });
-
-      // user.hasMany(models.notifications, {
-      //   foreignKey: 'userId',
-      //   as: 'notifications',
-      //   onDelete: 'CASCADE',
-      // });
     }
   }
   user.init({
@@ -101,7 +77,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     zipCode: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
     },
 
     state: {
@@ -113,7 +89,7 @@ module.exports = (sequelize, DataTypes) => {
     },
 
     telephone: {
-      type: DataTypes.STRING,
+      type: DataTypes.BIGINT,
     },
 
     mobileNumber: {
@@ -198,16 +174,16 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.STRING,
     },
 
-    registerType: {
-      type: DataTypes.ENUM('private', 'business'),
-      defaultValue: 'private',
-    },
+    // registerType: {
+    //   type: DataTypes.ENUM('private', 'business'),
+    //   defaultValue: 'private',
+    // },
 
     actionIpAddress: DataTypes.STRING
   }, {
     sequelize,
     modelName: 'user',
-    // paranoid: true
+    paranoid: true
   });
   return user;
 };

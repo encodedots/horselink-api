@@ -64,19 +64,4 @@ export default {
   DELETED_SUCCESSFULLY: 'Deleted successfully',
   REFERENCE_EXIST: 'Data can not be deleted, please delete references first',
 
-  // Create/Update post Messages
-  POST_DOES_NOT_EXIST: 'Post does not exist',
-  NOTIFICATION_DOES_NOT_EXIST: 'Notification does not exist',
-
-  // Post Management
-  POST_BOOKMARK_SUCCESSFULLY: "Post Bookmark successfully",
-  POST_REMOVE_BOOKMARK_SUCCESSFULLY: "Remove post Bookmark successfully",
-  LIKE_POST_SUCCESSFULLY: "Post like successfully",
-  UNLIKE_POST_SUCCESSFULLY: "Post unlike successfully",
-  USER_FOLLOW_ALREADY: "Already follow this User",
-  USER_FOLLOW_SUCCESSFULLY: "User follow successfully",
-  USER_UNFOLLOW_SUCCESSFULLY: "User unfollow successfully",
-  USER_NOT_FOLLOW: 'User does not follow yourself',
-  USER_BLOCK_SUCCESSFULLY: "User blocked successfully",
-
 }

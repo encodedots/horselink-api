@@ -79,7 +79,7 @@ module.exports = {
       },
 
       zipCode: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: true
       },
 
@@ -94,7 +94,7 @@ module.exports = {
       },
 
       telephone: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
 

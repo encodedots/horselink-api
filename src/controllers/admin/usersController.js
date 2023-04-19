@@ -1,6 +1,6 @@
 import { UserService } from '../../services/admin/usersService';
 import Messages from '../../utils/message';
-import { sendSuccessResponse, sendErrorResponse } from '../../utils/sendResponse';
+import { adminSendErrorResponse, adminSendSuccessResponse } from '../../utils/sendResponse';
 import { isValidArray, isValidInteger, isValidString } from '../../utils/validation';
 
 const _userService = new UserService();
@@ -21,15 +21,15 @@ export class UsersController {
         try {
             // Validate input data
             if (!isValidInteger(input) || input < 1)
-                return sendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+                return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
             // Call service to get specific user based in input
             var output = await _userService.getUser(input);
 
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
         } catch (e) {
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            return adminSendErrorResponse(res, 201, e);
         }
     }
 
@@ -45,15 +45,11 @@ export class UsersController {
             var output = await _userService.getUserlist();
 
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
         } catch (e) {
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            return adminSendErrorResponse(res, 201, e);
         }
     }
-
-    //#endregion GET APIs
-
-    //#region POST APIs
 
     /**
      * Summary: This method is used to get all users.
@@ -62,17 +58,49 @@ export class UsersController {
      * @returns
      */
     async getUsers(req, res) {
-        var input = req.body;
+        var input = req.query;
 
         try {
             // Call service to get users
             var output = await _userService.getUsers(input);
 
+            if(output && output["status"] == false) {
+                return adminSendErrorResponse(res, 201, output["error"]);
+            }
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.RETRIEVE_SUCCESSFULLY);
         } catch (e) {
             // Send error message on fail
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            console.log("e111",e);
+            return adminSendErrorResponse(res, 201, e);
+        }
+    }
+
+    //#endregion GET APIs
+
+    //#region POST APIs
+
+       /**
+     * Summary: This method is used to get all users.
+     * @param {*} req
+     * @param {*} res
+     * @returns
+     */
+    async updateUserStatus(req, res) {
+        var input = req.body.status;
+        var id = req.params.id;
+        try {
+            // Call service to get users
+            var output = await _userService.updateUserStatus(id,input);
+
+            if(output && output["status"] == false) {
+                return adminSendErrorResponse(res, 201, output["error"]);
+            }
+            // Return response data
+            return adminSendSuccessResponse(res, 200, output, Messages.UPDATED_SUCCESSFULLY);
+        } catch (e) {
+            // Send error message on fail
+            return adminSendErrorResponse(res, 201, e);
         }
     }
 
@@ -85,7 +113,6 @@ export class UsersController {
     async createUser(req, res) {
         try {
             var input = req.body;
-            var inputFiles = req.files;
 
             // Validate input data
             if (input == null
@@ -94,29 +121,27 @@ export class UsersController {
                 || !isValidString(input.userName)
                 || !isValidString(input.email)
                 || !isValidString(input.password)
-                || (input.description && input.description.length > 200)
-                || !isValidString(input.memberNumber)
                 || !isValidString(input.town)
-                || !isValidString(input.zipCode)
+                || !isValidInteger(input.zipCode)
                 || !isValidInteger(input.country)
-                || !isValidString(input.telephone)
-                || !isValidString(input.businessTown)
-                || !isValidString(input.businessZipCode)
-                || !isValidInteger(input.businessCountry)
-                || !isValidString(input.businessTelephone)
-                || !isValidArray(input.preferences))
-                return sendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
-
+                || !isValidInteger(input.telephone)
+                ){
+                    return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+            }
             // Call service to create new user entry
-            var output = await _userService.createUser(input, inputFiles);
+            var output = await _userService.createUser(input);
             if (output == null)
-                return sendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG, null);
+                return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG); 
+            
+            if(output && output["status"] == false) {
+                return adminSendErrorResponse(res, 201, output["error"]);
+            }        
 
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.CREATED_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.CREATED_SUCCESSFULLY);
         } catch (e) {
             // Send error message on fail
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            return adminSendErrorResponse(res, 201, e);
         }
     }
 
@@ -130,7 +155,6 @@ export class UsersController {
         try {
             var id = req.params.id;
             var input = req.body;
-            var inputFiles = req.files;
 
             // Validate input data
             if (id < 1 || input == null
@@ -138,30 +162,27 @@ export class UsersController {
                 || !isValidString(input.lastName)
                 || !isValidString(input.userName)
                 || !isValidString(input.email)
-                || (input.description && input.description.length > 200)
-                || !isValidString(input.memberNumber)
                 || !isValidString(input.town)
-                || !isValidString(input.zipCode)
+                || !isValidInteger(input.zipCode)
                 || !isValidInteger(input.country)
-                || !isValidString(input.telephone)
-                || !isValidString(input.businessTown)
-                || !isValidString(input.businessZipCode)
-                || !isValidInteger(input.businessCountry)
-                || !isValidString(input.businessTelephone)
-                || !isValidArray(input.preferences))
-                return sendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
-
+                || !isValidInteger(input.telephone))
+                {
+                   return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+                }
 
             // Call service to update specific user
-            var output = await _userService.updateUser(id, input, inputFiles);
+            var output = await _userService.updateUser(id, input);
             if (output == null)
-                return sendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG, null);
-
+                return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+            
+            if(output && output["status"] == false) {
+                return adminSendErrorResponse(res, 201, output["error"]);
+            }            
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.UPDATED_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.UPDATED_SUCCESSFULLY);
         } catch (e) {
             // Send error message on fail
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            return adminSendErrorResponse(res, 201, e);
         }
     }
 
@@ -177,20 +198,23 @@ export class UsersController {
         try {
             // Validate input data
             if (!isValidInteger(id) || id < 1)
-                return sendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+                return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
             // Call service to delete specific user based on id
             var output = await _userService.deleteUser(id);
             if (output == null)
-                return sendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG, e);
+                return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+
+            if(output && output["status"] == false) {
+                return adminSendErrorResponse(res, 201, output["error"]);
+            }
 
             // Return response data
-            return sendSuccessResponse(res, 200, output, Messages.DELETED_SUCCESSFULLY);
+            return adminSendSuccessResponse(res, 200, output, Messages.DELETED_SUCCESSFULLY);
         } catch (e) {
             // Send error message on fail
-            return sendErrorResponse(res, 201, Messages.COULD_NOT_PERFORM_ACTION, e);
+            return adminSendErrorResponse(res, 201, e);
         }
     }
-
     //#endregion POST APIs
 }

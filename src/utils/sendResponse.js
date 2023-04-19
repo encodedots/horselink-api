@@ -34,7 +34,7 @@ export const sendSuccessResponse = (res, code, data, message = 'Successful') => 
  * @param data
  * @returns {*}
  */
-export const frontServiceErrorResponse = (errorMessage, data = null) => ({
+export const adminServiceErrorResponse = (errorMessage, data = null) => ({
     status: false,
     error: handleTryCatchError(errorMessage),
     data: data
@@ -48,7 +48,7 @@ export const frontServiceErrorResponse = (errorMessage, data = null) => ({
  * @param message
  * @returns {*}
  */
-export const frontSendSuccessResponse = (res, code, data, message = 'Successful') => res.status(code).send({
+export const adminSendSuccessResponse = (res, code, data, message = 'Successful') => res.status(code).send({
     status: true,
     code,
     data,
@@ -63,7 +63,7 @@ export const frontSendSuccessResponse = (res, code, data, message = 'Successful'
  * @param data
  * @returns {*}
  */
-export const frontSendErrorResponse = (res, code, errorMessage, data = null) => res.status(code).send({
+export const adminSendErrorResponse = (res, code, errorMessage, data = null) => res.status(code).send({
     status: false,
     code: code,
     message: handleTryCatchError(errorMessage),
@@ -74,9 +74,11 @@ export const frontSendErrorResponse = (res, code, errorMessage, data = null) => 
 export function handleTryCatchError(error) {
     if (error.name == "SequelizeValidationError" || error.name === 'SequelizeUniqueConstraintError' || error.name === 'SequelizeForeignKeyConstraintError') {
         return error.errors.map(e => e.messages);
-    } else if (error.name != null && error.name != 'undefined') {
+    }
+ else if (error.name != null && error.name != 'undefined') {
         return messages.COULD_NOT_PERFORM_ACTION;
-    } else {
+    }
+ else {
         return error;
     }
 };

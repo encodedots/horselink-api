@@ -2,77 +2,81 @@ import { hash, hash_compare } from "../../utils/hashing";
 import messages from '../../utils/message';
 import model from '../../models';
 import { isValidString } from "../../utils/validation";
-import { handleTryCatchError } from "../../utils/sendResponse";
+import { adminServiceErrorResponse, handleTryCatchError } from "../../utils/sendResponse";
+var sendEmail = require("../../utils/sendEmail");
+import Random from '../../utils/random';
 
-const { adminUser } = model;
+const { adminUser,user } = model;
 
 export class AdminUserService {
-
-    //#region GET APIs
-
-    /**
-     * Summary: This method is used to get specific admin user details based on id.
-     * @param {*} input
-     * @returns
-     */
-    async getAdminById(input) {
-        try {
-            // Validate input
-            if (input < 1)
-                throw new Error(messages.INVALID_PARAMETERS);
-
-            // Find specific admin user based on id
-            var output = "";
-            output = await adminUser.findOne({ where: { id: input } });
-            return output;
-        } catch (e) {
-            throw new Error(handleTryCatchError(e));
-        }
-    }
-
-    //#endregion GET APIs
 
     //#region POST APIs
 
     /**
      * Summary: This method checks for valid login user and creates new token for valid user.
-     * @param {*} input
+     * @param {*} input - Valid email and password checks for admin 
      * @returns
      */
     async adminLogin(input) {
         try {
             // Validate input
             if (input == null || (input && (!isValidString(input.email) || !isValidString(input.password))))
-                throw new Error(messages.INVALID_PARAMETERS);
+                return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
             var output = {};
 
             // Get information for user if valid otherwise send error
             const adminUserDetails = await adminUser.findOne({ where: { email: input.email } });
+
             if (!adminUserDetails) 
-                throw new Error(messages.INCORRECT_LOGIN_CREDENTIALS);
+                return adminServiceErrorResponse(messages.INCORRECT_LOGIN_CREDENTIALS);
                 
             const checkPassword = hash_compare(hash(input.password), adminUserDetails.password);
             if (!checkPassword)
-                throw new Error(messages.INCORRECT_LOGIN_CREDENTIALS);
+                return adminServiceErrorResponse(messages.INCORRECT_LOGIN_CREDENTIALS);
 
             if (adminUserDetails.isActive !== 'y')
-                throw new Error(messages.ACCOUNT_SUSPENDED);
+                return adminServiceErrorResponse(messages.ACCOUNT_SUSPENDED);
 
             if (adminUserDetails.isDeleted !== 'n')
-                throw new Error(messages.ACCOUNT_DELETED);
+                return adminServiceErrorResponse(messages.ACCOUNT_DELETED);
 
             output.user = adminUserDetails;
-
             // Create new authentication token
-            output.token = await adminUserDetails.newToken();
+            output.token = await adminUserDetails.generateJWT();
+
+            await adminUser.update({ token: output.token,
+                lastLoginAt: new Date()
+             }, { where: { id: adminUserDetails.dataValues.id } });
+
             if (output == null)
-                throw new Error(messages.SOMETHING_WENT_WRONG);
+                return adminServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
             // Return output
             return output;
         } catch (e) {
-            throw new Error(handleTryCatchError(e));
+            return adminServiceErrorResponse(e);
+        }
+    }
+
+    /**
+     * Summary: This method checks for user logout and delete token for valid user.
+     * @param {*} input - This parameter contains parameter related to adminUser table
+     */
+    async logout(input) {
+        try {
+            if (input == null || (input && (!isValidString(input.email))))
+                return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
+         
+            var checkEmailExists =  await adminUser.findOne({ where: { email: input.email } });
+            if (checkEmailExists == null) {
+                return adminServiceErrorResponse(messages.NOT_FOUND);
+            }
+            await adminUser.update({ token : '' }, { where: { email: input.email } });
+
+            return true;
+        } catch (error) {
+            return adminServiceErrorResponse(error);
         }
     }
 
