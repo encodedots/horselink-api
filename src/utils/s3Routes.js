@@ -3,12 +3,9 @@
  */
 
 export default {
-    USER_PROFILE_ORIGINAL_IMAGE: "User/Profile/Images/OriginalFiles/",
-    USER_PROFILE_CROPPED_IMAGE: "User/Profile/Images/CroppedFiles/",
+  USER_PROFILE_ORIGINAL_IMAGE: "User/Profile/Images/OriginalFiles/",
+  USER_PROFILE_CROPPED_IMAGE: "User/Profile/Images/CroppedFiles/",
 
-    USER_DOCUMENT_ORIGINAL_IMAGE: "User/Document/OriginalFiles/",
-    USER_DOCUMENT_CROPPED_IMAGE: "User/Document/CroppedFiles/",
-
-    POST_ORIGINAL_FILE: "Post/File/OriginalFiles/",
-    POST_CROPPED_FILE: "Post/File/CroppedFiles/",
-}
+  USER_DOCUMENT_ORIGINAL_IMAGE: "User/Document/OriginalFiles/",
+  USER_DOCUMENT_CROPPED_IMAGE: "User/Document/CroppedFiles/"
+};

@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable("users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,15 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       webId: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       firstName: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       lastName: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       userName: {
@@ -35,15 +35,10 @@ module.exports = {
       },
 
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       description: {
-        type: Sequelize.STRING,
-        allowNull: true
-      },
-
-      memberNumber: {
         type: Sequelize.STRING,
         allowNull: true
       },
@@ -107,62 +102,46 @@ module.exports = {
         type: Sequelize.STRING
       },
 
-      allowMessage: {
+      instagram: {
         type: Sequelize.STRING
       },
 
-      instagram: {
-        type: Sequelize.STRING,
-      },
-
       facebook: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       youtube: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       tiktok: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       website: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
-
+      planName: {
+        type: Sequelize.STRING
+      },
       resetPasswordToken: {
         type: Sequelize.STRING
       },
 
-      emailVerificationCode: {
-        type: Sequelize.STRING,
-      },
-
-      passwordVerificationCode: {
-        type: Sequelize.STRING,
-      },
-
       signUpToken: {
-        type: Sequelize.STRING,
-      },
-
-      status: {
-        type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'n',
+        type: Sequelize.STRING
       },
 
       isActive: {
         type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'y',
+        values: ["y", "n"],
+        defaultValue: "y"
       },
 
       isDeleted: {
         type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'n',
+        values: ["y", "n"],
+        defaultValue: "n"
       },
 
       registerDate: {
@@ -200,10 +179,10 @@ module.exports = {
       deletedAt: {
         allowNull: true,
         type: Sequelize.DATE
-      },
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable("users");
   }
 };
