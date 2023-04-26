@@ -1,5 +1,5 @@
 import model from '../../models';
-import { adminServiceErrorResponse, handleTryCatchError } from "../../utils/sendResponse";
+import { adminServiceErrorResponse } from "../../utils/sendResponse";
 const { countries } = model;
 
 export class CommonService {

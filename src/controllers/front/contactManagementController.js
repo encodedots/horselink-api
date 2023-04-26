@@ -1,20 +1,14 @@
 import { ContactManagementService } from "../../services/front/contactManagementService";
 import Messages from "../../utils/message";
-import {
-  frontSendErrorResponse,
-  frontSendSuccessResponse
-} from "../../utils/sendResponse";
-import {
-  isValidArray,
-  isValidInteger,
-  isValidString
-} from "../../utils/validation";
+import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
+import { isValidString } from "../../utils/validation";
 
 const _contactManagementService = new ContactManagementService();
 
 export class ContactManagementController {
+
   /**
-   * Summary: This function is used for the front sent mail for help, reports and contact
+   * Summary: This function is used for sent mail for help, reports and contact and store data in database
    * @param {*} req
    * @param {*} res
    * @returns
@@ -22,6 +16,7 @@ export class ContactManagementController {
   async sentContactsMail(req, res) {
     var input = req.body;
     try {
+
       // Validate input data
       if (
         input == null ||
@@ -50,8 +45,7 @@ export class ContactManagementController {
         Messages.MAIL_SENT_SUCCESSFULLY
       );
     } catch (e) {
-      console.log("e", e);
-      return frontSendErrorResponse(res, 500, e);
+      return frontSendErrorResponse(res, 201, e);
     }
   }
 }

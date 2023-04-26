@@ -1,17 +1,15 @@
 import { AuthService } from "../../services/front/authService";
 import messages from "../../utils/message";
-import {
-  frontSendErrorResponse,
-  frontSendSuccessResponse
-} from "../../utils/sendResponse";
+import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 
 const _authService = new AuthService();
 
 export class AuthController {
+
   /**
    * Summary: This function is used for the front login
-   * This function will create and authenticate token which will be return to front end to access authorised API
+   * This function will create authenticate token which will be return to frontend to access authorised API
    * @param {*} req
    * @param {*} res
    * @returns
@@ -21,11 +19,7 @@ export class AuthController {
 
     try {
       // Validate input data
-      if (
-        input == null ||
-        (input &&
-          (!isValidString(input.email) || !isValidString(input.password)))
-      )
+      if (input == null || (input && (!isValidString(input.email) || !isValidString(input.password))))
         return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
       // Call service method to handle authentication
@@ -44,7 +38,7 @@ export class AuthController {
         messages.LOGIN_SUCCESSFULLY
       );
     } catch (e) {
-      return frontSendErrorResponse(res, 500, e);
+      return frontSendErrorResponse(res, 201, e);
     }
   }
 }

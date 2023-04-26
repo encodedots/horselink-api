@@ -3,10 +3,11 @@ import messages from "../../utils/message";
 import { isValidInteger } from "../../utils/validation";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 const { user, userInfo } = model;
-const { QueryTypes, Sequelize } = require("sequelize");
+const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
 export class UserService {
+
   /**
    * Summary: This method gets specific user details based on id and return it
    * @param {*} input
@@ -24,7 +25,9 @@ export class UserService {
       output = await user.findOne({
         where: { id: input }
       });
-      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      if (output == null)
+        return frontServiceErrorResponse(messages.NOT_FOUND);
 
       // Return response
       return output;
@@ -34,12 +37,13 @@ export class UserService {
   }
 
   /**
-   * Summary: This method gets specific user details based on id and return it
+   * Summary: This method gets specific user info details based on id and return it
    * @param {*} input
    * @returns
    */
   async getUserInfo(input) {
     try {
+
       // Validate input data
       if (!isValidInteger(input) || input < 1)
         return frontServiceErrorResponse(messages.INVALID_PARAMETERS);

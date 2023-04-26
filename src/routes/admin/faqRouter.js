@@ -13,11 +13,7 @@ router.get("/:id", authenticateJWT, faqController.getFaqDetails);
 //#region POST APIs
 router.post("/create", authenticateJWT, faqController.addFaqDetails);
 router.post("/update/:id", authenticateJWT, faqController.updateFaqDetails);
-router.post(
-  "/updateFaqStatus/:id",
-  authenticateJWT,
-  faqController.updateFaqStatus
-);
+router.post("/updateFaqStatus/:id", authenticateJWT, faqController.updateFaqStatus);
 //#endregion POST APIs
 
 //#region DELETE APIs

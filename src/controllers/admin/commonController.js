@@ -1,12 +1,10 @@
 import { CommonService } from "../../services/admin/commonService";
 import messages from "../../utils/message";
-import {
-  adminSendSuccessResponse,
-  adminSendErrorResponse
-} from "../../utils/sendResponse";
+import { adminSendSuccessResponse, adminSendErrorResponse } from "../../utils/sendResponse";
 const _commonService = new CommonService();
 
 export class CommonController {
+
   /**
    * Summary: This method is used to get all countries.
    * @param {*} req
@@ -18,9 +16,9 @@ export class CommonController {
       // Get all countries list
       var output = await _commonService.getCountries();
 
-      if (output && output["status"] == false) {
+      if (output && output["status"] == false)
         return adminSendErrorResponse(res, 201, output["error"]);
-      }
+
       // Return response
       return adminSendSuccessResponse(
         res,
@@ -30,7 +28,7 @@ export class CommonController {
       );
     } catch (e) {
       // Return error response
-      return adminSendErrorResponse(res, 500, e);
+      return adminSendErrorResponse(res, 201, e);
     }
   }
 }

@@ -9,10 +9,6 @@ const usersController = new UsersController();
 //#region GET APIs
 router.get("/getUser/:id", frontAuthenticateJWT, usersController.getUser);
 
-router.get(
-  "/getUserInfo/:userId",
-  frontAuthenticateJWT,
-  usersController.getUserInfo
-);
+router.get("/getUserInfo/:userId", frontAuthenticateJWT, usersController.getUserInfo);
 //#endregion GET APIs
 export default router;

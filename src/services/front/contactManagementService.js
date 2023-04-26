@@ -1,13 +1,15 @@
 import model from "../../models";
 import message from "../../utils/message";
+import constants from "../../utils/constants";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 import sendEmail from "../../utils/sendEmail";
 const { contactManagement } = model;
 
 export class ContactManagementService {
+
   /**
-   * Summary: This method sent mail to specific user and store details in contact management table
+   * Summary: This method sent mail to admin email and store details in contact management table
    * @param {*} input
    * @returns
    */
@@ -16,6 +18,7 @@ export class ContactManagementService {
       var output = "";
       var sub = "";
       var title = "";
+
       let charityDetails = {
         firstName: isValidString(input.firstName) ? input.firstName.trim() : "",
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
@@ -26,10 +29,10 @@ export class ContactManagementService {
 
       output = await contactManagement.create(charityDetails);
 
-      if (input.type == "contact") {
+      if (input.type == constants.CONTACT_TYPE) {
         sub = message.CONTACT_REQUEST;
         title = "Thank you for connect with us";
-      } else if (input.type == "report") {
+      } else if (input.type == constants.REPORT_TYPE) {
         sub = message.REPORT_REQUEST;
         title = "There is request for reports with below details";
       } else {
@@ -55,7 +58,6 @@ export class ContactManagementService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return frontServiceErrorResponse(e);
     }
   }

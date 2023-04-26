@@ -1,16 +1,14 @@
 import Messages from "../../utils/message";
 import { DataProtectionService } from "../../services/front/dataProtectionService";
-import {
-  frontSendErrorResponse,
-  frontSendSuccessResponse
-} from "../../utils/sendResponse";
+import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 
 const _dataProtectionService = new DataProtectionService();
 
 export class DataProtectionController {
+
   /**
-   * Summary: This function is used for the front sent mail for help, reports and contact
+   * Summary: This function is used for sent mail for GDPR
    * @param {*} req
    * @param {*} res
    * @returns
@@ -18,6 +16,7 @@ export class DataProtectionController {
   async sentDataProtectionMail(req, res) {
     var input = req.body;
     try {
+
       // Validate input data
       if (
         input == null ||
@@ -45,8 +44,7 @@ export class DataProtectionController {
         Messages.MAIL_SENT_SUCCESSFULLY
       );
     } catch (e) {
-      console.log("e", e);
-      return frontSendErrorResponse(res, 500, e);
+      return frontSendErrorResponse(res, 201, e);
     }
   }
 }

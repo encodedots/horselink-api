@@ -1,18 +1,12 @@
 import { UserService } from "../../services/front/usersService";
 import Messages from "../../utils/message";
-import {
-  frontSendErrorResponse,
-  frontSendSuccessResponse
-} from "../../utils/sendResponse";
-import {
-  isValidArray,
-  isValidInteger,
-  isValidString
-} from "../../utils/validation";
+import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
+import { isValidInteger } from "../../utils/validation";
 
 const _userService = new UserService();
 
 export class UsersController {
+
   //#region GET APIs
 
   /**
@@ -58,7 +52,7 @@ export class UsersController {
       if (!isValidInteger(input) || input < 1)
         return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
-      // Call service to get specific user based in input
+      // Call service to get specific user info based in input
       var output = await _userService.getUserInfo(input);
 
       // Return response data

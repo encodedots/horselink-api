@@ -8,6 +8,7 @@ const jwt = require("jsonwebtoken");
 var refreshTokens = [];
 
 export class AuthService {
+
   /**
    * Summary: This method gets specific user details based on email, manage login and return token.
    * @param {*} input
@@ -15,12 +16,9 @@ export class AuthService {
    */
   async login(input) {
     try {
+
       // Validate input data
-      if (
-        input == null ||
-        (input &&
-          (!isValidString(input.email) || !isValidString(input.password)))
-      )
+      if (input == null || (input && (!isValidString(input.email) || !isValidString(input.password))))
         return frontServiceErrorResponse(message.INVALID_PARAMETERS);
 
       // Get information for user if valid otherwise send error
@@ -31,10 +29,7 @@ export class AuthService {
         return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
 
       // Compare user password
-      const checkPassword = hash_compare(
-        hash(input.password),
-        frontUserDetails.password
-      );
+      const checkPassword = hash_compare(hash(input.password), frontUserDetails.password);
       if (!checkPassword)
         return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
 
@@ -44,10 +39,7 @@ export class AuthService {
 
       // Check if user details are deleted, As we do soft delete it will have y/n flag here
       if (frontUserDetails.isDeleted !== "n")
-        await user.update(
-          { isDeleted: "n" },
-          { where: { id: frontUserDetails.id } }
-        );
+        return frontServiceErrorResponse(message.ACCOUNT_DELETED);
 
       // Generate an access token
       // If this token is stolen, then they will have access to the account forever and the actual user won't be able to revoke access.
@@ -80,6 +72,7 @@ export class AuthService {
         process.env.JWT_REFRESH_SECRET_KEY
       );
       refreshTokens.push(refreshToken);
+
       const loginUserDetails = await user.findOne({
         where: { id: frontUserDetails.id }
       });

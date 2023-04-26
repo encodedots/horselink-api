@@ -1,18 +1,12 @@
 import { UserService } from "../../services/admin/usersService";
 import Messages from "../../utils/message";
-import {
-  adminSendErrorResponse,
-  adminSendSuccessResponse
-} from "../../utils/sendResponse";
-import {
-  isValidArray,
-  isValidInteger,
-  isValidString
-} from "../../utils/validation";
+import { adminSendErrorResponse, adminSendSuccessResponse } from "../../utils/sendResponse";
+import { isValidInteger, isValidString } from "../../utils/validation";
 
 const _userService = new UserService();
 
 export class UsersController {
+
   //#region GET APIs
 
   /**
@@ -29,11 +23,11 @@ export class UsersController {
       if (!isValidInteger(input) || input < 1)
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
-      // Call service to get specific user based in input
+      // Call service to get specific user based on id
       var output = await _userService.getUser(input);
-      if (output && output["status"] == false) {
+      if (output && output["status"] == false)
         return adminSendErrorResponse(res, 201, output["error"]);
-      }
+
       // Return response data
       return adminSendSuccessResponse(
         res,
@@ -82,9 +76,9 @@ export class UsersController {
       // Call service to get users
       var output = await _userService.getUsers(input);
 
-      if (output && output["status"] == false) {
+      if (output && output["status"] == false)
         return adminSendErrorResponse(res, 201, output["error"]);
-      }
+
       // Return response data
       return adminSendSuccessResponse(
         res,
@@ -103,7 +97,7 @@ export class UsersController {
   //#region POST APIs
 
   /**
-   * Summary: This method is used to get all users.
+   * Summary: This method is used to update user status
    * @param {*} req
    * @param {*} res
    * @returns
@@ -112,12 +106,12 @@ export class UsersController {
     var input = req.body.status;
     var id = req.params.id;
     try {
-      // Call service to get users
+      // Call service to update user status
       var output = await _userService.updateUserStatus(id, input);
 
-      if (output && output["status"] == false) {
+      if (output && output["status"] == false)
         return adminSendErrorResponse(res, 201, output["error"]);
-      }
+
       // Return response data
       return adminSendSuccessResponse(
         res,
@@ -132,7 +126,7 @@ export class UsersController {
   }
 
   /**
-   * Summary: This method is used to create new user.
+   * Summary: This method is used to create new user
    * @param {*} req
    * @param {*} res
    * @returns
@@ -141,6 +135,7 @@ export class UsersController {
     try {
       var input = req.body;
       var inputFiles = req.files;
+
       // Validate input data
       if (
         input == null ||
@@ -154,6 +149,7 @@ export class UsersController {
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
+
       // Call service to create new user entry
       var output = await _userService.createUser(input, inputFiles);
       if (output == null)
@@ -177,7 +173,7 @@ export class UsersController {
   }
 
   /**
-   * Summary: This method is used to update contact details.
+   * Summary: This method is used to add/update contact details of the user
    * @param {*} req
    * @param {*} res
    * @returns
@@ -186,6 +182,7 @@ export class UsersController {
     try {
       var input = req.body;
       var id = req.params.id;
+
       // Validate input data
       if (
         input == null ||
@@ -200,7 +197,8 @@ export class UsersController {
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
-      // Call service to update user entry
+
+      // Call service to add/update user contact details
       var output = await _userService.addContact(input, id);
       if (output == null)
         return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
@@ -233,6 +231,7 @@ export class UsersController {
       var id = req.params.id;
       var input = req.body;
       var inputFiles = req.files;
+
       // Validate input data
       if (
         id < 1 ||
@@ -255,6 +254,7 @@ export class UsersController {
       if (output && output["status"] == false) {
         return adminSendErrorResponse(res, 201, output["error"]);
       }
+
       // Return response data
       return adminSendSuccessResponse(
         res,
@@ -268,6 +268,9 @@ export class UsersController {
     }
   }
 
+  //#endregion POST APIs
+
+  //#region DELETE APIs
   /**
    * Summary: This method is used to delete specific user based on id.
    * @param {*} req
@@ -303,5 +306,5 @@ export class UsersController {
       return adminSendErrorResponse(res, 201, e);
     }
   }
-  //#endregion POST APIs
+  //#endregion DELETE APIs
 }

@@ -8,14 +8,12 @@ const app = express();
 var bodyParser = require('body-parser')
 app.use(express.json());
 app.use(express.json({ limit: '200mb' }));
-app.use(express.urlencoded({ limit: '200mb',extended: true }));
+app.use(express.urlencoded({ limit: '200mb', extended: true }));
 app.use(express.static(__dirname + '/src/uploads'));
 app.use(cors())
 route(app);
 
 let port = process.env.PORT || 3000;
-console.log("process.env.PORT",process.env.PORT);
-console.log("port",port);
 if (process.env.NODE_ENV == 'local') {
     app.listen(port, () => console.log('Server running on http://localhost:' + port + '/'));
 } else {

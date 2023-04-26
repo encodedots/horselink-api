@@ -5,14 +5,15 @@ import messages from "../../utils/message";
 import { isValidInteger, isValidString } from "../../utils/validation";
 import md5 from "md5";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-var slugify = require("../../utils/slugifyUrl");
-const { user, businesses, userSportType } = model;
 import s3Routes from "../../utils/s3Routes";
 import constants from "../../utils/constants";
+var slugify = require("../../utils/slugifyUrl");
+const { user } = model;
 const { QueryTypes, Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
 export class UserService {
+
   /**
    * Summary: This method gets specific user details based on id and return it
    * @param {*} input
@@ -30,7 +31,9 @@ export class UserService {
       output = await user.findOne({
         where: { id: input }
       });
-      if (output == null) return adminServiceErrorResponse(messages.NOT_FOUND);
+
+      if (output == null)
+        return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Return response
       return output;
@@ -50,7 +53,9 @@ export class UserService {
         attributes: ["id", "firstName", "lastName", "userName"],
         where: { isDeleted: "n", isActive: "y" }
       });
-      if (output == null) return adminServiceErrorResponse(messages.NOT_FOUND);
+
+      if (output == null)
+        return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Return response
       return output;
@@ -68,6 +73,8 @@ export class UserService {
     try {
       var output = "";
       var query = `select u.id, u.firstName, u.lastName, u.userName, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where 1 `;
+
+      var countQuery = query
 
       // Filter data
       if (input !== undefined) {
@@ -87,6 +94,7 @@ export class UserService {
             }
           });
         }
+
         // Order the data
         if (input.sort !== undefined) {
           let sortdata = input.sort;
@@ -104,11 +112,11 @@ export class UserService {
             }
           });
         }
+
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${
-            (input.page ? input.page : 1) * input.limit - input.limit
-          }, ${input.limit}`;
+          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
+            }, ${input.limit}`;
         }
       }
 
@@ -118,7 +126,7 @@ export class UserService {
 
       // Get total count for pagination
       let totalCount = await model.sequelize.query(
-        `select COUNT(*) as count from users`,
+        countQuery,
         {
           type: QueryTypes.SELECT
         }
@@ -127,7 +135,7 @@ export class UserService {
       // Return response
       return {
         records: output,
-        totalCount: totalCount[0].count,
+        totalCount: totalCount.length,
         pageSize: input.limit,
         currentPage: input.page
       };
@@ -171,12 +179,8 @@ export class UserService {
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        password: isValidString(input.password)
-          ? hash(input.password.trim())
-          : "",
-        description: isValidString(input.description)
-          ? input.description.trim()
-          : "",
+        password: isValidString(input.password) ? hash(input.password.trim()) : "",
+        description: isValidString(input.description) ? input.description.trim() : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : ""
       };
@@ -227,8 +231,8 @@ export class UserService {
   }
 
   /**
-   * Summary: This method updates a contact.
-   * @param {*} id - This paramter contains user id.
+   * Summary: This method update the user
+   * @param {*} id - This paramter contains user id
    * @param {*} input - This paramter contains parameter related to users table
    */
   async addContact(input, id) {
@@ -239,17 +243,15 @@ export class UserService {
       if (input == null || id < 1)
         return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
-      // Get user by username
-      var userName = await user.findOne({ where: { id: id } });
-      if (userName == null)
+      // Get user by id
+      var userDetails = await user.findOne({ where: { id: id } });
+      if (userDetails == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Update user data object
       let newUser = {
         telephone: isValidInteger(input.telephone) ? input.telephone : 0,
-        mobileNumber: isValidString(input.mobileNumber)
-          ? input.mobileNumber.trim()
-          : "",
+        mobileNumber: isValidString(input.mobileNumber) ? input.mobileNumber.trim() : "",
         street: isValidString(input.street) ? input.street.trim() : "",
         town: isValidString(input.town) ? input.town.trim() : "",
         zipCode: isValidInteger(input.zipCode) ? input.zipCode : 0,
@@ -271,16 +273,18 @@ export class UserService {
   }
 
   /**
-   * Summary: This method updates information for specific user based on input parameter.
+   * Summary: This method updates information for specific user based on input parameter
    * @param {*} id - This parameter contains the user id
    * @param {*} input - This paramter contains parameter related to user table
    */
   async updateUser(id, input, inputFiles) {
     try {
       var output = "";
+
       // Validate input data
       if (id < 1) return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
+      // Get user by id
       var userData = await user.findOne({ where: { id: id } });
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
@@ -293,9 +297,7 @@ export class UserService {
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        description: isValidString(input.description)
-          ? input.description.trim()
-          : "",
+        description: isValidString(input.description) ? input.description.trim() : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : ""
       };
@@ -359,11 +361,10 @@ export class UserService {
       if (!isValidInteger(input) || input < 1)
         return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
-      // Get specific user data to delete related file
+      // Get specific user data 
       var userData = await user.findOne({ where: { id: input } });
-      if (userData == null) {
+      if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
-      }
 
       // Delete image from s3 bucket
       if (
@@ -400,7 +401,7 @@ export class UserService {
   }
 
   /**
-   * Summary: This method updates the user status based on input parameter.
+   * Summary: This method updates the user status based on id
    * @param {*} id - This parameter contains the user id
    * @param {*} input - This parameter contains user status
    */
@@ -410,8 +411,8 @@ export class UserService {
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
-      input == false ? (input = "n") : (input = "y");
-      await user.update({ isActive: input }, { where: { id: id } });
+      var updatedStatus = (input == false) ? "n" : "y";
+      await user.update({ isActive: updatedStatus }, { where: { id: id } });
 
       return true;
     } catch (error) {

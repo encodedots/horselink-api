@@ -6,23 +6,21 @@ import sendEmail from "../../utils/sendEmail";
 const { dataProtection } = model;
 
 export class DataProtectionService {
+
   /**
-   * Summary: This method sent mail to specific user and store details in contact management table
+   * Summary: This method sent mail to admin email and store details in database
    * @param {*} input
    * @returns
    */
   async sentDataProtectionMail(input) {
     try {
       var output = "";
+
       let data = {
         fullName: isValidString(input.fullName) ? input.fullName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        countryOfResidence: isValidString(input.countryOfResidence)
-          ? input.countryOfResidence.trim()
-          : "",
-        horseLinkTo: isValidString(input.horseLinkTo)
-          ? input.horseLinkTo.trim()
-          : ""
+        countryOfResidence: isValidString(input.countryOfResidence) ? input.countryOfResidence.trim() : "",
+        horseLinkTo: isValidString(input.horseLinkTo) ? input.horseLinkTo.trim() : ""
       };
 
       output = await dataProtection.create(data);
@@ -44,7 +42,6 @@ export class DataProtectionService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return frontServiceErrorResponse(e);
     }
   }

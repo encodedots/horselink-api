@@ -1,20 +1,13 @@
 import { FaqService } from "../../services/front/faqService";
 import Messages from "../../utils/message";
-import {
-  frontSendErrorResponse,
-  frontSendSuccessResponse
-} from "../../utils/sendResponse";
-import {
-  isValidArray,
-  isValidInteger,
-  isValidString
-} from "../../utils/validation";
+import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
 
 const _faqService = new FaqService();
 
 export class FaqController {
+
   /**
-   * Summary: This method returns all register users.
+   * Summary: This method returns all FAQs.
    * @param {*} req
    * @param {*} res
    * @returns
@@ -23,8 +16,10 @@ export class FaqController {
     try {
       // Call service to get all users
       var output = await _faqService.getFaqList();
+
       if (output["status"] == false)
         return frontSendErrorResponse(res, 201, output["error"]);
+
       // Return response data
       return frontSendSuccessResponse(
         res,

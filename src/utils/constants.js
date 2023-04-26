@@ -15,6 +15,10 @@ export default {
   /* DEFAULT ADMIN USER DATA */
   ADMIN_USER_NAME: "admin",
   ADMIN_USER_EMAIL: process.env.EMAIL_ADMIN,
-  ADMIN_USER_PASSWORD: "Etpl@852"
+  ADMIN_USER_PASSWORD: "Etpl@852",
   /* DEFAULT ADMIN USER DATA */
+
+  CONTACT_TYPE: "contact",
+  REPORT_TYPE: "report",
+  HELP_TYPE: "help"
 };

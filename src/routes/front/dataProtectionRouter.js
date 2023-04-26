@@ -4,10 +4,7 @@ const router = express.Router();
 const dataProtectionController = new DataProtectionController();
 
 // #region POST APIs
-router.post(
-  "/sentDataProtectionMail",
-  dataProtectionController.sentDataProtectionMail
-);
+router.post("/sentDataProtectionMail", dataProtectionController.sentDataProtectionMail);
 // #endregion POST APIs
 
 export default router;

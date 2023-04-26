@@ -6,7 +6,7 @@ const router = express.Router();
 var adminUserController = new AdminUserController();
 
 //#region POST APIs
-router.post('/adminLogin', adminUserController.adminLogin);
+router.post('/login', adminUserController.login);
 router.post('/logout', authenticateJWT, adminUserController.logout);
 //#endregion
 

@@ -4,24 +4,23 @@ const { charity } = model;
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 import sendEmail from "../../utils/sendEmail";
+
 export class CharityService {
+
   /**
-   * Summary: This method sent mail to specific user and store details in charity table
+   * Summary: This method sent mail to admin email and store details in charity table
    * @param {*} input
    * @returns
    */
   async sentCharityMail(input) {
     try {
       var output = "";
+
       let charityDetails = {
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        charityName: isValidString(input.charityName)
-          ? input.charityName.trim()
-          : "",
-        charityWebsite: isValidString(input.charityWebsite)
-          ? input.charityWebsite.trim()
-          : ""
+        charityName: isValidString(input.charityName) ? input.charityName.trim() : "",
+        charityWebsite: isValidString(input.charityWebsite) ? input.charityWebsite.trim() : ""
       };
 
       output = await charity.create(charityDetails);

@@ -12,7 +12,9 @@ const { adminUser } = model;
 export const authenticateJWT = async (req, res, next) => {
   const authHeader = req.headers.authorization;
 
-  var messages = {};
+  var messages = {
+    authMessage: "Your session has been expired, Please login to continue"
+  };
 
   if (authHeader) {
     const token = await authHeader.split(" ")[1];
@@ -20,7 +22,7 @@ export const authenticateJWT = async (req, res, next) => {
       if (err) {
         // Change token status when user not authorized
         messages.authMessage =
-          "Your token is expired, Please login to continue11";
+          "Your token is expired, Please login to continue";
         return res.status(403).send(messages);
       } else {
         // if (userData && userData.email) {
