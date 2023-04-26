@@ -16,6 +16,7 @@ import charityFrontRouter from "./front/charityRouter";
 import contactManagementFrontRouter from "./front/contactManagementRouter";
 import faqFrontRouter from "./front/faqRouter";
 import dataProtectionFrontRouter from "./front/dataProtectionRouter";
+import userTypesRouter from "./front/userTypesRouter";
 //#endregion Front Routes
 
 export default (app) => {
@@ -37,6 +38,7 @@ export default (app) => {
   app.use("/api/v1/front/contacts", contactManagementFrontRouter);
   app.use("/api/v1/front/faq", faqFrontRouter);
   app.use("/api/v1/front/dataProtection", dataProtectionFrontRouter);
+  app.use("/api/v1/front/userTypes", userTypesRouter);
   //#endregion Front Routes
 
   app.all("*", (req, res) => (res, 404, "Route does not exist"));

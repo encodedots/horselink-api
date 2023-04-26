@@ -14,7 +14,7 @@ export class FaqController {
    */
   async getFaqList(req, res) {
     try {
-      // Call service to get all users
+      // Call service to get all FAQs
       var output = await _faqService.getFaqList();
 
       if (output["status"] == false)

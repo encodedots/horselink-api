@@ -43,6 +43,16 @@ module.exports = {
         allowNull: true
       },
 
+      userTypeId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "userTypes",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
+      },
+
       originalFileName: {
         type: Sequelize.STRING,
         allowNull: true
