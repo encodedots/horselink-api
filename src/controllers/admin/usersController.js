@@ -31,7 +31,9 @@ export class UsersController {
 
       // Call service to get specific user based in input
       var output = await _userService.getUser(input);
-
+      if (output && output["status"] == false) {
+        return adminSendErrorResponse(res, 201, output["error"]);
+      }
       // Return response data
       return adminSendSuccessResponse(
         res,
@@ -53,7 +55,7 @@ export class UsersController {
   async getUserList(req, res) {
     try {
       // Call service to get all users
-      var output = await _userService.getUserlist();
+      var output = await _userService.getUserList();
 
       // Return response data
       return adminSendSuccessResponse(

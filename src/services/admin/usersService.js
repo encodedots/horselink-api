@@ -43,7 +43,7 @@ export class UserService {
    * Summary: This method gets all register users
    * @returns
    */
-  async getUserlist() {
+  async getUserList() {
     try {
       var output = "";
       output = await user.findAll({

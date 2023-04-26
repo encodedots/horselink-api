@@ -19,6 +19,10 @@ export default {
 
   // Email Messages
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
+  CONTACT_REQUEST: "Contact request",
+  REPORT_REQUEST: "Report request",
+  HELP_REQUEST: "Help request",
+  GDPR_REQUEST: "GDPR request",
 
   // Create/Update user Messages
   USER_ALREADY_EXIST: "User already exist",

@@ -32,7 +32,7 @@ router.post(
   multipartMiddleware,
   usersController.updateUser
 );
-router.post("/deleteUser/:id", authenticateJWT, usersController.deleteUser);
+router.delete("/deleteUser/:id", authenticateJWT, usersController.deleteUser);
 
 router.post(
   "/updateUserStatus/:id",

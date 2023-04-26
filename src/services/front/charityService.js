@@ -43,7 +43,6 @@ export class CharityService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return frontServiceErrorResponse(e);
     }
   }
