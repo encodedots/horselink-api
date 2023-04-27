@@ -191,13 +191,11 @@ export class UsersController {
       if (
         input == null ||
         !isValidInteger(input.telephone) ||
-        !isValidString(input.mobileNumber) ||
         !isValidString(input.street) ||
         !isValidString(input.town) ||
         !isValidInteger(input.zipCode) ||
         !isValidString(input.state) ||
-        !isValidInteger(input.country) ||
-        !isValidString(input.website)
+        !isValidInteger(input.country)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
@@ -216,7 +214,7 @@ export class UsersController {
         res,
         200,
         output,
-        Messages.UPDATED_SUCCESSFULLY
+        Messages.UPDATED_USER_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail

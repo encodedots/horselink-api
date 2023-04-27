@@ -112,9 +112,8 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${
-            (input.page ? input.page : 1) * input.limit - input.limit
-          }, ${input.limit}`;
+          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
+            }, ${input.limit}`;
         }
       }
 

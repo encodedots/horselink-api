@@ -45,7 +45,7 @@ export class SaleHorseController {
         res,
         200,
         output,
-        Messages.CREATED_SUCCESSFULLY
+        Messages.UPDATED_USER_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail
