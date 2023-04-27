@@ -13,7 +13,6 @@ const { QueryTypes, Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
 export class UserService {
-
   /**
    * Summary: This method gets specific user details based on id and return it
    * @param {*} input
@@ -32,8 +31,7 @@ export class UserService {
         where: { id: input }
       });
 
-      if (output == null)
-        return adminServiceErrorResponse(messages.NOT_FOUND);
+      if (output == null) return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Return response
       return output;
@@ -54,8 +52,7 @@ export class UserService {
         where: { isDeleted: "n", isActive: "y" }
       });
 
-      if (output == null)
-        return adminServiceErrorResponse(messages.NOT_FOUND);
+      if (output == null) return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Return response
       return output;
@@ -74,7 +71,7 @@ export class UserService {
       var output = "";
       var query = `select u.id, u.firstName, u.lastName, u.userName, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where 1 `;
 
-      var countQuery = query
+      var countQuery = query;
 
       // Filter data
       if (input !== undefined) {
@@ -115,8 +112,9 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
-            }, ${input.limit}`;
+          query += ` limit ${
+            (input.page ? input.page : 1) * input.limit - input.limit
+          }, ${input.limit}`;
         }
       }
 
@@ -125,12 +123,9 @@ export class UserService {
       });
 
       // Get total count for pagination
-      let totalCount = await model.sequelize.query(
-        countQuery,
-        {
-          type: QueryTypes.SELECT
-        }
-      );
+      let totalCount = await model.sequelize.query(countQuery, {
+        type: QueryTypes.SELECT
+      });
 
       // Return response
       return {
@@ -179,10 +174,18 @@ export class UserService {
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        password: isValidString(input.password) ? hash(input.password.trim()) : "",
-        description: isValidString(input.description) ? input.description.trim() : "",
+        password: isValidString(input.password)
+          ? hash(input.password.trim())
+          : "",
+        description: isValidString(input.description)
+          ? input.description.trim()
+          : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
-        planName: isValidString(input.planName) ? input.planName.trim() : ""
+        planName: isValidString(input.planName) ? input.planName.trim() : "",
+        userTypeId: isValidInteger(input.userTypeId) ? input.userTypeId : 0,
+        colorTemplate: isValidString(input.colorTemplate)
+          ? input.colorTemplate.trim()
+          : ""
       };
 
       if (
@@ -251,7 +254,9 @@ export class UserService {
       // Update user data object
       let newUser = {
         telephone: isValidInteger(input.telephone) ? input.telephone : 0,
-        mobileNumber: isValidString(input.mobileNumber) ? input.mobileNumber.trim() : "",
+        mobileNumber: isValidString(input.mobileNumber)
+          ? input.mobileNumber.trim()
+          : "",
         street: isValidString(input.street) ? input.street.trim() : "",
         town: isValidString(input.town) ? input.town.trim() : "",
         zipCode: isValidInteger(input.zipCode) ? input.zipCode : 0,
@@ -297,9 +302,15 @@ export class UserService {
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        description: isValidString(input.description) ? input.description.trim() : "",
+        description: isValidString(input.description)
+          ? input.description.trim()
+          : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
-        planName: isValidString(input.planName) ? input.planName.trim() : ""
+        planName: isValidString(input.planName) ? input.planName.trim() : "",
+        userTypeId: isValidInteger(input.userTypeId) ? input.userTypeId : 0,
+        colorTemplate: isValidString(input.colorTemplate)
+          ? input.colorTemplate.trim()
+          : ""
       };
 
       if (
@@ -361,7 +372,7 @@ export class UserService {
       if (!isValidInteger(input) || input < 1)
         return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
-      // Get specific user data 
+      // Get specific user data
       var userData = await user.findOne({ where: { id: input } });
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
@@ -411,7 +422,7 @@ export class UserService {
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
-      var updatedStatus = (input == false) ? "n" : "y";
+      var updatedStatus = input == false ? "n" : "y";
       await user.update({ isActive: updatedStatus }, { where: { id: id } });
 
       return true;

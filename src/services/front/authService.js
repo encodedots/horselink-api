@@ -8,7 +8,6 @@ const jwt = require("jsonwebtoken");
 var refreshTokens = [];
 
 export class AuthService {
-
   /**
    * Summary: This method gets specific user details based on email, manage login and return token.
    * @param {*} input
@@ -16,20 +15,26 @@ export class AuthService {
    */
   async login(input) {
     try {
-
       // Validate input data
-      if (input == null || (input && (!isValidString(input.email) || !isValidString(input.password))))
+      if (
+        input == null ||
+        (input &&
+          (!isValidString(input.userName) || !isValidString(input.password)))
+      )
         return frontServiceErrorResponse(message.INVALID_PARAMETERS);
 
       // Get information for user if valid otherwise send error
       const frontUserDetails = await user.findOne({
-        where: { email: input.email }
+        where: { userName: input.userName }
       });
       if (!frontUserDetails)
         return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
 
       // Compare user password
-      const checkPassword = hash_compare(hash(input.password), frontUserDetails.password);
+      const checkPassword = hash_compare(
+        hash(input.password),
+        frontUserDetails.password
+      );
       if (!checkPassword)
         return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
 

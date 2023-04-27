@@ -134,6 +134,9 @@ module.exports = {
       planName: {
         type: Sequelize.STRING
       },
+      colorTemplate: {
+        type: Sequelize.STRING
+      },
       resetPasswordToken: {
         type: Sequelize.STRING
       },

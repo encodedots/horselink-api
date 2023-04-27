@@ -1,12 +1,14 @@
 import { UserService } from "../../services/admin/usersService";
 import Messages from "../../utils/message";
-import { adminSendErrorResponse, adminSendSuccessResponse } from "../../utils/sendResponse";
+import {
+  adminSendErrorResponse,
+  adminSendSuccessResponse
+} from "../../utils/sendResponse";
 import { isValidInteger, isValidString } from "../../utils/validation";
 
 const _userService = new UserService();
 
 export class UsersController {
-
   //#region GET APIs
 
   /**
@@ -145,7 +147,9 @@ export class UsersController {
         !isValidString(input.email) ||
         !isValidString(input.password) ||
         !isValidString(input.description) ||
-        !isValidString(input.planName)
+        !isValidString(input.planName) ||
+        !isValidInteger(input.userTypeId) ||
+        !isValidString(input.colorTemplate)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
@@ -241,7 +245,9 @@ export class UsersController {
         !isValidString(input.userName) ||
         !isValidString(input.email) ||
         !isValidString(input.description) ||
-        !isValidString(input.planName)
+        !isValidString(input.planName) ||
+        !isValidInteger(input.userTypeId) ||
+        !isValidString(input.colorTemplate)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
