@@ -6,8 +6,8 @@ import userRouter from "./admin/userRotuer";
 import commonRouter from "./admin/commonRouter";
 import userInfoRouter from "./admin/userInfoRouter";
 import faqRouter from "./admin/faqRouter";
+import sponsorRouter from "./admin/sponsorRouter";
 import saleHorseRouter from "./admin/saleHorseRouter";
-
 //#endregion Admin Routes
 
 //#region Front Routes
@@ -30,6 +30,7 @@ export default (app) => {
   app.use("/api/v1/common", commonRouter);
   app.use("/api/v1/userInfo", userInfoRouter);
   app.use("/api/v1/faq", faqRouter);
+  app.use("/api/v1/sponsor", sponsorRouter);
   app.use("/api/v1/saleHorse", saleHorseRouter);
   //#endregion Admin Routes
 

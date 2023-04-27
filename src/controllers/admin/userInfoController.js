@@ -27,6 +27,9 @@ export class UserInfoController {
       // Call service to get specific user info based on id
       var output = await _userInfoService.getUserInfo(input);
 
+      if (output && output["status"] == false)
+        return adminSendErrorResponse(res, 201, output["error"]);
+
       // Return response data
       return adminSendSuccessResponse(
         res,

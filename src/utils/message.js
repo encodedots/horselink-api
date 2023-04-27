@@ -32,5 +32,6 @@ export default {
   RETRIEVE_SUCCESSFULLY: "Retrieved data successfully",
   CREATED_SUCCESSFULLY: "Created successfully",
   UPDATED_SUCCESSFULLY: "Updated successfully",
-  DELETED_SUCCESSFULLY: "Deleted successfully"
+  DELETED_SUCCESSFULLY: "Deleted successfully",
+  UPDATED_USER_SUCCESSFULLY: "Updated user details successfully",
 };

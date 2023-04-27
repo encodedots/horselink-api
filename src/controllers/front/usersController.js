@@ -96,10 +96,40 @@ export class UsersController {
     }
   }
 
-  //#region GET APIs
+  /**
+   * Summary: This method returns sponsor details of user based on id
+   * @param {*} req 
+   * @param {*} res 
+   * @returns 
+   */
+  async getSponsorDetails(req, res) {
+    var input = req.params.id;
+
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get sponsor details based on id
+      var output = await _userService.getSponsorDetails(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      console.log("e", e);
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
 
   /**
-   * Summary: This method returns specific user's detail based on id.
+   * Summary: This method returns horse sale detail of user based on id
    * @param {*} req
    * @param {*} res
    * @returns
@@ -112,7 +142,7 @@ export class UsersController {
       if (!isValidInteger(input) || input < 1)
         return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
-      // Call service to get specific user based on id
+      // Call service to get horse sale based on id
       var output = await _userService.getSaleHorseDetails(input);
       if (output && output["status"] == false)
         return frontSendErrorResponse(res, 201, output["error"]);

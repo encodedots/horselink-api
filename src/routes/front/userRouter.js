@@ -16,6 +16,8 @@ router.get(
 );
 router.get("/getUserList", usersController.getUserList);
 
+router.get("/getSponsorDetails/:id", frontAuthenticateJWT, usersController.getSponsorDetails);
+
 router.get(
   "/getSaleHorseDetails/:id",
   frontAuthenticateJWT,

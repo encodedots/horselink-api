@@ -2,7 +2,7 @@ import model from "../../models";
 import messages from "../../utils/message";
 import { isValidInteger } from "../../utils/validation";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
-const { user, userInfo, userType, saleHorse } = model;
+const { user, userInfo, userType, sponsors, saleHorse } = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
@@ -122,7 +122,32 @@ export class UserService {
   }
 
   /**
-   * Summary: This method gets specific sale horse details based on userid and return it
+   * Summary: This method gets sponsor details based on userid and return it
+   * @param {*} input
+   * @returns
+   */
+  async getSponsorDetails(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+      // Get a sponsor details based on id
+      output = await sponsors.findAll({
+        where: { userId: input }
+      });
+
+      // Return response
+      return output;
+    } catch (e) {
+      console.log("e", e);
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method gets sale horse details based on userid and return it
    * @param {*} input
    * @returns
    */

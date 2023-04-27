@@ -89,6 +89,7 @@ export class AuthService {
         user: loginUserDetails
       };
     } catch (e) {
+      console.log("sdsd11", e)
       return frontServiceErrorResponse(e);
     }
   }

@@ -44,6 +44,7 @@ export class AuthController {
         messages.LOGIN_SUCCESSFULLY
       );
     } catch (e) {
+      console.log("sdsd", e)
       return frontSendErrorResponse(res, 201, e);
     }
   }
