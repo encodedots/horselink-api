@@ -148,7 +148,7 @@ export class UsersController {
         !isValidString(input.password) ||
         !isValidString(input.description) ||
         !isValidString(input.planName) ||
-        !isValidInteger(input.userTypeId) ||
+        !isValidInteger(input.categoryId) ||
         !isValidString(input.colorTemplate)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
@@ -246,7 +246,7 @@ export class UsersController {
         !isValidString(input.email) ||
         !isValidString(input.description) ||
         !isValidString(input.planName) ||
-        !isValidInteger(input.userTypeId) ||
+        !isValidInteger(input.categoryId) ||
         !isValidString(input.colorTemplate)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);

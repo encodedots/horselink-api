@@ -182,7 +182,7 @@ export class UserService {
           : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
-        userTypeId: isValidInteger(input.userTypeId) ? input.userTypeId : 0,
+        categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
         colorTemplate: isValidString(input.colorTemplate)
           ? input.colorTemplate.trim()
           : ""
@@ -307,7 +307,7 @@ export class UserService {
           : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
-        userTypeId: isValidInteger(input.userTypeId) ? input.userTypeId : 0,
+        categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
         colorTemplate: isValidString(input.colorTemplate)
           ? input.colorTemplate.trim()
           : ""

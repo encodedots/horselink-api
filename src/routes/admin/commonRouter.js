@@ -5,7 +5,7 @@ var commonController = new CommonController();
 
 //#region GET APIs
 router.get("/getCountries", commonController.getCountries);
-router.get("/getUserTypesList", commonController.getUserTypesList);
+router.get("/getCategoryList", commonController.getCategoryList);
 //#endregion GET APIs
 
 export default router;

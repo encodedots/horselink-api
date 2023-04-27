@@ -1,6 +1,6 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-const { countries, userType, user } = model;
+const { countries, category, user } = model;
 
 export class CommonService {
   /**
@@ -24,13 +24,13 @@ export class CommonService {
   }
 
   /**
-   * Summary: This method get all user types
+   * Summary: This method get all categories
    * @returns
    */
-  async getUserTypesList() {
+  async getCategoryList() {
     try {
       var output = "";
-      output = await userType.findAll({
+      output = await category.findAll({
         where: {
           isActive: "y",
           deletedAt: null

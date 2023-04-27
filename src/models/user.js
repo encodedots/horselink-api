@@ -10,9 +10,9 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      user.belongsTo(models.userType, {
-        foreignKey: "userTypeId",
-        as: "userTypeDetails",
+      user.belongsTo(models.category, {
+        foreignKey: "categoryId",
+        as: "categoryDetails",
         onDelete: "CASCADE"
       });
     }
@@ -55,7 +55,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING
       },
 
-      userTypeId: {
+      categoryId: {
         type: DataTypes.INTEGER
       },
 

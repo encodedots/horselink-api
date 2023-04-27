@@ -43,10 +43,10 @@ module.exports = {
         allowNull: true
       },
 
-      userTypeId: {
+      categoryId: {
         type: Sequelize.INTEGER,
         references: {
-          model: "userTypes",
+          model: "categories",
           key: "id"
         },
         onDelete: "cascade",

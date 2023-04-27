@@ -2,7 +2,7 @@ import model from "../../models";
 import messages from "../../utils/message";
 import { isValidInteger } from "../../utils/validation";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
-const { user, userInfo, userType, sponsors, saleHorse } = model;
+const { user, userInfo, category, sponsors, saleHorse } = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
@@ -84,8 +84,8 @@ export class UserService {
         },
         include: [
           {
-            model: userType,
-            as: "userTypeDetails",
+            model: category,
+            as: "categoryDetails",
             where: whereObj
           }
         ],
@@ -102,8 +102,8 @@ export class UserService {
         },
         include: [
           {
-            model: userType,
-            as: "userTypeDetails",
+            model: category,
+            as: "categoryDetails",
             where: whereObj
           }
         ]

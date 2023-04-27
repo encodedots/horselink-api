@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('userTypes', {
+    await queryInterface.createTable("categories", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -14,13 +14,12 @@ module.exports = {
         type: Sequelize.STRING
       },
       slug: {
-        allowNull: false,
         type: Sequelize.STRING
       },
       isActive: {
         type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'y',
+        values: ["y", "n"],
+        defaultValue: "y"
       },
       actionIpAddress: {
         type: Sequelize.STRING
@@ -39,6 +38,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('userTypes');
+    await queryInterface.dropTable("categories");
   }
 };

@@ -35,15 +35,15 @@ export class CommonController {
   }
 
   /**
-   * Summary: This method returns all user types.
+   * Summary: This method returns all categories.
    * @param {*} req
    * @param {*} res
    * @returns
    */
-  async getUserTypesList(req, res) {
+  async getCategoryList(req, res) {
     try {
-      // Call service to get all user types
-      var output = await _commonService.getUserTypesList();
+      // Call service to get all categories
+      var output = await _commonService.getCategoryList();
 
       if (output["status"] == false)
         return adminSendErrorResponse(res, 201, output["error"]);
