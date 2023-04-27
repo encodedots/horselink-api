@@ -68,7 +68,6 @@ export class SponsorService {
             // Return response
             return output;
         } catch (e) {
-            console.log("e1", e)
             return adminServiceErrorResponse(e);
         }
     }

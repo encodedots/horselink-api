@@ -35,10 +35,10 @@ export class SaleHorseService {
       }
 
       output = await saleHorse.bulkCreate(horseArr);
+
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return adminServiceErrorResponse(e);
     }
   }

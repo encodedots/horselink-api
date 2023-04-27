@@ -73,7 +73,6 @@ export class SponsorController {
             );
         } catch (e) {
             // Send error message on fail
-            console.log("e", e)
             return adminSendErrorResponse(res, 201, e);
         }
     }

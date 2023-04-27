@@ -141,7 +141,6 @@ export class UserService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return frontServiceErrorResponse(e);
     }
   }
@@ -168,7 +167,6 @@ export class UserService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e);
       return frontServiceErrorResponse(e);
     }
   }

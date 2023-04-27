@@ -123,7 +123,6 @@ export class UsersController {
         Messages.RETRIEVE_SUCCESSFULLY
       );
     } catch (e) {
-      console.log("e", e);
       return frontSendErrorResponse(res, 201, e);
     }
   }
@@ -155,7 +154,6 @@ export class UsersController {
         Messages.RETRIEVE_SUCCESSFULLY
       );
     } catch (e) {
-      console.log("e", e);
       return frontSendErrorResponse(res, 201, e);
     }
   }
