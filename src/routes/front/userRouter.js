@@ -24,6 +24,17 @@ router.get(
   usersController.getSaleHorseDetails
 );
 
+router.get(
+  "/getUserSocialMediaDetails/:id",
+  frontAuthenticateJWT,
+  usersController.getUserSocialMediaDetails
+);
+
+router.get(
+  "/getTitles/:userId",
+  frontAuthenticateJWT,
+  usersController.getTitles
+);
 //#endregion GET APIs
 
 //#region POST APIs

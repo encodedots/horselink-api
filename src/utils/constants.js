@@ -20,5 +20,14 @@ export default {
 
   CONTACT_TYPE: "contact",
   REPORT_TYPE: "report",
-  HELP_TYPE: "help"
+  HELP_TYPE: "help",
+
+  /* TITLE */
+
+  USER_INFO_TITLE: "user-info",
+  HORSE_FOR_SALE_TITLE: "horse-for-sale",
+  SPONSORS_TITLE: "sponsors",
+  CONTACTS_TITLE: "contacts",
+  STALLIONS_TITLE: "stallions",
+  SOCIAL_MEDIA_TITLE: "social-media"
 };

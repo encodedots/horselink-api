@@ -35,5 +35,7 @@ export default {
   CREATED_SUCCESSFULLY: "Created successfully",
   UPDATED_SUCCESSFULLY: "Updated successfully",
   DELETED_SUCCESSFULLY: "Deleted successfully",
-  UPDATED_USER_SUCCESSFULLY: "Updated user details successfully",
+  UPDATED_USER_SUCCESSFULLY: "User detail updated successfully",
+  SOCIALMEDIA_ADDED_SUCCESSFULLY: "Social media added successfully",
+  USER_ADDED_SUCCESSFULLY: "User added successfully"
 };

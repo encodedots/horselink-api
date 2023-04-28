@@ -1,6 +1,6 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-const { countries, category, user } = model;
+const { countries, category, user, socialMedia } = model;
 
 export class CommonService {
   /**
@@ -33,6 +33,26 @@ export class CommonService {
       output = await category.findAll({
         where: {
           isActive: "y",
+          deletedAt: null
+        }
+      });
+
+      // Return response
+      return output;
+    } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get all social media
+   * @returns
+   */
+  async getSocialMediaList() {
+    try {
+      var output = "";
+      output = await socialMedia.findAll({
+        where: {
           deletedAt: null
         }
       });
