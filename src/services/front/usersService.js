@@ -2,7 +2,16 @@ import model from "../../models";
 import messages from "../../utils/message";
 import { isValidInteger } from "../../utils/validation";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
-const { user, userInfo, category, sponsors, saleHorse } = model;
+import Constants from "../../utils/constants";
+const {
+  user,
+  userInfo,
+  category,
+  sponsors,
+  saleHorse,
+  userSocialMedia,
+  socialMedia
+} = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
@@ -166,6 +175,104 @@ export class UserService {
 
       // Return response
       return output;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get user social media details based on user id and return it
+   * @param {*} input
+   * @returns
+   */
+  async getUserSocialMediaDetails(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+      // Get a user social media details based on id
+      output = await userSocialMedia.findAll({
+        where: { userId: input },
+        include: [
+          {
+            model: socialMedia,
+            as: "socialMediaDetails"
+          }
+        ]
+      });
+
+      // Return response
+      return output;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get user title based on user id and return it
+   * @param {*} input
+   * @returns
+   */
+  async getTitles(input) {
+    try {
+      var titleArray = [];
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+      var userInfoTitle = "";
+      var horseSaleTitle = "";
+      var sponsorTitle = "";
+      var socialMediaDetails = [];
+      var contacts = false;
+
+      // Get a specific user details based in id
+      output = await user.findOne({
+        where: { id: input }
+      });
+
+      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      if (output && output.country != null && output.telephone != null) {
+        contacts = true;
+      }
+      // Get user details title based on id
+      userInfoTitle = await userInfo.findOne({
+        where: { userId: input }
+      });
+
+      horseSaleTitle = await saleHorse.findOne({
+        where: { userId: input }
+      });
+
+      sponsorTitle = await sponsors.findOne({
+        where: { userId: input }
+      });
+
+      socialMediaDetails = await userSocialMedia.findAll({
+        where: { userId: input },
+        include: [
+          {
+            model: socialMedia,
+            as: "socialMediaDetails"
+          }
+        ]
+      });
+
+      titleArray.push({
+        [Constants.USER_INFO_TITLE]: userInfoTitle ? userInfoTitle?.title : "",
+        [Constants.HORSE_FOR_SALE_TITLE]: horseSaleTitle
+          ? horseSaleTitle?.title
+          : "",
+        [Constants.SPONSORS_TITLE]: sponsorTitle ? sponsorTitle?.title : "",
+        [Constants.SOCIAL_MEDIA_TITLE]: socialMediaDetails,
+        [Constants.CONTACTS_TITLE]: contacts
+      });
+      // Return response
+      return titleArray;
     } catch (e) {
       return frontServiceErrorResponse(e);
     }

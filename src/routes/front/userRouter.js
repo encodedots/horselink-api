@@ -16,12 +16,28 @@ router.get(
 );
 router.get("/getUserList", usersController.getUserList);
 
-router.get("/getSponsorDetails/:id", frontAuthenticateJWT, usersController.getSponsorDetails);
+router.get(
+  "/getSponsorDetails/:id",
+  frontAuthenticateJWT,
+  usersController.getSponsorDetails
+);
 
 router.get(
   "/getSaleHorseDetails/:id",
   frontAuthenticateJWT,
   usersController.getSaleHorseDetails
+);
+
+router.get(
+  "/getUserSocialMediaDetails/:id",
+  frontAuthenticateJWT,
+  usersController.getUserSocialMediaDetails
+);
+
+router.get(
+  "/getTitles/:userId",
+  frontAuthenticateJWT,
+  usersController.getTitles
 );
 //#endregion GET APIs
 export default router;

@@ -98,9 +98,9 @@ export class UsersController {
 
   /**
    * Summary: This method returns sponsor details of user based on id
-   * @param {*} req 
-   * @param {*} res 
-   * @returns 
+   * @param {*} req
+   * @param {*} res
+   * @returns
    */
   async getSponsorDetails(req, res) {
     var input = req.params.id;
@@ -158,5 +158,66 @@ export class UsersController {
     }
   }
 
+  /**
+   * Summary: This method returns user social media details based on user id.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getUserSocialMediaDetails(req, res) {
+    var input = req.params.id;
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get specific user social media based on id
+      var output = await _userService.getUserSocialMediaDetails(input);
+
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This method returns user get titles based on user id.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getTitles(req, res) {
+    var input = req.params.userId;
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get specific user profiles title based on id
+      var output = await _userService.getTitles(input);
+
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
   //#endregion GET APIs
 }
