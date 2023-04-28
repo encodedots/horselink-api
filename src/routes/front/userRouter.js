@@ -23,5 +23,15 @@ router.get(
   frontAuthenticateJWT,
   usersController.getSaleHorseDetails
 );
+
 //#endregion GET APIs
+
+//#region POST APIs
+router.post("/update/:id", usersController.updateUserDeatils); // :id - user web id
+//#endregion POST APIs
+
+//#region DELETE APIs
+router.delete("/delete/:id", usersController.deleteUser); // :id - user web id
+//#endregion DELETE APIs
+
 export default router;

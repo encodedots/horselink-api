@@ -4,7 +4,7 @@ import {
   frontSendErrorResponse,
   frontSendSuccessResponse
 } from "../../utils/sendResponse";
-import { isValidInteger } from "../../utils/validation";
+import { isValidInteger, isEmptyObject, isValidString } from "../../utils/validation";
 
 const _userService = new UserService();
 
@@ -22,11 +22,13 @@ export class UsersController {
 
     try {
       // Validate input data
-      if (!isValidInteger(input) || input < 1)
+      if (input == null || !isValidString(input))
         return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
       // Call service to get specific user based in input
       var output = await _userService.getUser(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
 
       // Return response data
       return frontSendSuccessResponse(
@@ -56,6 +58,8 @@ export class UsersController {
 
       // Call service to get specific user info based in input
       var output = await _userService.getUserInfo(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
 
       // Return response data
       return frontSendSuccessResponse(
@@ -159,4 +163,77 @@ export class UsersController {
   }
 
   //#endregion GET APIs
+
+
+  //#region POST APIs
+
+  /**
+     * Summary: This method update the user details based on id
+     * @param {*} req
+     * @param {*} res
+     * @returns
+     */
+  async updateUserDeatils(req, res) {
+    var webId = req.params.id;
+    var input = req.body;
+
+    try {
+      // Validate input data
+      if (input == null || isEmptyObject(input) || !isValidString(webId))
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to update the user details based on id
+      var output = await _userService.updateUserDeatils(webId, input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.UPDATED_USER_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+  //#endregion POST APIs
+
+
+  //#region DELETE APIs
+  /**
+     * Summary: This method delete the user based on id
+     * @param {*} req
+     * @param {*} res
+     * @returns
+     */
+  async deleteUser(req, res) {
+    var webId = req.params.id;
+
+    try {
+      // Validate input data
+      if (webId == null || !isValidString(webId))
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to delete the user based on id
+      var output = await _userService.deleteUser(webId);
+      if (output == null)
+        return frontSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"], output["data"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.DELETED_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+  //#endregion DELETE APIs
 }

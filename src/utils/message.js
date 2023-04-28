@@ -6,7 +6,8 @@ export default {
   ACCOUNT_SUSPENDED: "Your account has been suspended. Contact admin",
   ACCOUNT_DELETED: "Your account has been deleted. Contact admin",
   INCORRECT_LOGIN_CREDENTIALS: "Incorrect login credentials. Kindly check and try again",
-  LOGIN_SUCCESSFULLY: "Login  successful",
+  REGISTER_SUCCESSFULLY: "Register successful",
+  LOGIN_SUCCESSFULLY: "Login successful",
   LOGOUT_SUCCESSFULLY: "Logout successful",
   MAIL_SENT_SUCCESSFULLY: "Mail sent successfully",
   // Common messages
@@ -27,6 +28,7 @@ export default {
   USER_ALREADY_EXIST: "User already exist",
   EMAIL_USER_ALREADY_EXIST: "Email you have entered is already exists",
   USER_NAME_ALREADY_EXISTS: "User name you have entered is already exists",
+  EMAIL_USER_NAME_ALREADY_EXIST: "Email and User name you have entered is already exists",
 
   // CRUD success/error messages
   RETRIEVE_SUCCESSFULLY: "Retrieved data successfully",
