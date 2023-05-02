@@ -149,7 +149,7 @@ export class UsersController {
         !isValidString(input.description) ||
         !isValidString(input.planName) ||
         !isValidInteger(input.categoryId) ||
-        !isValidString(input.colorTemplate)
+        !isValidInteger(input.colorTemplateId)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
@@ -245,7 +245,7 @@ export class UsersController {
         !isValidString(input.description) ||
         !isValidString(input.planName) ||
         !isValidInteger(input.categoryId) ||
-        !isValidString(input.colorTemplate)
+        !isValidInteger(input.colorTemplateId)
       ) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }

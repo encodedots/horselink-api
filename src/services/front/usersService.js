@@ -1,11 +1,23 @@
 import model from "../../models";
 import messages from "../../utils/message";
-import { isEmptyObject, isValidInteger, isValidString } from "../../utils/validation";
+import {
+  isEmptyObject,
+  isValidInteger,
+  isValidString
+} from "../../utils/validation";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 var slugify = require("../../utils/slugifyUrl");
 import { hash } from "../../utils/hashing";
 import Constants from "../../utils/constants";
-const { user, userInfo, category, sponsors, saleHorse, userSocialMedia, socialMedia } = model;
+const {
+  user,
+  userInfo,
+  category,
+  sponsors,
+  saleHorse,
+  userSocialMedia,
+  socialMedia
+} = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 
@@ -92,6 +104,22 @@ export class UserService {
             where: whereObj
           }
         ],
+        attributes: {
+          include: [
+            [
+              model.sequelize.literal(
+                `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
+                  Constants.LATITUDE +
+                  `)) * COS(RADIANS(longitude - ` +
+                  Constants.LONGITUDE +
+                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                  Constants.LATITUDE +
+                  `)))))`
+              ),
+              "distance_in_km"
+            ]
+          ]
+        },
         order: [["id", "DESC"]],
         offset: parseInt(input.limit * (input.page - 1)),
         limit: parseInt(input.limit)
@@ -259,8 +287,8 @@ export class UserService {
       titleArray.push({
         [Constants.USER_INFO_TITLE]: userInfoTitle ? userInfoTitle?.title : "",
         [Constants.HORSE_FOR_SALE_TITLE]: horseSaleTitle
-            ? horseSaleTitle?.title
-            : "",
+          ? horseSaleTitle?.title
+          : "",
         [Constants.SPONSORS_TITLE]: sponsorTitle ? sponsorTitle?.title : "",
         [Constants.SOCIAL_MEDIA_TITLE]: socialMediaDetails,
         [Constants.CONTACTS_TITLE]: contacts
@@ -286,38 +314,44 @@ export class UserService {
       var output = "";
 
       // Get a specific user details based in id
-      var userExist = await user.findOne({ where: { webId: webId, isActive: "y", deletedAt: null } });
+      var userExist = await user.findOne({
+        where: { webId: webId, isActive: "y", deletedAt: null }
+      });
       if (userExist == null)
         return frontServiceErrorResponse(messages.NOT_FOUND);
 
-      var updateArray = {}
+      var updateArray = {};
 
       // Get user by username
       if (input.userName) {
-        var userName = await user.findOne({ where: { userName: input.userName.trim() } });
+        var userName = await user.findOne({
+          where: { userName: input.userName.trim() }
+        });
         if (userName != null)
           return frontServiceErrorResponse(messages.USER_NAME_ALREADY_EXISTS);
 
         var userSlug = await slugify.slugifyUsername(input.userName);
-        updateArray.userName = input.userName
-        updateArray.userNameSlug = userSlug
+        updateArray.userName = input.userName;
+        updateArray.userNameSlug = userSlug;
       }
 
       // Get user by email address
       if (input.email) {
-        var userEmail = await user.findOne({ where: { email: input.email.trim() } });
+        var userEmail = await user.findOne({
+          where: { email: input.email.trim() }
+        });
         if (userEmail != null)
           return frontServiceErrorResponse(messages.EMAIL_USER_ALREADY_EXIST);
 
-        updateArray.email = input.email
+        updateArray.email = input.email;
       }
 
       if (input.password && isValidString(input.password)) {
-        updateArray.password = hash(input.password.trim())
+        updateArray.password = hash(input.password.trim());
       }
 
       if (input.planName && isValidString(input.planName)) {
-        updateArray.planName = input.planName.trim()
+        updateArray.planName = input.planName.trim();
       }
 
       if (updateArray && !isEmptyObject(updateArray)) {
@@ -345,7 +379,9 @@ export class UserService {
       var output = "";
 
       // Get a specific user details based in id
-      var userExist = await user.findOne({ where: { webId: webId, isActive: "y", deletedAt: null } });
+      var userExist = await user.findOne({
+        where: { webId: webId, isActive: "y", deletedAt: null }
+      });
       if (userExist == null)
         return frontServiceErrorResponse(messages.NOT_FOUND);
 

@@ -85,4 +85,30 @@ export class CommonController {
       return adminSendErrorResponse(res, 201, e);
     }
   }
+
+  /**
+   * Summary: This method returns all color template data.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getColorTemplateList(req, res) {
+    try {
+      // Call service to get all social media
+      var output = await _commonService.getColorTemplateList();
+
+      if (output["status"] == false)
+        return adminSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return adminSendSuccessResponse(
+        res,
+        200,
+        output,
+        messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return adminSendErrorResponse(res, 201, e);
+    }
+  }
 }

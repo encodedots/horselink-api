@@ -1,6 +1,6 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-const { countries, category, user, socialMedia } = model;
+const { countries, category, user, socialMedia, colorTemplate } = model;
 
 export class CommonService {
   /**
@@ -52,6 +52,26 @@ export class CommonService {
     try {
       var output = "";
       output = await socialMedia.findAll({
+        where: {
+          deletedAt: null
+        }
+      });
+
+      // Return response
+      return output;
+    } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get all color template data
+   * @returns
+   */
+  async getColorTemplateList(req, res) {
+    try {
+      var output = "";
+      output = await colorTemplate.findAll({
         where: {
           deletedAt: null
         }

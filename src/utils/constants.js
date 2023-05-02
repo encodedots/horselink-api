@@ -29,5 +29,10 @@ export default {
   SPONSORS_TITLE: "sponsors",
   CONTACTS_TITLE: "contacts",
   STALLIONS_TITLE: "stallions",
-  SOCIAL_MEDIA_TITLE: "social-media"
+  SOCIAL_MEDIA_TITLE: "social-media",
+
+  /* END TITLE */
+  // AHMEDABAD
+  LATITUDE: "23.022505",
+  LONGITUDE: "72.571365"
 };

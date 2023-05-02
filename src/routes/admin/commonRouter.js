@@ -7,6 +7,7 @@ var commonController = new CommonController();
 router.get("/getCountries", commonController.getCountries);
 router.get("/getCategoryList", commonController.getCategoryList);
 router.get("/getSocialMediaList", commonController.getSocialMediaList);
+router.get("/getColorTemplateList", commonController.getColorTemplateList);
 //#endregion GET APIs
 
 export default router;

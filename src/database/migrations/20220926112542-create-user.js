@@ -52,7 +52,12 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade"
       },
-
+      latitude: {
+        type: Sequelize.STRING
+      },
+      longitude: {
+        type: Sequelize.STRING
+      },
       originalFileName: {
         type: Sequelize.STRING,
         allowNull: true
@@ -109,7 +114,9 @@ module.exports = {
       },
 
       isNewsLetter: {
-        type: Sequelize.STRING
+        type: Sequelize.ENUM,
+        values: ["y", "n"],
+        defaultValue: "n"
       },
 
       instagram: {
@@ -134,8 +141,14 @@ module.exports = {
       planName: {
         type: Sequelize.STRING
       },
-      colorTemplate: {
-        type: Sequelize.STRING
+      colorTemplateId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "colorTemplates",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
       },
       resetPasswordToken: {
         type: Sequelize.STRING

@@ -5,7 +5,8 @@ export default {
   // Authentication messages
   ACCOUNT_SUSPENDED: "Your account has been suspended. Contact admin",
   ACCOUNT_DELETED: "Your account has been deleted. Contact admin",
-  INCORRECT_LOGIN_CREDENTIALS: "Incorrect login credentials. Kindly check and try again",
+  INCORRECT_LOGIN_CREDENTIALS:
+    "Incorrect login credentials. Kindly check and try again",
   REGISTER_SUCCESSFULLY: "Register successful",
   LOGIN_SUCCESSFULLY: "Login successful",
   LOGOUT_SUCCESSFULLY: "Logout successful",
@@ -16,7 +17,8 @@ export default {
   NOT_FOUND: "Data not found",
   SOMETHING_WENT_WRONG: "Something Went Wrong",
   INVALID_PARAMETERS: "Invalid parameters",
-
+  PASSWORD_VALIDATION_ERROR:
+    "Password must be at least one uppercase, lowercase, special character and number",
   // Email Messages
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
   CONTACT_REQUEST: "Contact request",
@@ -28,14 +30,13 @@ export default {
   USER_ALREADY_EXIST: "User already exist",
   EMAIL_USER_ALREADY_EXIST: "Email you have entered is already exists",
   USER_NAME_ALREADY_EXISTS: "User name you have entered is already exists",
-  EMAIL_USER_NAME_ALREADY_EXIST: "Email and User name you have entered is already exists",
+  EMAIL_USER_NAME_ALREADY_EXIST:
+    "Email and User name you have entered is already exists",
 
   // CRUD success/error messages
   RETRIEVE_SUCCESSFULLY: "Retrieved data successfully",
   CREATED_SUCCESSFULLY: "Created successfully",
   UPDATED_SUCCESSFULLY: "Updated successfully",
   DELETED_SUCCESSFULLY: "Deleted successfully",
-  UPDATED_USER_SUCCESSFULLY: "User detail updated successfully",
-  SOCIALMEDIA_ADDED_SUCCESSFULLY: "Social media added successfully",
-  USER_ADDED_SUCCESSFULLY: "User added successfully"
+  UPDATED_USER_SUCCESSFULLY: "User detail updated successfully"
 };

@@ -103,22 +103,36 @@ export class AuthService {
   async register(input) {
     try {
       // Validate input data
-      if (input == null
-        || !isValidString(input.userName)
-        || !isValidString(input.email)
-        || !isValidString(input.password)
-        || !isValidString(input.firstName)
-        || !isValidString(input.lastName)
-        || !isValidString(input.planName))
+      if (
+        input == null ||
+        !isValidString(input.userName) ||
+        !isValidString(input.email) ||
+        !isValidString(input.password) ||
+        !isValidString(input.firstName) ||
+        !isValidString(input.lastName) ||
+        !isValidString(input.planName) ||
+        !isValidString(input.isNewsLetter)
+      )
         return frontServiceErrorResponse(message.INVALID_PARAMETERS);
 
+      const regex = new RegExp(
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*]).{6,}$/
+      );
+      var passwordValid = await regex.test(input.password);
+      if (!passwordValid) {
+        return frontServiceErrorResponse(message.PASSWORD_VALIDATION_ERROR);
+      }
       // Get user by username
-      var userName = await user.findOne({ where: { userName: input.userName.trim() } });
+      var userName = await user.findOne({
+        where: { userName: input.userName.trim() }
+      });
       if (userName != null)
         return frontServiceErrorResponse(message.USER_NAME_ALREADY_EXISTS);
 
       // Get user by email address
-      var userEmail = await user.findOne({ where: { email: input.email.trim() } });
+      var userEmail = await user.findOne({
+        where: { email: input.email.trim() }
+      });
       if (userEmail != null)
         return frontServiceErrorResponse(message.EMAIL_USER_ALREADY_EXIST);
 
@@ -132,8 +146,13 @@ export class AuthService {
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         userNameSlug: userSlug ? userSlug.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        password: isValidString(input.password) ? hash(input.password.trim()) : "",
-        planName: isValidString(input.planName) ? input.planName.trim() : ""
+        password: isValidString(input.password)
+          ? hash(input.password.trim())
+          : "",
+        planName: isValidString(input.planName) ? input.planName.trim() : "",
+        isNewsLetter: isValidString(input.isNewsLetter)
+          ? input.isNewsLetter.trim()
+          : ""
       };
 
       var output = await user.create(newUser);
@@ -184,23 +203,29 @@ export class AuthService {
   }
 
   /**
-  * Summary: This method is used to check the username and email is unique or not
-  * @param {*} input
-  * @returns
-  */
+   * Summary: This method is used to check the username and email is unique or not
+   * @param {*} input
+   * @returns
+   */
   async checkEmailUserName(input) {
     try {
       // Validate input data
-      if (input == null
-        || !isValidString(input.userName)
-        || !isValidString(input.email))
+      if (
+        input == null ||
+        !isValidString(input.userName) ||
+        !isValidString(input.email)
+      )
         return frontServiceErrorResponse(message.INVALID_PARAMETERS);
 
       // Get user by username
-      var userName = await user.findOne({ where: { userName: input.userName.trim() } });
+      var userName = await user.findOne({
+        where: { userName: input.userName.trim() }
+      });
 
       // Get user by email address
-      var userEmail = await user.findOne({ where: { email: input.email.trim() } });
+      var userEmail = await user.findOne({
+        where: { email: input.email.trim() }
+      });
 
       if (userName != null && userEmail != null)
         return frontServiceErrorResponse(message.EMAIL_USER_NAME_ALREADY_EXIST);
@@ -212,7 +237,7 @@ export class AuthService {
         return frontServiceErrorResponse(message.EMAIL_USER_ALREADY_EXIST);
 
       // Return response
-      return true
+      return true;
     } catch (e) {
       return frontServiceErrorResponse(e);
     }

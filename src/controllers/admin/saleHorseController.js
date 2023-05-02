@@ -31,6 +31,9 @@ export class SaleHorseController {
       )
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
+      if (input.titleLink && !isValidString(input.titleLink)) {
+        return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+      }
       // Call service to create new user entry
       var output = await _saleHorseService.addHorseForSale(id, input);
       if (output == null)

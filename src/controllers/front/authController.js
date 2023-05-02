@@ -56,16 +56,18 @@ export class AuthController {
    */
   async register(req, res) {
     var input = req.body;
-
     try {
       // Validate input data
-      if (input == null
-        || !isValidString(input.userName)
-        || !isValidString(input.email)
-        || !isValidString(input.password)
-        || !isValidString(input.firstName)
-        || !isValidString(input.lastName)
-        || !isValidString(input.planName))
+      if (
+        input == null ||
+        !isValidString(input.userName) ||
+        !isValidString(input.email) ||
+        !isValidString(input.password) ||
+        !isValidString(input.firstName) ||
+        !isValidString(input.lastName) ||
+        !isValidString(input.planName) ||
+        !isValidString(input.isNewsLetter)
+      )
         return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
       // Call service method to handle authentication
@@ -99,9 +101,11 @@ export class AuthController {
 
     try {
       // Validate input data
-      if (input == null
-        || !isValidString(input.userName)
-        || !isValidString(input.email))
+      if (
+        input == null ||
+        !isValidString(input.userName) ||
+        !isValidString(input.email)
+      )
         return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
       // Call service method to check username and email

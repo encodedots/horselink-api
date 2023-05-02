@@ -112,8 +112,9 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
-            }, ${input.limit}`;
+          query += ` limit ${
+            (input.page ? input.page : 1) * input.limit - input.limit
+          }, ${input.limit}`;
         }
       }
 
@@ -182,9 +183,10 @@ export class UserService {
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
         categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
-        colorTemplate: isValidString(input.colorTemplate)
-          ? input.colorTemplate.trim()
-          : ""
+        colorTemplateId: isValidInteger(input.colorTemplateId)
+          ? input.colorTemplateId
+          : 0,
+        isNewsLetter: "y"
       };
 
       if (
@@ -264,6 +266,14 @@ export class UserService {
         website: isValidString(input.website) ? input.website.trim() : ""
       };
 
+      // TODO: Get lat/long based on address using geocoding API
+      // var addressInput = newUser.town;
+      // var addressLatLong = await getLatLongFromAddress(addressInput);
+      // if (isValidArray(addressLatLong)) {
+      //     newUser["latitude"] = addressLatLong[0].latitude;
+      //     newUser["longitude"] = addressLatLong[0].longitude;
+      // }
+
       output = await user.update(newUser, { where: { id: id } });
 
       if (output == null)
@@ -307,9 +317,9 @@ export class UserService {
         userNameSlug: userSlug ? userSlug.trim() : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
         categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
-        colorTemplate: isValidString(input.colorTemplate)
-          ? input.colorTemplate.trim()
-          : ""
+        colorTemplateId: isValidInteger(input.colorTemplateId)
+          ? input.colorTemplateId
+          : 0
       };
 
       if (

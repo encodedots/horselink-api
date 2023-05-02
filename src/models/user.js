@@ -15,6 +15,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "categoryDetails",
         onDelete: "CASCADE"
       });
+
+      user.belongsTo(models.colorTemplate, {
+        foreignKey: "colorTemplateId",
+        as: "colorTemplateDetails",
+        onDelete: "CASCADE"
+      });
     }
   }
   user.init(
@@ -58,7 +64,12 @@ module.exports = (sequelize, DataTypes) => {
       categoryId: {
         type: DataTypes.INTEGER
       },
-
+      latitude: {
+        type: DataTypes.STRING
+      },
+      longitude: {
+        type: DataTypes.STRING
+      },
       originalFileName: {
         type: DataTypes.STRING
       },
@@ -130,8 +141,8 @@ module.exports = (sequelize, DataTypes) => {
       planName: {
         type: DataTypes.STRING
       },
-      colorTemplate: {
-        type: DataTypes.STRING
+      colorTemplateId: {
+        type: DataTypes.INTEGER
       },
       resetPasswordToken: {
         type: DataTypes.STRING

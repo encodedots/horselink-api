@@ -16,13 +16,26 @@ router.get("/getUsers", authenticateJWT, usersController.getUsers);
 
 //#endregion GET APIs
 
-
 //#region POST APIs
 
-router.post("/create", authenticateJWT, multipartMiddleware, usersController.createUser);
+router.post(
+  "/create",
+  authenticateJWT,
+  multipartMiddleware,
+  usersController.createUser
+);
 router.post("/addContact/:id", authenticateJWT, usersController.addContact);
-router.post("/update/:id", authenticateJWT, multipartMiddleware, usersController.updateUser);
-router.post("/updateStatus/:id", authenticateJWT, usersController.updateUserStatus);
+router.post(
+  "/update/:id",
+  authenticateJWT,
+  multipartMiddleware,
+  usersController.updateUser
+);
+router.post(
+  "/updateStatus/:id",
+  authenticateJWT,
+  usersController.updateUserStatus
+);
 
 //#endregion POST APIs
 
