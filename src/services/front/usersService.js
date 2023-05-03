@@ -10,6 +10,7 @@ var slugify = require("../../utils/slugifyUrl");
 import { hash } from "../../utils/hashing";
 import Constants from "../../utils/constants";
 import sendEmail from "../../utils/sendEmail";
+import constants from "../../utils/constants";
 const {
   user,
   userInfo,
@@ -21,6 +22,7 @@ const {
 } = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
+var mailchimp = require("../../utils/mailchimp");
 
 export class UserService {
   /**
@@ -42,6 +44,16 @@ export class UserService {
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      // Get is newsletter from the API
+      var mailchimpRes = await mailchimp.getUserMailchimpData(output.email)
+      if (mailchimpRes) {
+        let isNewsLetter = (mailchimpRes == constants.MAILCHIMP_SUBSCRIBED_STATUS) ? 'y' : 'n'
+        if (output.isNewsLetter != isNewsLetter) {
+          await user.update({ isNewsLetter: isNewsLetter }, { where: { webId: output.webId } });
+          output = await user.findOne({ where: { webId: input } });
+        }
+      }
 
       // Return response
       return output;
@@ -110,12 +122,12 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  Constants.LATITUDE +
-                  `)) * COS(RADIANS(longitude - ` +
-                  Constants.LONGITUDE +
-                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  Constants.LATITUDE +
-                  `)))))`
+                Constants.LATITUDE +
+                `)) * COS(RADIANS(longitude - ` +
+                Constants.LONGITUDE +
+                `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                Constants.LATITUDE +
+                `)))))`
               ),
               "distance_in_km"
             ]
@@ -364,8 +376,8 @@ export class UserService {
           emailTemplateReplaceData["name"] = input.userName
             ? input.userName
             : userExist.userName
-            ? userExist.userName
-            : "There ";
+              ? userExist.userName
+              : "There ";
           emailTemplateReplaceData["verifyEmailUrl"] =
             process.env.SITE_REDIRECT_URL +
             "/auth/verify-user-email?email=" +
@@ -383,6 +395,24 @@ export class UserService {
 
       if (input.planName && isValidString(input.planName)) {
         updateArray.planName = input.planName.trim();
+      }
+
+      if (input.isNewsLetter && isValidString(input.isNewsLetter)) {
+        var mailchimpStatus = (input.isNewsLetter.trim() == 'y') ? constants.MAILCHIMP_SUBSCRIBED_STATUS : constants.MAILCHIMP_UNSUBSCRIBED_STATUS
+
+        let postData = {
+          email_address: userExist.email,
+          status: mailchimpStatus,
+          merge_fields: {
+            FNAME: userExist.firstName,
+            LNAME: userExist.lastName
+          }
+        }
+        var mailchimpRes = await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+        if (mailchimpRes) {
+          updateArray.isNewsLetter = input.isNewsLetter.trim()
+        }
+        console.log("mailchimpRes", mailchimpRes)
       }
 
       if (updateArray && !isEmptyObject(updateArray)) {
@@ -414,6 +444,7 @@ export class UserService {
         return frontServiceErrorResponse(messages.USER_DOES_NOT_EXIST);
 
       var setEmailVerifiedDetail = {};
+      let oldEmail = frontUser.email
 
       if (frontUser.tempEmail == input.email) {
         // Set user as verified
@@ -425,8 +456,15 @@ export class UserService {
         var output = await user.update(setEmailVerifiedDetail, {
           where: { webId: id }
         });
+
         if (output == null)
           return frontServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
+
+        let updatedData = {
+          "email_address": input.email
+        }
+        await mailchimp.updateUserMailchimpData(oldEmail, updatedData)
+
       } else {
         return frontServiceErrorResponse(messages.INCORRECT_EMAIL);
       }

@@ -32,7 +32,11 @@ export default {
   SOCIAL_MEDIA_TITLE: "social-media",
 
   /* END TITLE */
+
   // AHMEDABAD
   LATITUDE: "23.022505",
-  LONGITUDE: "72.571365"
+  LONGITUDE: "72.571365",
+
+  MAILCHIMP_SUBSCRIBED_STATUS: "subscribed",
+  MAILCHIMP_UNSUBSCRIBED_STATUS: "unsubscribed"
 };

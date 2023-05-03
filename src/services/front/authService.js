@@ -1,4 +1,5 @@
 import model from "../../models";
+import constants from "../../utils/constants";
 import { hash, hash_compare } from "../../utils/hashing";
 import message from "../../utils/message";
 const { user, userAuthTokens } = model;
@@ -8,6 +9,7 @@ import md5 from "md5";
 const jwt = require("jsonwebtoken");
 var slugify = require("../../utils/slugifyUrl");
 var refreshTokens = [];
+var mailchimp = require("../../utils/mailchimp");
 
 export class AuthService {
   /**
@@ -190,6 +192,18 @@ export class AuthService {
       refreshTokens.push(refreshToken);
 
       const loginUserDetails = await user.findOne({ where: { id: output.id } });
+
+      if (input.isNewsLetter == 'y') {
+        let postData = {
+          email_address: output.dataValues.email, //janvi+3.encodedots@gmail.com
+          status: constants.MAILCHIMP_SUBSCRIBED_STATUS,
+          merge_fields: {
+            FNAME: output.dataValues.firstName,
+            LNAME: output.dataValues.lastName
+          }
+        }
+        await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+      }
 
       // Return response
       return {
