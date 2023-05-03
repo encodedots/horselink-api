@@ -113,7 +113,9 @@ module.exports = (sequelize, DataTypes) => {
       mobileNumber: {
         type: DataTypes.STRING
       },
-
+      tempEmail: {
+        type: DataTypes.STRING
+      },
       isNewsLetter: {
         type: DataTypes.ENUM("y", "n"),
         defaultValue: "n"

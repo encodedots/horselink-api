@@ -9,6 +9,7 @@ import { frontServiceErrorResponse } from "../../utils/sendResponse";
 var slugify = require("../../utils/slugifyUrl");
 import { hash } from "../../utils/hashing";
 import Constants from "../../utils/constants";
+import sendEmail from "../../utils/sendEmail";
 const {
   user,
   userInfo,
@@ -337,15 +338,45 @@ export class UserService {
 
       // Get user by email address
       if (input.email) {
-        var userEmail = await user.findOne({
-          where: { email: input.email.trim() }
-        });
-        if (userEmail != null)
-          return frontServiceErrorResponse(messages.EMAIL_USER_ALREADY_EXIST);
+        if (userExist.email != input.email) {
+          var userEmail = await user.findOne({
+            where: { email: input.email.trim() }
+          });
+          if (userEmail != null)
+            return frontServiceErrorResponse(messages.EMAIL_USER_ALREADY_EXIST);
 
-        updateArray.email = input.email;
+          var updatetempEmail = await user.update(
+            { tempEmail: input.email.trim() },
+            { where: { webId: webId } }
+          );
+          if (updatetempEmail == null)
+            return frontServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
+
+          var subject = messages.EMAIL_SUBJECT_VERIFY_EMAIL_ADDRESS;
+          let sendEmailData = {
+            subject: subject,
+            templateName: "user-email-verification-template.ejs",
+            emailToUser: input.email.trim()
+          };
+
+          // Set data that needs to be replaced in email html
+          let emailTemplateReplaceData = {};
+          emailTemplateReplaceData["name"] = input.userName
+            ? input.userName
+            : userExist.userName
+            ? userExist.userName
+            : "There ";
+          emailTemplateReplaceData["verifyEmailUrl"] =
+            process.env.SITE_REDIRECT_URL +
+            "/auth/verify-user-email?email=" +
+            input.email;
+
+          sendEmail.generateHtmlForEmail(
+            sendEmailData,
+            emailTemplateReplaceData
+          );
+        }
       }
-
       if (input.password && isValidString(input.password)) {
         updateArray.password = hash(input.password.trim());
       }
@@ -361,6 +392,49 @@ export class UserService {
       // Return response
       return output;
     } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to update user email address based on the email.
+   * @param {*} id - This parameter contains the user web id
+   * @param {*} input - This parameter contains the user verify email
+   * @returns
+   */
+  async verifyUpdateEmail(id, input) {
+    try {
+      // Validate input data
+      if (!isValidString(id) || input == null || !isValidString(input.email))
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      // Get user based on webid
+      var frontUser = await user.findOne({ where: { webId: id } });
+      if (frontUser == null)
+        return frontServiceErrorResponse(messages.USER_DOES_NOT_EXIST);
+
+      var setEmailVerifiedDetail = {};
+
+      if (frontUser.tempEmail == input.email) {
+        // Set user as verified
+        setEmailVerifiedDetail = {
+          email: input.email,
+          tempEmail: ""
+        };
+
+        var output = await user.update(setEmailVerifiedDetail, {
+          where: { webId: id }
+        });
+        if (output == null)
+          return frontServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
+      } else {
+        return frontServiceErrorResponse(messages.INCORRECT_EMAIL);
+      }
+
+      // Return response
+      return true;
+    } catch (e) {
+      // Return error
       return frontServiceErrorResponse(e);
     }
   }

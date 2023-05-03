@@ -21,6 +21,8 @@ export default {
     "Password must be at least one uppercase, lowercase, special character and number",
   // Email Messages
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
+  EMAIL_SUBJECT_VERIFY_EMAIL_ADDRESS: "Email Verification",
+  USER_EMAIL_UPDATED_SUCCESSFULLY: "Email updated successfully",
   CONTACT_REQUEST: "Contact request",
   REPORT_REQUEST: "Report request",
   HELP_REQUEST: "Help request",
@@ -28,10 +30,13 @@ export default {
 
   // Create/Update user Messages
   USER_ALREADY_EXIST: "User already exist",
+  USER_DOES_NOT_EXIST: "User does not exist",
   EMAIL_USER_ALREADY_EXIST: "Email you have entered is already exists",
   USER_NAME_ALREADY_EXISTS: "User name you have entered is already exists",
   EMAIL_USER_NAME_ALREADY_EXIST:
     "Email and User name you have entered is already exists",
+  INCORRECT_EMAIL_ADDRESS: "Email you have entered is incorrect",
+  INCORRECT_EMAIL: "Email is incorrect",
 
   // CRUD success/error messages
   RETRIEVE_SUCCESSFULLY: "Retrieved data successfully",

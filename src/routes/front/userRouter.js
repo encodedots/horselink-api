@@ -16,7 +16,11 @@ router.get(
 );
 router.get("/getUserList", usersController.getUserList);
 
-router.get("/getSponsorDetails/:id", frontAuthenticateJWT, usersController.getSponsorDetails);
+router.get(
+  "/getSponsorDetails/:id",
+  frontAuthenticateJWT,
+  usersController.getSponsorDetails
+);
 
 router.get(
   "/getSaleHorseDetails/:id",
@@ -39,6 +43,7 @@ router.get(
 
 //#region POST APIs
 router.post("/update/:id", usersController.updateUserDeatils); // :id - user web id
+router.post("/verifyUpdateEmail/:id", usersController.verifyUpdateEmail); // :id - user web id
 //#endregion POST APIs
 
 //#region DELETE APIs

@@ -4,7 +4,11 @@ import {
   frontSendErrorResponse,
   frontSendSuccessResponse
 } from "../../utils/sendResponse";
-import { isValidInteger, isEmptyObject, isValidString } from "../../utils/validation";
+import {
+  isValidInteger,
+  isEmptyObject,
+  isValidString
+} from "../../utils/validation";
 
 const _userService = new UserService();
 
@@ -225,15 +229,14 @@ export class UsersController {
   }
   //#endregion GET APIs
 
-
   //#region POST APIs
 
   /**
-     * Summary: This method update the user details based on id
-     * @param {*} req
-     * @param {*} res
-     * @returns
-     */
+   * Summary: This method update the user details based on id
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
   async updateUserDeatils(req, res) {
     var webId = req.params.id;
     var input = req.body;
@@ -259,16 +262,50 @@ export class UsersController {
       return frontSendErrorResponse(res, 201, e);
     }
   }
-  //#endregion POST APIs
 
+  /**
+   * Summary: This method is used to verify/update the user email address in the system.
+   * @param {*} req
+   * @param {*} res
+   */
+  async verifyUpdateEmail(req, res) {
+    var id = req.params.id;
+    var input = req.body;
+
+    try {
+      // Validate input data
+      if (!isValidString(id) || input == null || !isValidString(input.email))
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to verify specific user email address based on token
+      var output = await _userService.verifyUpdateEmail(id, input);
+      if (output == null)
+        return frontSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.USER_EMAIL_UPDATED_SUCCESSFULLY
+      );
+    } catch (e) {
+      // Return error
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+  //#endregion POST APIs
 
   //#region DELETE APIs
   /**
-     * Summary: This method delete the user based on id
-     * @param {*} req
-     * @param {*} res
-     * @returns
-     */
+   * Summary: This method delete the user based on id
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
   async deleteUser(req, res) {
     var webId = req.params.id;
 
@@ -283,7 +320,12 @@ export class UsersController {
         return frontSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
 
       if (output["status"] == false)
-        return frontSendErrorResponse(res, 201, output["error"], output["data"]);
+        return frontSendErrorResponse(
+          res,
+          201,
+          output["error"],
+          output["data"]
+        );
 
       // Return response data
       return frontSendSuccessResponse(

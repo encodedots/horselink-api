@@ -112,7 +112,9 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-
+      tempEmail: {
+        type: Sequelize.STRING
+      },
       isNewsLetter: {
         type: Sequelize.ENUM,
         values: ["y", "n"],
