@@ -189,6 +189,9 @@ export class UserService {
         isNewsLetter: "y"
       };
 
+      output = await user.create(newUser);
+      let uploadImage = {};
+
       if (
         inputFiles != undefined &&
         inputFiles &&
@@ -199,34 +202,67 @@ export class UserService {
         if (inputFiles.profileImage["originalFile"]) {
           var originalFileInput = {
             file: inputFiles.profileImage["originalFile"],
-            filePath: s3Routes.USER_PROFILE_ORIGINAL_IMAGE + id + "/"
+            filePath: s3Routes.USER_PROFILE_ORIGINAL_IMAGE + output.id + "/"
           };
 
           var originalFile = await uploadFile(originalFileInput);
-          newUser.originalFileName = originalFile.key;
-          newUser.originalFileUrl = originalFile.Location;
+          uploadImage.originalFileName = originalFile.key;
+          uploadImage.originalFileUrl = originalFile.Location;
         }
 
         // Cropped file details
         if (inputFiles.profileImage["croppedFile"]) {
           var croppedFileInput = {
             file: inputFiles.profileImage["croppedFile"],
-            filePath: s3Routes.USER_PROFILE_CROPPED_IMAGE + id + "/"
+            filePath: s3Routes.USER_PROFILE_CROPPED_IMAGE + output.id + "/"
           };
 
           var croppedFile = await uploadFile(croppedFileInput);
-          newUser.croppedFileName = croppedFile.key;
-          newUser.croppedFileUrl = croppedFile.Location;
+          uploadImage.croppedFileName = croppedFile.key;
+          uploadImage.croppedFileUrl = croppedFile.Location;
         } else {
           if (inputFiles.profileImage["originalFile"]) {
-            newUser.croppedFileName = "";
-            newUser.croppedFileUrl = "";
+            uploadImage.croppedFileName = "";
+            uploadImage.croppedFileUrl = "";
           }
         }
       }
+      if (
+        inputFiles != undefined &&
+        inputFiles &&
+        Object.keys(inputFiles).length !== 0 &&
+        inputFiles.backgroundImage
+      ) {
+        // Background original file details
+        if (inputFiles.backgroundImage["originalFile"]) {
+          var originalFileInput = {
+            file: inputFiles.backgroundImage["originalFile"],
+            filePath: s3Routes.USER_BACKGROUND_ORIGINAL_IMAGE + output.id + "/"
+          };
 
-      output = await user.create(newUser);
+          var originalFile = await uploadFile(originalFileInput);
+          uploadImage.backgroundOriginalFileName = originalFile.key;
+          uploadImage.backgroundOriginalFileUrl = originalFile.Location;
+        }
 
+        // Background cropped file details
+        if (inputFiles.backgroundImage["croppedFile"]) {
+          var croppedFileInput = {
+            file: inputFiles.backgroundImage["croppedFile"],
+            filePath: s3Routes.USER_BACKGROUND_CROPPED_IMAGE + output.id + "/"
+          };
+
+          var croppedFile = await uploadFile(croppedFileInput);
+          uploadImage.backgroundCroppedFileName = croppedFile.key;
+          uploadImage.backgroundCroppedFileUrl = croppedFile.Location;
+        } else {
+          if (inputFiles.backgroundImage["originalFile"]) {
+            uploadImage.backgroundCroppedFileName = "";
+            uploadImage.backgroundCroppedFileUrl = "";
+          }
+        }
+      }
+      await user.update(uploadImage, { where: { id: output.id } });
       // Return response
       return output;
     } catch (e) {
@@ -321,7 +357,6 @@ export class UserService {
           ? input.colorTemplateId
           : 0
       };
-
       if (
         inputFiles != undefined &&
         inputFiles &&
@@ -354,6 +389,42 @@ export class UserService {
           if (inputFiles.profileImage["originalFile"]) {
             updateUser.croppedFileName = "";
             updateUser.croppedFileUrl = "";
+          }
+        }
+      }
+
+      if (
+        inputFiles != undefined &&
+        inputFiles &&
+        Object.keys(inputFiles).length !== 0 &&
+        inputFiles.backgroundImage
+      ) {
+        // Background original file details
+        if (inputFiles.backgroundImage["originalFile"]) {
+          var originalFileInput = {
+            file: inputFiles.backgroundImage["originalFile"],
+            filePath: s3Routes.USER_BACKGROUND_ORIGINAL_IMAGE + id + "/"
+          };
+
+          var originalFile = await uploadFile(originalFileInput);
+          updateUser.backgroundOriginalFileName = originalFile.key;
+          updateUser.backgroundOriginalFileUrl = originalFile.Location;
+        }
+
+        // Background cropped file details
+        if (inputFiles.backgroundImage["croppedFile"]) {
+          var croppedFileInput = {
+            file: inputFiles.backgroundImage["croppedFile"],
+            filePath: s3Routes.USER_BACKGROUND_CROPPED_IMAGE + id + "/"
+          };
+
+          var croppedFile = await uploadFile(croppedFileInput);
+          updateUser.backgroundCroppedFileName = croppedFile.key;
+          updateUser.backgroundCroppedFileUrl = croppedFile.Location;
+        } else {
+          if (inputFiles.backgroundImage["originalFile"]) {
+            updateUser.backgroundCroppedFileName = "";
+            updateUser.backgroundCroppedFileUrl = "";
           }
         }
       }
@@ -415,6 +486,116 @@ export class UserService {
 
       // Return response data
       return output;
+    } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method deletes user profile image from database and deletes the reference file from S3 bucket.
+   * @param {*} input
+   * @returns
+   */
+  async deleteUserImage(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      // Get specific user data
+      var userData = await user.findOne({ where: { id: input } });
+      if (userData == null)
+        return adminServiceErrorResponse(messages.NOT_FOUND);
+
+      // Delete image from s3 bucket
+      if (
+        userData.dataValues.originalFileName != "" &&
+        userData.dataValues.originalFileName != null
+      ) {
+        // Delete original file from s3
+        var deleteImageParams = {
+          key: userData.dataValues.originalFileName
+        };
+        await deleteFileFromS3(deleteImageParams);
+      }
+
+      if (
+        userData.dataValues.croppedFileName != "" &&
+        userData.dataValues.croppedFileName != null
+      ) {
+        // Delete cropped file from s3
+        var deleteCroppedImageParams = {
+          key: userData.dataValues.croppedFileName
+        };
+        await deleteFileFromS3(deleteCroppedImageParams);
+      }
+      var setImageData = {
+        originalFileName: "",
+        originalFileUrl: "",
+        croppedFileName: "",
+        croppedFileUrl: ""
+      };
+
+      // Delete specific user profile image based on id received in parameter
+      await user.update(setImageData, { where: { id: input } });
+
+      // Return response data
+      return true;
+    } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method deletes user background image from database and deletes the reference file from S3 bucket.
+   * @param {*} input
+   * @returns
+   */
+  async deleteBackgroundImage(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      // Get specific user data
+      var userData = await user.findOne({ where: { id: input } });
+      if (userData == null)
+        return adminServiceErrorResponse(messages.NOT_FOUND);
+
+      // Delete image from s3 bucket
+      if (
+        userData.dataValues.backgroundOriginalFileName != "" &&
+        userData.dataValues.backgroundOriginalFileName != null
+      ) {
+        // Delete original file from s3
+        var deleteImageParams = {
+          key: userData.dataValues.backgroundOriginalFileName
+        };
+        await deleteFileFromS3(deleteImageParams);
+      }
+
+      if (
+        userData.dataValues.backgroundCroppedFileName != "" &&
+        userData.dataValues.backgroundCroppedFileName != null
+      ) {
+        // Delete cropped file from s3
+        var deleteCroppedImageParams = {
+          key: userData.dataValues.backgroundCroppedFileName
+        };
+        await deleteFileFromS3(deleteCroppedImageParams);
+      }
+      var setImageData = {
+        backgroundOriginalFileName: "",
+        backgroundOriginalFileUrl: "",
+        backgroundCroppedFileName: "",
+        backgroundCroppedFileUrl: ""
+      };
+
+      // Delete specific user background image based on id received in parameter
+      await user.update(setImageData, { where: { id: input } });
+
+      // Return response data
+      return true;
     } catch (e) {
       return adminServiceErrorResponse(e);
     }

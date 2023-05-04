@@ -77,7 +77,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-
+      backgroundOriginalFileName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundOriginalFileUrl: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundCroppedFileName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundCroppedFileUrl: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       street: {
         type: Sequelize.STRING,
         allowNull: true

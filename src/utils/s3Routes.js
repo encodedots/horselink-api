@@ -3,9 +3,8 @@
  */
 
 export default {
-  USER_PROFILE_ORIGINAL_IMAGE: "User/Profile/Images/OriginalFiles/",
-  USER_PROFILE_CROPPED_IMAGE: "User/Profile/Images/CroppedFiles/",
-
-  USER_DOCUMENT_ORIGINAL_IMAGE: "User/Document/OriginalFiles/",
-  USER_DOCUMENT_CROPPED_IMAGE: "User/Document/CroppedFiles/"
+  USER_PROFILE_ORIGINAL_IMAGE: "user/profile/originalFiles/",
+  USER_PROFILE_CROPPED_IMAGE: "user/profile/croppedFiles/",
+  USER_BACKGROUND_ORIGINAL_IMAGE: "user/background/originalFiles/",
+  USER_BACKGROUND_CROPPED_IMAGE: "user/background/croppedFiles/"
 };

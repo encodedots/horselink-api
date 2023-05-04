@@ -41,6 +41,16 @@ router.post(
 
 //#region DELETE APIs
 router.delete("/deleteUser/:id", authenticateJWT, usersController.deleteUser);
+router.delete(
+  "/deleteUserImage/:id",
+  authenticateJWT,
+  usersController.deleteUserImage
+);
+router.delete(
+  "/deleteBackgroundImage/:id",
+  authenticateJWT,
+  usersController.deleteBackgroundImage
+);
 //#endregion DELETE APIs
 
 export default router;

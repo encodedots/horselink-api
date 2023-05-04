@@ -310,5 +310,76 @@ export class UsersController {
       return adminSendErrorResponse(res, 201, e);
     }
   }
+
+  /**
+   * Summary: This method is used to delete specific user profile image based on id.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async deleteUserImage(req, res) {
+    var id = req.params.id;
+
+    try {
+      // Validate input data
+      if (!isValidInteger(id) || id < 1)
+        return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to delete specific user profile image based on id
+      var output = await _userService.deleteUserImage(id);
+      if (output == null)
+        return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+
+      if (output && output["status"] == false) {
+        return adminSendErrorResponse(res, 201, output["error"]);
+      }
+
+      // Return response data
+      return adminSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.DELETED_SUCCESSFULLY
+      );
+    } catch (e) {
+      // Send error message on fail
+      return adminSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to delete specific user background image based on id.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async deleteBackgroundImage(req, res) {
+    var id = req.params.id;
+    try {
+      // Validate input data
+      if (!isValidInteger(id) || id < 1)
+        return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to delete specific user background image based on id
+      var output = await _userService.deleteBackgroundImage(id);
+      if (output == null)
+        return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+
+      if (output && output["status"] == false) {
+        return adminSendErrorResponse(res, 201, output["error"]);
+      }
+
+      // Return response data
+      return adminSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.DELETED_SUCCESSFULLY
+      );
+    } catch (e) {
+      // Send error message on fail
+      return adminSendErrorResponse(res, 201, e);
+    }
+  }
   //#endregion DELETE APIs
 }

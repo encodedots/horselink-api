@@ -85,7 +85,18 @@ module.exports = (sequelize, DataTypes) => {
       croppedFileUrl: {
         type: DataTypes.STRING
       },
-
+      backgroundOriginalFileName: {
+        type: DataTypes.STRING
+      },
+      backgroundOriginalFileUrl: {
+        type: DataTypes.STRING
+      },
+      backgroundCroppedFileName: {
+        type: DataTypes.STRING
+      },
+      backgroundCroppedFileUrl: {
+        type: DataTypes.STRING
+      },
       street: {
         type: DataTypes.STRING
       },
