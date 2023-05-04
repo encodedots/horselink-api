@@ -317,7 +317,7 @@ export class UsersController {
    * @param {*} res
    * @returns
    */
-  async deleteUserImage(req, res) {
+  async deleteUserProfileImage(req, res) {
     var id = req.params.id;
 
     try {
@@ -326,7 +326,7 @@ export class UsersController {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
       // Call service to delete specific user profile image based on id
-      var output = await _userService.deleteUserImage(id);
+      var output = await _userService.deleteUserProfileImage(id);
       if (output == null)
         return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
 

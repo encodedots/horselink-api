@@ -5,7 +5,7 @@ client.setConfig({
 });
 
 /**
- * Summary: This function will return form of service error response. This is used to return response from service to controller so that response from service can easily managed.
+ * Summary: This function will add user and Batch subscribe or unsubscribe status
  * @param errorMessage
  * @param data
  * @returns {*}
@@ -37,6 +37,12 @@ exports.subscribedUnsubscribedmailchimpData = async function (postData, updateEx
     return resData
 };
 
+/**
+ * Summary: This function will update the user (Update list member)
+ * @param {*} email 
+ * @param {*} updatedData 
+ * @returns 
+ */
 exports.updateUserMailchimpData = async function (email, updatedData) {
     const run = async () => {
         try {
@@ -63,6 +69,11 @@ exports.updateUserMailchimpData = async function (email, updatedData) {
     return resData
 };
 
+/**
+ * Summary: This function will get the user info (Get member info)
+ * @param {*} email 
+ * @returns 
+ */
 exports.getUserMailchimpData = async function (email) {
     const run = async () => {
         try {
@@ -77,10 +88,36 @@ exports.getUserMailchimpData = async function (email) {
         } catch (e) {
         }
     };
-    // run()
     var resData = await run();
     console.log("resData", resData)
     return resData
 };
 
+/**
+ * Summary: This function will delete the user (Archive list member)
+ * @param {*} email 
+ * @returns 
+ */
+exports.deleteUserMailchimpData = async function (email) {
+    const run = async () => {
+        try {
+            const response = await client.lists.deleteListMember(
+                process.env.MAILCHIMP_LIST,
+                email
+            );
+
+            console.log("response", response)
+            return true
+        } catch (e) {
+            // console.log("e", e)
+            // if (e && e.response && e.response.body && e.response.body.detail) {
+            //     console.log(e.response.body.detail);
+            // }
+            return false
+        }
+    };
+    var resData = await run();
+    console.log("resData11", resData)
+    return resData
+};
 

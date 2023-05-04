@@ -11,6 +11,7 @@ var slugify = require("../../utils/slugifyUrl");
 const { user } = model;
 const { QueryTypes, Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
+var mailchimp = require("../../utils/mailchimp");
 
 export class UserService {
   /**
@@ -112,9 +113,8 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${
-            (input.page ? input.page : 1) * input.limit - input.limit
-          }, ${input.limit}`;
+          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
+            }, ${input.limit}`;
         }
       }
 
@@ -190,8 +190,18 @@ export class UserService {
       };
 
       output = await user.create(newUser);
-      let uploadImage = {};
 
+      let postData = {
+        email_address: output.dataValues.email, //janvi+3.encodedots@gmail.com
+        status: constants.MAILCHIMP_SUBSCRIBED_STATUS,
+        merge_fields: {
+          FNAME: output.dataValues.firstName,
+          LNAME: output.dataValues.lastName
+        }
+      }
+      await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+
+      let uploadImage = {};
       if (
         inputFiles != undefined &&
         inputFiles &&
@@ -357,6 +367,8 @@ export class UserService {
           ? input.colorTemplateId
           : 0
       };
+
+      // User profile image upload
       if (
         inputFiles != undefined &&
         inputFiles &&
@@ -393,6 +405,7 @@ export class UserService {
         }
       }
 
+      // User background image upload
       if (
         inputFiles != undefined &&
         inputFiles &&
@@ -433,6 +446,13 @@ export class UserService {
       if (output == null)
         return adminServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
+      if (userData.email != input.email) {
+        let updatedData = {
+          "email_address": input.email
+        }
+        await mailchimp.updateUserMailchimpData(userData.email, updatedData)
+      }
+
       return output;
     } catch (e) {
       return adminServiceErrorResponse(e);
@@ -457,35 +477,83 @@ export class UserService {
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
-      // Delete image from s3 bucket
-      if (
-        userData.dataValues.originalFileName != "" &&
-        userData.dataValues.originalFileName != null
-      ) {
-        // Delete original file from s3
-        var deleteImageParams = {
-          key: userData.dataValues.originalFileName
-        };
-        await deleteFileFromS3(deleteImageParams);
-      }
-
-      if (
-        userData.dataValues.croppedFileName != "" &&
-        userData.dataValues.croppedFileName != null
-      ) {
-        // Delete cropped file from s3
-        var deleteCroppedImageParams = {
-          key: userData.dataValues.croppedFileName
-        };
-        await deleteFileFromS3(deleteCroppedImageParams);
-      }
+      // Delete user images
+      this.deleteUserImage(userData, true, true);
 
       // Delete specific user data based on id received in parameter
-      await user.update({ isDeleted: "y" }, { where: { id: input } });
+      var setData = {
+        isDeleted: "y",
+        originalFileName: "",
+        originalFileUrl: "",
+        croppedFileName: "",
+        croppedFileUrl: "",
+        backgroundOriginalFileName: "",
+        backgroundOriginalFileUrl: "",
+        backgroundCroppedFileName: "",
+        backgroundCroppedFileUrl: ""
+      };
+      await user.update(setData, { where: { id: input } });
       var output = await user.destroy({ where: { id: input } });
+
+      await mailchimp.deleteUserMailchimpData(userData.email)
 
       // Return response data
       return output;
+    } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method deletes user profile and background images from S3 bucket.
+   * @param {*} userData 
+   * @param {*} isProfile 
+   * @param {*} isBackground 
+   * @returns 
+   */
+  async deleteUserImage(userData, isProfile, isBackground) {
+    try {
+
+      // Delete profile image from s3 bucket
+      if (isProfile) {
+        if (userData.dataValues.originalFileName != "" && userData.dataValues.originalFileName != null) {
+          // Delete original file from s3
+          var deleteImageParams = {
+            key: userData.dataValues.originalFileName
+          };
+          await deleteFileFromS3(deleteImageParams);
+        }
+
+        if (userData.dataValues.croppedFileName != "" && userData.dataValues.croppedFileName != null) {
+          // Delete cropped file from s3
+          var deleteCroppedImageParams = {
+            key: userData.dataValues.croppedFileName
+          };
+          await deleteFileFromS3(deleteCroppedImageParams);
+        }
+      }
+
+      // Delete background image from s3 bucket
+      if (isBackground) {
+        if (userData.dataValues.backgroundOriginalFileName != "" && userData.dataValues.backgroundOriginalFileName != null) {
+          // Delete background original file from s3
+          var deleteImageParams = {
+            key: userData.dataValues.backgroundOriginalFileName
+          };
+          await deleteFileFromS3(deleteImageParams);
+        }
+
+        if (userData.dataValues.backgroundCroppedFileName != "" && userData.dataValues.backgroundCroppedFileName != null) {
+          // Delete background cropped file from s3
+          var deleteCroppedImageParams = {
+            key: userData.dataValues.backgroundCroppedFileName
+          };
+          await deleteFileFromS3(deleteCroppedImageParams);
+        }
+      }
+
+      // Return response data
+      return true;
     } catch (e) {
       return adminServiceErrorResponse(e);
     }
@@ -496,7 +564,7 @@ export class UserService {
    * @param {*} input
    * @returns
    */
-  async deleteUserImage(input) {
+  async deleteUserProfileImage(input) {
     try {
       // Validate input data
       if (!isValidInteger(input) || input < 1)
@@ -508,27 +576,8 @@ export class UserService {
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Delete image from s3 bucket
-      if (
-        userData.dataValues.originalFileName != "" &&
-        userData.dataValues.originalFileName != null
-      ) {
-        // Delete original file from s3
-        var deleteImageParams = {
-          key: userData.dataValues.originalFileName
-        };
-        await deleteFileFromS3(deleteImageParams);
-      }
+      this.deleteUserImage(userData, true, false);
 
-      if (
-        userData.dataValues.croppedFileName != "" &&
-        userData.dataValues.croppedFileName != null
-      ) {
-        // Delete cropped file from s3
-        var deleteCroppedImageParams = {
-          key: userData.dataValues.croppedFileName
-        };
-        await deleteFileFromS3(deleteCroppedImageParams);
-      }
       var setImageData = {
         originalFileName: "",
         originalFileUrl: "",
@@ -563,27 +612,8 @@ export class UserService {
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
       // Delete image from s3 bucket
-      if (
-        userData.dataValues.backgroundOriginalFileName != "" &&
-        userData.dataValues.backgroundOriginalFileName != null
-      ) {
-        // Delete original file from s3
-        var deleteImageParams = {
-          key: userData.dataValues.backgroundOriginalFileName
-        };
-        await deleteFileFromS3(deleteImageParams);
-      }
+      this.deleteUserImage(userData, false, true);
 
-      if (
-        userData.dataValues.backgroundCroppedFileName != "" &&
-        userData.dataValues.backgroundCroppedFileName != null
-      ) {
-        // Delete cropped file from s3
-        var deleteCroppedImageParams = {
-          key: userData.dataValues.backgroundCroppedFileName
-        };
-        await deleteFileFromS3(deleteCroppedImageParams);
-      }
       var setImageData = {
         backgroundOriginalFileName: "",
         backgroundOriginalFileUrl: "",

@@ -44,7 +44,7 @@ router.delete("/deleteUser/:id", authenticateJWT, usersController.deleteUser);
 router.delete(
   "/deleteUserImage/:id",
   authenticateJWT,
-  usersController.deleteUserImage
+  usersController.deleteUserProfileImage
 );
 router.delete(
   "/deleteBackgroundImage/:id",

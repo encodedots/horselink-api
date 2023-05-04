@@ -497,8 +497,23 @@ export class UserService {
       if (userExist == null)
         return frontServiceErrorResponse(messages.NOT_FOUND);
 
-      // Delete user
-      await user.update({ isDeleted: "y" }, { where: { webId: webId } });
+      // Delete user images
+      this.deleteUserImage(userExist);
+
+      // Delete specific user data based on id received in parameter
+      var setData = {
+        isDeleted: "y",
+        originalFileName: "",
+        originalFileUrl: "",
+        croppedFileName: "",
+        croppedFileUrl: "",
+        backgroundOriginalFileName: "",
+        backgroundOriginalFileUrl: "",
+        backgroundCroppedFileName: "",
+        backgroundCroppedFileUrl: ""
+      };
+
+      await user.update(setData, { where: { webId: webId } });
       var output = user.destroy({ where: { webId: webId } });
 
       if (output == null)
@@ -506,6 +521,57 @@ export class UserService {
 
       // Return response
       return output;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method deletes user profile and background images from S3 bucket.
+   * @param {*} userData 
+   * @param {*} isProfile 
+   * @param {*} isBackground 
+   * @returns 
+   */
+  async deleteUserImage(userData) {
+    try {
+
+      // Delete profile image from s3 bucket
+      if (userData.dataValues.originalFileName != "" && userData.dataValues.originalFileName != null) {
+        // Delete original file from s3
+        var deleteImageParams = {
+          key: userData.dataValues.originalFileName
+        };
+        await deleteFileFromS3(deleteImageParams);
+      }
+
+      if (userData.dataValues.croppedFileName != "" && userData.dataValues.croppedFileName != null) {
+        // Delete cropped file from s3
+        var deleteCroppedImageParams = {
+          key: userData.dataValues.croppedFileName
+        };
+        await deleteFileFromS3(deleteCroppedImageParams);
+      }
+
+      // Delete background image from s3 bucket
+      if (userData.dataValues.backgroundOriginalFileName != "" && userData.dataValues.backgroundOriginalFileName != null) {
+        // Delete background original file from s3
+        var deleteImageParams = {
+          key: userData.dataValues.backgroundOriginalFileName
+        };
+        await deleteFileFromS3(deleteImageParams);
+      }
+
+      if (userData.dataValues.backgroundCroppedFileName != "" && userData.dataValues.backgroundCroppedFileName != null) {
+        // Delete background cropped file from s3
+        var deleteCroppedImageParams = {
+          key: userData.dataValues.backgroundCroppedFileName
+        };
+        await deleteFileFromS3(deleteCroppedImageParams);
+      }
+
+      // Return response data
+      return true;
     } catch (e) {
       return frontServiceErrorResponse(e);
     }
