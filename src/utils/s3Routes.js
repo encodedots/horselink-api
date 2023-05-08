@@ -6,5 +6,7 @@ export default {
   USER_PROFILE_ORIGINAL_IMAGE: "user/profile/originalFiles/",
   USER_PROFILE_CROPPED_IMAGE: "user/profile/croppedFiles/",
   USER_BACKGROUND_ORIGINAL_IMAGE: "user/background/originalFiles/",
-  USER_BACKGROUND_CROPPED_IMAGE: "user/background/croppedFiles/"
+  USER_BACKGROUND_CROPPED_IMAGE: "user/background/croppedFiles/",
+  SPONSOR_ORIGINAL_IMAGE: "user/sponsor/originalFiles/",
+  SPONSOR_CROPPED_IMAGE: "user/sponsor/croppedFiles/"
 };

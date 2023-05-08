@@ -55,21 +55,18 @@ export class SponsorController {
     try {
       var input = req.body;
       var id = req.params.userId;
+      var inputFiles = req.files;
 
       // Validate input data
-      if (
-        input == null ||
-        !isValidString(input.title) ||
-        !isValidArray(input.sponsors) ||
-        (isValidArray(input.sponsors) && !isValidString(input.sponsors[0].name))
-      )
+      if (input.sponsors && !isValidArray(input.sponsors)) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+      }
 
-      if (input.titleLink && !isValidString(input.titleLink)) {
+      if (input.title && !isValidString(input.title)) {
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
       }
       // Call service to add/update sponsor
-      var output = await _sponsorService.addSponser(input, id);
+      var output = await _sponsorService.addSponser(input, id, inputFiles);
       if (output == null)
         return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
 

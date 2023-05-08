@@ -13,7 +13,8 @@ const sizeOf = require("image-size");
 // Initialize s3
 const s3 = new AWS.S3({
   accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-  secretAccessKey: process.env.AWS_SECRET_KEY
+  secretAccessKey: process.env.AWS_SECRET_KEY,
+  region: process.env.REGION
 });
 
 /**

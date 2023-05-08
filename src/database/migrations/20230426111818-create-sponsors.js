@@ -40,8 +40,17 @@ module.exports = {
       fileUrl: {
         type: Sequelize.STRING
       },
+      croppedFileName: {
+        type: Sequelize.STRING
+      },
+      croppedFileUrl: {
+        type: Sequelize.STRING
+      },
       link: {
         type: Sequelize.STRING
+      },
+      order: {
+        type: Sequelize.INTEGER
       },
       actionIpAddress: Sequelize.STRING,
       createdAt: {

@@ -34,8 +34,17 @@ module.exports = (sequelize, DataTypes) => {
       fileUrl: {
         type: DataTypes.STRING
       },
+      croppedFileName: {
+        type: DataTypes.STRING
+      },
+      croppedFileUrl: {
+        type: DataTypes.STRING
+      },
       link: {
         type: DataTypes.STRING
+      },
+      order: {
+        type: DataTypes.INTEGER
       },
       actionIpAddress: {
         type: DataTypes.STRING

@@ -38,5 +38,7 @@ export default {
   LONGITUDE: "72.571365",
 
   MAILCHIMP_SUBSCRIBED_STATUS: "subscribed",
-  MAILCHIMP_UNSUBSCRIBED_STATUS: "unsubscribed"
+  MAILCHIMP_UNSUBSCRIBED_STATUS: "unsubscribed",
+
+  AWSPATH: "https://horse-link.s3.ap-south-1.amazonaws.com/"
 };
