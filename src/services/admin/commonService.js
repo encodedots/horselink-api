@@ -1,6 +1,6 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-const { countries, category, user, socialMedia, colorTemplate } = model;
+const { countries, category, horseCategory, socialMedia, colorTemplate } = model;
 
 export class CommonService {
   /**
@@ -80,6 +80,28 @@ export class CommonService {
       // Return response
       return output;
     } catch (e) {
+      return adminServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get all horse categories
+   * @returns
+   */
+  async getHorseCategoryList() {
+    try {
+      var output = "";
+      output = await horseCategory.findAll({
+        where: {
+          isActive: "y",
+          deletedAt: null
+        }
+      });
+
+      // Return response
+      return output;
+    } catch (e) {
+      console.log("e", e)
       return adminServiceErrorResponse(e);
     }
   }

@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       userId: {
         type: DataTypes.INTEGER
       },
+      horseCategoryId: {
+        type: DataTypes.INTEGER
+      },
       title: {
         type: DataTypes.STRING
       },

@@ -43,5 +43,8 @@ export default {
   CREATED_SUCCESSFULLY: "Created successfully",
   UPDATED_SUCCESSFULLY: "Updated successfully",
   DELETED_SUCCESSFULLY: "Deleted successfully",
-  UPDATED_USER_SUCCESSFULLY: "User detail updated successfully"
+  CREATED_USER_SUCCESSFULLY: "User created successfully",
+  UPDATED_USER_SUCCESSFULLY: "User detail updated successfully",
+  CREATED_FAQ_SUCCESSFULLY: "FAQ created successfully",
+  UPDATED_FAQ_SUCCESSFULLY: "FAQ detail updated successfully"
 };

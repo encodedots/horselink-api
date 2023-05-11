@@ -8,6 +8,7 @@ router.get("/getCountries", commonController.getCountries);
 router.get("/getCategoryList", commonController.getCategoryList);
 router.get("/getSocialMediaList", commonController.getSocialMediaList);
 router.get("/getColorTemplateList", commonController.getColorTemplateList);
+router.get("/getHorseCategoryList", commonController.getHorseCategoryList);
 //#endregion GET APIs
 
 export default router;

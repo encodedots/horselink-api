@@ -12,6 +12,7 @@ export class SaleHorseService {
       var output = "";
       var horseArr = [];
       var counter = 0;
+
       // Get user by id
       var userData = await user.findOne({ where: { id: id } });
       if (userData == null)
@@ -23,15 +24,12 @@ export class SaleHorseService {
         let newUserInfo = {
           userId: isValidInteger(id) ? id : 0,
           title: isValidString(input.title) ? input.title.trim() : "",
-          titleLink: isValidString(input.titleLink)
-            ? input.titleLink.trim()
-            : "",
-          description: isValidString(ele.description)
-            ? ele.description.trim()
-            : "",
+          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          description: isValidString(ele.description) ? ele.description.trim() : "",
+          link: isValidString(ele.link) ? ele.link.trim() : "",
+          horseCategoryId: isValidInteger(ele.category) ? ele.category : null,
           fileName: isValidString(ele.fileName) ? ele.fileName.trim() : "",
           fileUrl: isValidString(ele.fileUrl) ? ele.fileUrl.trim() : "",
-          link: isValidString(ele.link) ? ele.link.trim() : ""
         };
 
         if (counter == 1) {

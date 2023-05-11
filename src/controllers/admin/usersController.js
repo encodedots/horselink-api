@@ -168,7 +168,7 @@ export class UsersController {
         res,
         200,
         output,
-        Messages.CREATED_SUCCESSFULLY
+        Messages.CREATED_USER_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail
@@ -264,7 +264,7 @@ export class UsersController {
         res,
         200,
         output,
-        Messages.UPDATED_SUCCESSFULLY
+        Messages.UPDATED_USER_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail

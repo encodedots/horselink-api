@@ -97,7 +97,7 @@ export class FaqController {
         res,
         200,
         output,
-        messages.CREATED_SUCCESSFULLY
+        messages.CREATED_FAQ_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail
@@ -133,7 +133,7 @@ export class FaqController {
         res,
         200,
         output,
-        messages.UPDATED_SUCCESSFULLY
+        messages.UPDATED_FAQ_SUCCESSFULLY
       );
     } catch (e) {
       // Send error message on fail
