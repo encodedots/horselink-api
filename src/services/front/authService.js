@@ -6,6 +6,7 @@ const { user, userAuthTokens } = model;
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 import md5 from "md5";
+import sendEmail from "../../utils/sendEmail";
 const jwt = require("jsonwebtoken");
 var slugify = require("../../utils/slugifyUrl");
 var refreshTokens = [];
@@ -42,6 +43,13 @@ export class AuthService {
       if (!checkPassword)
         return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
 
+      if (frontUserDetails.status && frontUserDetails.status !== "y") {
+        return frontServiceErrorResponse(message.VERIFY_ACCOUNT);
+      }
+
+      // Check if user is active
+      if (frontUserDetails.deletedAt !== null)
+        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
       // Check if user is active
       if (frontUserDetails.isActive !== "y")
         return frontServiceErrorResponse(message.ACCOUNT_SUSPENDED);
@@ -154,7 +162,8 @@ export class AuthService {
         planName: isValidString(input.planName) ? input.planName.trim() : "",
         isNewsLetter: isValidString(input.isNewsLetter)
           ? input.isNewsLetter.trim()
-          : ""
+          : "",
+        isActive: "y"
       };
 
       var output = await user.create(newUser);
@@ -172,13 +181,6 @@ export class AuthService {
         { expiresIn: expireTime }
       );
 
-      var newToken = {
-        email: output.dataValues.email,
-        token: token
-      };
-
-      await userAuthTokens.create(newToken);
-
       // Generate an refresh token
       // We are managing refresh token, so that is user token get expired while he/she is working, we can renew the token to prevent data/work loss for user.
       // This is used to increase usability without damaging any data. The actual token will expire after specific time. After that refresh token will be used to renew it.
@@ -193,7 +195,7 @@ export class AuthService {
 
       const loginUserDetails = await user.findOne({ where: { id: output.id } });
 
-      if (input.isNewsLetter == 'y') {
+      if (input.isNewsLetter == "y") {
         let postData = {
           email_address: output.dataValues.email, //janvi+3.encodedots@gmail.com
           status: constants.MAILCHIMP_SUBSCRIBED_STATUS,
@@ -201,9 +203,25 @@ export class AuthService {
             FNAME: output.dataValues.firstName,
             LNAME: output.dataValues.lastName
           }
-        }
-        await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+        };
+        await mailchimp.subscribedUnsubscribedmailchimpData(postData, true);
       }
+
+      let sendEmailData = {
+        subject: message.EMAIL_SUBJECT_VERIFY_ACCOUNT,
+        templateName: "user-account-verification-template.ejs",
+        emailToUser: output.dataValues.email
+      };
+
+      // Set data that needs to be replaced in email html
+      let emailTemplateReplaceData = {};
+      emailTemplateReplaceData["userName"] = output.dataValues.userName;
+      emailTemplateReplaceData["verifyEmailUrl"] =
+        process.env.SITE_REDIRECT_URL +
+        "/auth/sign-in?webId=" +
+        output.dataValues.webId;
+
+      sendEmail.generateHtmlForEmail(sendEmailData, emailTemplateReplaceData);
 
       // Return response
       return {
@@ -254,6 +272,71 @@ export class AuthService {
       return true;
     } catch (e) {
       return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to remove refresh token from refresh token array. It would be considered as logout.
+   *          So that anyone with specific refresh token can not access the system.
+   *          If the refresh token is stolen from the user, someone can use it to generate as many new tokens as they'd like.
+   *          To avoid this, we implemented logout
+   * @param {*} input
+   * @returns
+   */
+  async logout(input, authToken) {
+    try {
+      // Validate input data
+      if (
+        input == null ||
+        !isValidString(authToken) ||
+        !isValidString(input.email)
+      )
+        return frontServiceErrorResponse(message.INVALID_PARAMETERS);
+
+      // Get front user by email address
+      const frontUserDetails = await user.findOne({
+        where: { email: input.email }
+      });
+      if (!frontUserDetails)
+        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
+
+      // Change token status when user performs logout action
+      await userAuthTokens.update(
+        { status: "n" },
+        { where: { email: input.email, token: authToken } }
+      );
+
+      // Remove token from refreshtokens array
+      refreshTokens = refreshTokens.filter((token) => authToken !== token);
+      // Return response
+      return true;
+    } catch (e) {
+      // Return error
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  async userActivate(input) {
+    try {
+      // Get front user by email address
+      const frontUserDetails = await user.findOne({
+        where: { webId: input.webId }
+      });
+      if (!frontUserDetails)
+        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
+
+      var checkUserVerified = await user.findOne({
+        where: { webId: input.webId, status: "n" }
+      });
+      if (checkUserVerified) {
+        await user.update({ status: "y" }, { where: { webId: input.webId } });
+      } else {
+        return frontServiceErrorResponse(message.ACCOUNT_ALREADY_VERIFIED);
+      }
+
+      return true;
+    } catch (error) {
+      return frontServiceErrorResponse(error);
     }
   }
 }

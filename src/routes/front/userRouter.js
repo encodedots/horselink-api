@@ -42,12 +42,20 @@ router.get(
 //#endregion GET APIs
 
 //#region POST APIs
-router.post("/update/:id", usersController.updateUserDeatils); // :id - user web id
-router.post("/verifyUpdateEmail/:id", usersController.verifyUpdateEmail); // :id - user web id
+router.post(
+  "/update/:id",
+  frontAuthenticateJWT,
+  usersController.updateUserDeatils
+); // :id - user web id
+router.post(
+  "/verifyUpdateEmail/:id",
+  frontAuthenticateJWT,
+  usersController.verifyUpdateEmail
+); // :id - user web id
 //#endregion POST APIs
 
 //#region DELETE APIs
-router.delete("/delete/:id", usersController.deleteUser); // :id - user web id
+router.delete("/delete/:id", frontAuthenticateJWT, usersController.deleteUser); // :id - user web id
 //#endregion DELETE APIs
 
 export default router;

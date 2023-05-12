@@ -127,4 +127,85 @@ export class AuthController {
       return frontSendErrorResponse(res, 201, e);
     }
   }
+
+  /**
+   * Summary: This method is used to remove refresh token from refresh token array. It would be considered as logout.
+   *          So that anyone with specific refresh token can not access the system.
+   *          If the refresh token is stolen from the user, someone can use it to generate as many new tokens as they'd like.
+   *          To avoid this, we implemented logout
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async logout(req, res) {
+    var input = req.body;
+
+    try {
+      var authHeader = req.headers.authorization;
+      var token = "";
+      if (authHeader) {
+        token = authHeader.split(" ")[1];
+      }
+      // Validate token
+      if (token == null || token == "" || !isValidString(token))
+        return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+      // Validate input data
+      if (input == null || !isValidString(input.email))
+        return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+      // Call sevice to logout user from the system
+      var output = await _authService.logout(input, token);
+      if (output == null)
+        return frontSendErrorResponse(res, 201, messages.SOMETHING_WENT_WRONG);
+
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        messages.LOGOUT_SUCCESSFULLY
+      );
+    } catch (e) {
+      // Return error
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This function is used for activate the user
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async userActivate(req, res) {
+    var input = req.body;
+
+    try {
+      // Validate input data
+      if (input == null || !isValidString(input.webId))
+        return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+      // Call service method to check username and email
+      var output = await _authService.userActivate(input);
+      if (output == null)
+        return frontSendErrorResponse(res, 201, messages.SOMETHING_WENT_WRONG);
+
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        messages.ACCOUNT_VERIFIED
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
 }

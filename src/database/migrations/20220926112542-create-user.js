@@ -180,6 +180,10 @@ module.exports = {
         values: ["y", "n"],
         defaultValue: "y"
       },
+      status: {
+        type: Sequelize.ENUM("y", "n"),
+        defaultValue: "n"
+      },
 
       isDeleted: {
         type: Sequelize.ENUM,

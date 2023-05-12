@@ -11,6 +11,7 @@ export default {
   LOGIN_SUCCESSFULLY: "Login successful",
   LOGOUT_SUCCESSFULLY: "Logout successful",
   MAIL_SENT_SUCCESSFULLY: "Mail sent successfully",
+  VERIFY_ACCOUNT: "Please verify your account",
   // Common messages
   COULD_NOT_PERFORM_ACTION:
     "Could not perform operation at this time, kindly try again later.",
@@ -22,6 +23,9 @@ export default {
   // Email Messages
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
   EMAIL_SUBJECT_VERIFY_EMAIL_ADDRESS: "Email Verification",
+  EMAIL_SUBJECT_VERIFY_ACCOUNT: "Verify account for signup",
+  ACCOUNT_ALREADY_VERIFIED: "Your account is already verified",
+  ACCOUNT_VERIFIED: "Your account is verified",
   USER_EMAIL_UPDATED_SUCCESSFULLY: "Email updated successfully",
   CONTACT_REQUEST: "Contact request",
   REPORT_REQUEST: "Report request",

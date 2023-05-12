@@ -168,7 +168,10 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("y", "n"),
         defaultValue: "y"
       },
-
+      status: {
+        type: DataTypes.ENUM("y", "n"),
+        defaultValue: "n"
+      },
       isDeleted: {
         type: DataTypes.ENUM("y", "n"),
         defaultValue: "n"

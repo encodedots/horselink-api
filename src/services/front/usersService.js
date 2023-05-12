@@ -18,6 +18,7 @@ const {
   sponsors,
   saleHorse,
   userSocialMedia,
+  userAuthTokens,
   socialMedia
 } = model;
 const { Sequelize } = require("sequelize");
@@ -46,11 +47,15 @@ export class UserService {
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
 
       // Get is newsletter from the API
-      var mailchimpRes = await mailchimp.getUserMailchimpData(output.email)
+      var mailchimpRes = await mailchimp.getUserMailchimpData(output.email);
       if (mailchimpRes) {
-        let isNewsLetter = (mailchimpRes == constants.MAILCHIMP_SUBSCRIBED_STATUS) ? 'y' : 'n'
+        let isNewsLetter =
+          mailchimpRes == constants.MAILCHIMP_SUBSCRIBED_STATUS ? "y" : "n";
         if (output.isNewsLetter != isNewsLetter) {
-          await user.update({ isNewsLetter: isNewsLetter }, { where: { webId: output.webId } });
+          await user.update(
+            { isNewsLetter: isNewsLetter },
+            { where: { webId: output.webId } }
+          );
           output = await user.findOne({ where: { webId: input } });
         }
       }
@@ -122,12 +127,12 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                Constants.LATITUDE +
-                `)) * COS(RADIANS(longitude - ` +
-                Constants.LONGITUDE +
-                `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                Constants.LATITUDE +
-                `)))))`
+                  Constants.LATITUDE +
+                  `)) * COS(RADIANS(longitude - ` +
+                  Constants.LONGITUDE +
+                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                  Constants.LATITUDE +
+                  `)))))`
               ),
               "distance_in_km"
             ]
@@ -338,7 +343,12 @@ export class UserService {
       // Get user by username
       if (input.userName) {
         var userName = await user.findOne({
-          where: { userName: input.userName.trim() }
+          where: {
+            webId: {
+              [Op.ne]: webId
+            },
+            userName: input.userName.trim()
+          }
         });
         if (userName != null)
           return frontServiceErrorResponse(messages.USER_NAME_ALREADY_EXISTS);
@@ -352,7 +362,12 @@ export class UserService {
       if (input.email) {
         if (userExist.email != input.email) {
           var userEmail = await user.findOne({
-            where: { email: input.email.trim() }
+            where: {
+              webId: {
+                [Op.ne]: webId
+              },
+              email: input.email.trim()
+            }
           });
           if (userEmail != null)
             return frontServiceErrorResponse(messages.EMAIL_USER_ALREADY_EXIST);
@@ -376,12 +391,14 @@ export class UserService {
           emailTemplateReplaceData["name"] = input.userName
             ? input.userName
             : userExist.userName
-              ? userExist.userName
-              : "There ";
+            ? userExist.userName
+            : "There ";
           emailTemplateReplaceData["verifyEmailUrl"] =
             process.env.SITE_REDIRECT_URL +
-            "/auth/verify-user-email?email=" +
-            input.email;
+            "/verify-user-email?email=" +
+            input.email +
+            "&webId=" +
+            webId;
 
           sendEmail.generateHtmlForEmail(
             sendEmailData,
@@ -398,7 +415,10 @@ export class UserService {
       }
 
       if (input.isNewsLetter && isValidString(input.isNewsLetter)) {
-        var mailchimpStatus = (input.isNewsLetter.trim() == 'y') ? constants.MAILCHIMP_SUBSCRIBED_STATUS : constants.MAILCHIMP_UNSUBSCRIBED_STATUS
+        var mailchimpStatus =
+          input.isNewsLetter.trim() == "y"
+            ? constants.MAILCHIMP_SUBSCRIBED_STATUS
+            : constants.MAILCHIMP_UNSUBSCRIBED_STATUS;
 
         let postData = {
           email_address: userExist.email,
@@ -407,20 +427,28 @@ export class UserService {
             FNAME: userExist.firstName,
             LNAME: userExist.lastName
           }
-        }
-        var mailchimpRes = await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+        };
+        var mailchimpRes = await mailchimp.subscribedUnsubscribedmailchimpData(
+          postData,
+          true
+        );
         if (mailchimpRes) {
-          updateArray.isNewsLetter = input.isNewsLetter.trim()
+          updateArray.isNewsLetter = input.isNewsLetter.trim();
         }
-        console.log("mailchimpRes", mailchimpRes)
+        console.log("mailchimpRes", mailchimpRes);
       }
 
       if (updateArray && !isEmptyObject(updateArray)) {
         output = await user.update(updateArray, { where: { webId: webId } });
       }
 
+      var getUserDetails = await user.findOne({
+        where: { webId: webId }
+      });
       // Return response
-      return output;
+      return {
+        user: getUserDetails
+      };
     } catch (e) {
       return frontServiceErrorResponse(e);
     }
@@ -444,7 +472,7 @@ export class UserService {
         return frontServiceErrorResponse(messages.USER_DOES_NOT_EXIST);
 
       var setEmailVerifiedDetail = {};
-      let oldEmail = frontUser.email
+      let oldEmail = frontUser.email;
 
       if (frontUser.tempEmail == input.email) {
         // Set user as verified
@@ -461,16 +489,17 @@ export class UserService {
           return frontServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
         let updatedData = {
-          "email_address": input.email
-        }
-        await mailchimp.updateUserMailchimpData(oldEmail, updatedData)
-
+          email_address: input.email
+        };
+        await mailchimp.updateUserMailchimpData(oldEmail, updatedData);
       } else {
         return frontServiceErrorResponse(messages.INCORRECT_EMAIL);
       }
-
+      var frontUser = await user.findOne({ where: { webId: id } });
       // Return response
-      return true;
+      return {
+        user: frontUser
+      };
     } catch (e) {
       // Return error
       return frontServiceErrorResponse(e);
@@ -519,6 +548,11 @@ export class UserService {
       if (output == null)
         return frontServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
+      await userAuthTokens.destroy({
+        where: {
+          email: userExist.email
+        }
+      });
       // Return response
       return output;
     } catch (e) {
@@ -528,16 +562,18 @@ export class UserService {
 
   /**
    * Summary: This method deletes user profile and background images from S3 bucket.
-   * @param {*} userData 
-   * @param {*} isProfile 
-   * @param {*} isBackground 
-   * @returns 
+   * @param {*} userData
+   * @param {*} isProfile
+   * @param {*} isBackground
+   * @returns
    */
   async deleteUserImage(userData) {
     try {
-
       // Delete profile image from s3 bucket
-      if (userData.dataValues.originalFileName != "" && userData.dataValues.originalFileName != null) {
+      if (
+        userData.dataValues.originalFileName != "" &&
+        userData.dataValues.originalFileName != null
+      ) {
         // Delete original file from s3
         var deleteImageParams = {
           key: userData.dataValues.originalFileName
@@ -545,7 +581,10 @@ export class UserService {
         await deleteFileFromS3(deleteImageParams);
       }
 
-      if (userData.dataValues.croppedFileName != "" && userData.dataValues.croppedFileName != null) {
+      if (
+        userData.dataValues.croppedFileName != "" &&
+        userData.dataValues.croppedFileName != null
+      ) {
         // Delete cropped file from s3
         var deleteCroppedImageParams = {
           key: userData.dataValues.croppedFileName
@@ -554,7 +593,10 @@ export class UserService {
       }
 
       // Delete background image from s3 bucket
-      if (userData.dataValues.backgroundOriginalFileName != "" && userData.dataValues.backgroundOriginalFileName != null) {
+      if (
+        userData.dataValues.backgroundOriginalFileName != "" &&
+        userData.dataValues.backgroundOriginalFileName != null
+      ) {
         // Delete background original file from s3
         var deleteImageParams = {
           key: userData.dataValues.backgroundOriginalFileName
@@ -562,7 +604,10 @@ export class UserService {
         await deleteFileFromS3(deleteImageParams);
       }
 
-      if (userData.dataValues.backgroundCroppedFileName != "" && userData.dataValues.backgroundCroppedFileName != null) {
+      if (
+        userData.dataValues.backgroundCroppedFileName != "" &&
+        userData.dataValues.backgroundCroppedFileName != null
+      ) {
         // Delete background cropped file from s3
         var deleteCroppedImageParams = {
           key: userData.dataValues.backgroundCroppedFileName

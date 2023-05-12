@@ -1,12 +1,14 @@
 import { CharityService } from "../../services/front/charityService";
 import Messages from "../../utils/message";
-import { frontSendErrorResponse, frontSendSuccessResponse } from "../../utils/sendResponse";
+import {
+  frontSendErrorResponse,
+  frontSendSuccessResponse
+} from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 
 const _charityService = new CharityService();
 
 export class CharityController {
-
   /**
    * Summary: This function is used for the sent mail for charity account
    * @param {*} req
@@ -16,7 +18,6 @@ export class CharityController {
   async sentCharityMail(req, res) {
     var input = req.body;
     try {
-
       // Validate input data
       if (
         input == null ||
