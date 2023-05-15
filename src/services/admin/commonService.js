@@ -101,7 +101,6 @@ export class CommonService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e", e)
       return adminServiceErrorResponse(e);
     }
   }

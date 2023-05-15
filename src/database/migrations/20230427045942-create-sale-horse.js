@@ -36,14 +36,26 @@ module.exports = {
       description: {
         type: Sequelize.TEXT
       },
+      youtubeLink: {
+        type: Sequelize.TEXT
+      },
+      youtubeEmbed: {
+        type: Sequelize.TEXT
+      },
       fileName: {
         type: Sequelize.STRING
       },
       fileUrl: {
         type: Sequelize.STRING
       },
+      type: {
+        type: Sequelize.STRING
+      },
       link: {
         type: Sequelize.STRING
+      },
+      order: {
+        type: Sequelize.INTEGER
       },
       actionIpAddress: Sequelize.STRING,
       createdAt: {

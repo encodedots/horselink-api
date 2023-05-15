@@ -54,6 +54,7 @@ export class SponsorService {
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
+      // Get images/files for existing records
       var getOriginalData = await sponsors.findAll({
         where: { userId: id },
         attributes: ["fileName"]
@@ -71,13 +72,11 @@ export class SponsorService {
           sponsorData.map(async (element, i) => {
             var data = JSON.parse(element.sponsordata);
             // New object for sponsor details
-            if (data.name != "" && data.code != "" && data.link != "") {
+            if ((data.name != "" && data.code != "" && data.link != "") || input.titleLink) {
               let newSponsor = {
                 userId: isValidInteger(id) ? id : 0,
                 title: isValidString(input.title) ? input.title.trim() : "",
-                titleLink: isValidString(input.titleLink)
-                  ? input.titleLink.trim()
-                  : "",
+                titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
                 name: isValidString(data.name) ? data.name.trim() : "",
                 code: isValidString(data.code) ? data.code.trim() : "",
                 link: isValidString(data.link) ? data.link.trim() : "",

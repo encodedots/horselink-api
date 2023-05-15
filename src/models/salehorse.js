@@ -28,14 +28,26 @@ module.exports = (sequelize, DataTypes) => {
       description: {
         type: DataTypes.TEXT
       },
+      youtubeLink: {
+        type: DataTypes.TEXT
+      },
+      youtubeEmbed: {
+        type: DataTypes.TEXT
+      },
       fileName: {
         type: DataTypes.STRING
       },
       fileUrl: {
         type: DataTypes.STRING
       },
+      type: {
+        type: DataTypes.STRING
+      },
       link: {
         type: DataTypes.STRING
+      },
+      order: {
+        type: DataTypes.INTEGER
       },
       actionIpAddress: DataTypes.STRING
     },
