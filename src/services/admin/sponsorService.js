@@ -153,49 +153,58 @@ export class SponsorService {
             }
           })
         );
+      } else {
+        let newSponsor = {
+          userId: isValidInteger(id) ? id : 0,
+          title: isValidString(input.title) ? input.title.trim() : "",
+          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          order: 1
+        };
 
-        // Delete Original file from S3
-        var originalURL = await sponsors.findAll({
-          where: { userId: id },
-          attributes: ["fileName"]
+        output = await sponsors.create(newSponsor);
+      }
+
+      // Delete Original file from S3
+      var originalURL = await sponsors.findAll({
+        where: { userId: id },
+        attributes: ["fileName"]
+      });
+
+      var originalImageArray = getOriginalData.filter(
+        (e) =>
+          !originalURL.find(
+            (a) => e.dataValues.fileName == a.dataValues.fileName
+          )
+      );
+      if (originalImageArray && originalImageArray.length > 0) {
+        originalImageArray.forEach(async (element) => {
+          var deleteImageParams = {
+            key: element.dataValues.fileName
+          };
+          await deleteFileFromS3(deleteImageParams);
         });
+      }
 
-        var originalImageArray = getOriginalData.filter(
-          (e) =>
-            !originalURL.find(
-              (a) => e.dataValues.fileName == a.dataValues.fileName
-            )
-        );
-        if (originalImageArray && originalImageArray.length > 0) {
-          originalImageArray.forEach(async (element) => {
-            var deleteImageParams = {
-              key: element.dataValues.fileName
-            };
-            await deleteFileFromS3(deleteImageParams);
-          });
-        }
+      // Delete Cropped file from S3
+      var croppedURL = await sponsors.findAll({
+        where: { userId: id },
+        attributes: ["croppedFileName"]
+      });
 
-        // Delete Cropped file from S3
-        var croppedURL = await sponsors.findAll({
-          where: { userId: id },
-          attributes: ["croppedFileName"]
+      var croppedImageArray = getCroppedData.filter(
+        (e) =>
+          !croppedURL.find(
+            (a) =>
+              e.dataValues.croppedFileName == a.dataValues.croppedFileName
+          )
+      );
+      if (croppedImageArray && croppedImageArray.length > 0) {
+        croppedImageArray.forEach(async (element) => {
+          var deleteImageParams = {
+            key: element.dataValues.croppedFileName
+          };
+          await deleteFileFromS3(deleteImageParams);
         });
-
-        var croppedImageArray = getCroppedData.filter(
-          (e) =>
-            !croppedURL.find(
-              (a) =>
-                e.dataValues.croppedFileName == a.dataValues.croppedFileName
-            )
-        );
-        if (croppedImageArray && croppedImageArray.length > 0) {
-          croppedImageArray.forEach(async (element) => {
-            var deleteImageParams = {
-              key: element.dataValues.croppedFileName
-            };
-            await deleteFileFromS3(deleteImageParams);
-          });
-        }
       }
 
       // Return response

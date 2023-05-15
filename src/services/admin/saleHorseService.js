@@ -103,28 +103,37 @@ export class SaleHorseService {
           }
         }))
 
-        // get video for new records
-        var getNewSaleHorseData = await saleHorse.findAll({
-          where: { userId: id, fileName: { [Op.ne]: null } },
-          attributes: ["fileName"]
+      } else {
+        let newSaleHorse = {
+          userId: isValidInteger(id) ? id : 0,
+          title: isValidString(input.title) ? input.title.trim() : "",
+          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          order: 1
+        };
+        output = await saleHorse.create(newSaleHorse);
+      }
+
+      // get video for new records
+      var getNewSaleHorseData = await saleHorse.findAll({
+        where: { userId: id, fileName: { [Op.ne]: null } },
+        attributes: ["fileName"]
+      });
+
+      var extraVideoArray = getOldSaleHorseData.filter(
+        (e) =>
+          !getNewSaleHorseData.find(
+            (a) => e.dataValues.fileName == a.dataValues.fileName
+          )
+      );
+
+      // Delete video file from S3
+      if (extraVideoArray && extraVideoArray.length > 0) {
+        extraVideoArray.forEach(async (element) => {
+          var deleteImageParams = {
+            key: element.dataValues.fileName
+          };
+          await deleteFileFromS3(deleteImageParams);
         });
-
-        var extraVideoArray = getOldSaleHorseData.filter(
-          (e) =>
-            !getNewSaleHorseData.find(
-              (a) => e.dataValues.fileName == a.dataValues.fileName
-            )
-        );
-
-        // Delete video file from S3
-        if (extraVideoArray && extraVideoArray.length > 0) {
-          extraVideoArray.forEach(async (element) => {
-            var deleteImageParams = {
-              key: element.dataValues.fileName
-            };
-            await deleteFileFromS3(deleteImageParams);
-          });
-        }
       }
 
       var gethorseSaleData = await saleHorse.findAll({
@@ -134,6 +143,7 @@ export class SaleHorseService {
       // Return response
       return gethorseSaleData;
     } catch (e) {
+      console.log("e", e)
       return adminServiceErrorResponse(e);
     }
   }

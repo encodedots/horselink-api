@@ -12,6 +12,7 @@ const { user } = model;
 const { QueryTypes, Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 var mailchimp = require("../../utils/mailchimp");
+import { getLatLongFromAddress } from "../../utils/geoCodingAPI";
 
 export class UserService {
   /**
