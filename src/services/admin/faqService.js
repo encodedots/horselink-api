@@ -16,7 +16,7 @@ export class FaqService {
   async getFaqList(input) {
     try {
       var output = "";
-      var query = `select u.id, u.title, u.description, u.status, u.createdAt, u.updatedAt from ${constants.FAQ_MANAGEMENT} as u where u.deletedAt IS NULL `;
+      var query = `select fm.id, fm.title, fm.description, fm.status, fm.module, fm.createdAt, fm.updatedAt from ${constants.FAQ_MANAGEMENT} as fm where fm.deletedAt IS NULL `;
 
       var countQuery = query
 
@@ -31,7 +31,7 @@ export class FaqService {
             const keyName = key;
             var paramName = "";
             paramName = keyName;
-            query += `u.${paramName} like '%${val}%'`;
+            query += `fm.${paramName} like '%${val}%'`;
 
             if (keyName != "" && index < Object.keys(filterdata).length - 1) {
               query += "and ";
@@ -48,7 +48,7 @@ export class FaqService {
             var paramName = "";
             paramName = keyName;
 
-            query += `u.${paramName} ${val}`;
+            query += `fm.${paramName} ${val}`;
 
             if (keyName != "" && i < Object.keys(sortdata).length - 1) {
               query += ", ";
@@ -125,7 +125,8 @@ export class FaqService {
       // Create object for faq
       let newFaqDetails = {
         title: isValidString(input.title) ? input.title.trim() : "",
-        description: isValidString(input.description) ? input.description.trim() : ""
+        description: isValidString(input.description) ? input.description.trim() : "",
+        module: isValidString(input.module) ? input.module.trim() : "",
       };
 
       output = await faqManagement.create(newFaqDetails);

@@ -23,6 +23,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.ENUM("y", "n"),
         defaultValue: "y"
       },
+      module: {
+        type: DataTypes.STRING
+      },
       actionIpAddress: DataTypes.STRING,
       deletedAt: {
         allowNull: true,

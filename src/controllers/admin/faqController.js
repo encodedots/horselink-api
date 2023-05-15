@@ -80,7 +80,7 @@ export class FaqController {
       var input = req.body;
 
       // Validate input data
-      if (input == null || !isValidString(input.title) || !isValidString(input.description))
+      if (input == null || !isValidString(input.title) || !isValidString(input.description) || !isValidString(input.module))
         return adminSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
 
 

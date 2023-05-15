@@ -19,6 +19,10 @@ module.exports = {
         type: Sequelize.ENUM("y", "n"),
         defaultValue: "y"
       },
+      module: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
       actionIpAddress: Sequelize.STRING,
       createdAt: {
         allowNull: false,
