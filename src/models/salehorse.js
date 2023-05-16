@@ -9,6 +9,18 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      saleHorse.belongsTo(models.user, {
+        foreignKey: "userId",
+        as: "userDetails",
+        onDelete: "CASCADE"
+      });
+
+      // define association here
+      saleHorse.belongsTo(models.horseCategory, {
+        foreignKey: "horseCategoryId",
+        as: "horseCategoryDetails",
+        onDelete: "CASCADE"
+      });
     }
   }
   saleHorse.init(

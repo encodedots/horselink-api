@@ -19,6 +19,7 @@ import contactManagementFrontRouter from "./front/contactManagementRouter";
 import faqFrontRouter from "./front/faqRouter";
 import dataProtectionFrontRouter from "./front/dataProtectionRouter";
 import categoryRouter from "./front/categoryRouter";
+import saleHorseFrontRouter from "./front/saleHorseRouter";
 //#endregion Front Routes
 
 export default (app) => {
@@ -44,6 +45,7 @@ export default (app) => {
   app.use("/api/v1/front/faq", faqFrontRouter);
   app.use("/api/v1/front/dataProtection", dataProtectionFrontRouter);
   app.use("/api/v1/front/categories", categoryRouter);
+  app.use("/api/v1/front/saleHorse", saleHorseFrontRouter);
   //#endregion Front Routes
 
   app.all("*", (req, res) => (res, 404, "Route does not exist"));

@@ -115,7 +115,13 @@ module.exports = {
 
       country: {
         type: Sequelize.INTEGER,
-        allowNull: true
+        allowNull: true,
+        references: {
+          model: "countries",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
       },
 
       telephone: {

@@ -1,6 +1,7 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-const { countries, category, horseCategory, socialMedia, colorTemplate } = model;
+const { countries, category, horseCategory, socialMedia, colorTemplate } =
+  model;
 
 export class CommonService {
   /**

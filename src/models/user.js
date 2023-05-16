@@ -21,6 +21,12 @@ module.exports = (sequelize, DataTypes) => {
         as: "colorTemplateDetails",
         onDelete: "CASCADE"
       });
+
+      user.belongsTo(models.countries, {
+        foreignKey: "country",
+        as: "countryDetails",
+        onDelete: "CASCADE"
+      });
     }
   }
   user.init(
@@ -114,7 +120,7 @@ module.exports = (sequelize, DataTypes) => {
       },
 
       country: {
-        type: DataTypes.STRING
+        type: DataTypes.INTEGER
       },
 
       telephone: {

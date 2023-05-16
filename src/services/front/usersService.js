@@ -10,7 +10,6 @@ var slugify = require("../../utils/slugifyUrl");
 import { hash } from "../../utils/hashing";
 import Constants from "../../utils/constants";
 import sendEmail from "../../utils/sendEmail";
-import constants from "../../utils/constants";
 const {
   user,
   userInfo,
@@ -19,7 +18,8 @@ const {
   saleHorse,
   userSocialMedia,
   userAuthTokens,
-  socialMedia
+  socialMedia,
+  countries
 } = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
@@ -50,7 +50,7 @@ export class UserService {
       var mailchimpRes = await mailchimp.getUserMailchimpData(output.email);
       if (mailchimpRes) {
         let isNewsLetter =
-          mailchimpRes == constants.MAILCHIMP_SUBSCRIBED_STATUS ? "y" : "n";
+          mailchimpRes == Constants.MAILCHIMP_SUBSCRIBED_STATUS ? "y" : "n";
         if (output.isNewsLetter != isNewsLetter) {
           await user.update(
             { isNewsLetter: isNewsLetter },
@@ -106,9 +106,10 @@ export class UserService {
     try {
       var output = "";
       var whereObj = {};
-      if (input.filter && input.filter.type) {
+      if (input.filter && input.filter.type != "all") {
         whereObj.name = input.filter.type;
       }
+
       // Get all user with pagination and filter
       output = await user.findAll({
         where: {
@@ -120,6 +121,10 @@ export class UserService {
             model: category,
             as: "categoryDetails",
             where: whereObj
+          },
+          {
+            model: countries,
+            as: "countryDetails"
           }
         ],
         attributes: {
@@ -138,7 +143,10 @@ export class UserService {
             ]
           ]
         },
-        order: [["id", "DESC"]],
+        order:
+          input.filter && input.filter.sort == "Closest"
+            ? [["distance_in_km", "ASC"]]
+            : [["id", "DESC"]],
         offset: parseInt(input.limit * (input.page - 1)),
         limit: parseInt(input.limit)
       });
@@ -158,12 +166,16 @@ export class UserService {
         ]
       });
 
+      var pagesCount = Math.ceil(count / input.limit);
+      var pages = isNaN(pagesCount) ? 0 : parseInt(pagesCount);
+
       // Return response
       return {
         records: output,
         totalCount: count,
         pageSize: input.limit,
-        currentPage: input.page
+        currentPage: input.page,
+        pages: pages
       };
     } catch (e) {
       return frontServiceErrorResponse(e);
@@ -417,8 +429,8 @@ export class UserService {
       if (input.isNewsLetter && isValidString(input.isNewsLetter)) {
         var mailchimpStatus =
           input.isNewsLetter.trim() == "y"
-            ? constants.MAILCHIMP_SUBSCRIBED_STATUS
-            : constants.MAILCHIMP_UNSUBSCRIBED_STATUS;
+            ? Constants.MAILCHIMP_SUBSCRIBED_STATUS
+            : Constants.MAILCHIMP_UNSUBSCRIBED_STATUS;
 
         let postData = {
           email_address: userExist.email,
