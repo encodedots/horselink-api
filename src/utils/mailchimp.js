@@ -38,7 +38,7 @@ exports.subscribedUnsubscribedmailchimpData = async function (postData, updateEx
 };
 
 /**
- * Summary: This function will update the user (Update list member)
+ * Summary: This function will update the user (Update list member) (Example: first name, last name and email)
  * @param {*} email 
  * @param {*} updatedData 
  * @returns 
@@ -105,8 +105,6 @@ exports.deleteUserMailchimpData = async function (email) {
                 process.env.MAILCHIMP_LIST,
                 email
             );
-
-            console.log("response", response)
             return true
         } catch (e) {
             // console.log("e", e)

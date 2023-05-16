@@ -2,7 +2,7 @@ import model from "../../models";
 import { uploadFile, deleteFileFromS3 } from "../../utils/files";
 import { hash } from "../../utils/hashing";
 import messages from "../../utils/message";
-import { isValidInteger, isValidString } from "../../utils/validation";
+import { isEmptyObject, isValidInteger, isValidString } from "../../utils/validation";
 import md5 from "md5";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
 import s3Routes from "../../utils/s3Routes";
@@ -447,10 +447,23 @@ export class UserService {
       if (output == null)
         return adminServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
+      let updatedData = {}
+      let mergeFields = {}
+
       if (userData.email != input.email) {
-        let updatedData = {
-          "email_address": input.email
-        }
+        updatedData.email_address = input.email
+      }
+      if (userData.firstName != input.firstName) {
+        mergeFields.FNAME = input.firstName
+      }
+      if (userData.lastName != input.lastName) {
+        mergeFields.LNAME = input.lastName
+      }
+      if (!isEmptyObject(mergeFields)) {
+        updatedData.merge_fields = mergeFields
+      }
+
+      if (!isEmptyObject(updatedData)) {
         await mailchimp.updateUserMailchimpData(userData.email, updatedData)
       }
 
