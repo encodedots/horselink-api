@@ -15,7 +15,9 @@ export class FaqController {
   async getFaqList(req, res) {
     try {
       // Call service to get all FAQs
-      var output = await _faqService.getFaqList();
+      var module = req.params.module;
+
+      var output = await _faqService.getFaqList(module);
 
       if (output["status"] == false)
         return frontSendErrorResponse(res, 201, output["error"]);

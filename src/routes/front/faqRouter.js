@@ -4,7 +4,7 @@ const router = express.Router();
 const faqController = new FaqController();
 
 // #region GET APIs
-router.get("/getFaqList", faqController.getFaqList);
+router.get("/getFaqList/:module", faqController.getFaqList);
 // #endregion GET APIs
 
 export default router;
