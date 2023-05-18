@@ -9,24 +9,12 @@ const usersController = new UsersController();
 //#region GET APIs
 router.get("/getUser/:id", frontAuthenticateJWT, usersController.getUser);
 
-router.get(
-  "/getUserInfo/:userId",
-  frontAuthenticateJWT,
-  usersController.getUserInfo
-);
+router.get("/getUserInfo/:userId", usersController.getUserInfo);
 router.get("/getUserList", usersController.getUserList);
 
-router.get(
-  "/getSponsorDetails/:id",
-  frontAuthenticateJWT,
-  usersController.getSponsorDetails
-);
+router.get("/getSponsorDetails/:id", usersController.getSponsorDetails);
 
-router.get(
-  "/getSaleHorseDetails/:id",
-  frontAuthenticateJWT,
-  usersController.getSaleHorseDetails
-);
+router.get("/getSaleHorseDetails/:id", usersController.getSaleHorseDetails);
 
 router.get(
   "/getUserSocialMediaDetails/:id",
@@ -34,11 +22,9 @@ router.get(
   usersController.getUserSocialMediaDetails
 );
 
-router.get(
-  "/getTitles/:userId",
-  frontAuthenticateJWT,
-  usersController.getTitles
-);
+router.get("/getTitles/:userId", usersController.getTitles);
+
+router.get("/getUserBySlug/:userNameSlug", usersController.getUserBySlug);
 //#endregion GET APIs
 
 //#region POST APIs

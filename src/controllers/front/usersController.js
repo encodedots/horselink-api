@@ -227,6 +227,37 @@ export class UsersController {
       return frontSendErrorResponse(res, 201, e);
     }
   }
+
+  /**
+   * Summary: This method returns specific user's detail based on slug.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getUserBySlug(req, res) {
+    var input = req.params.userNameSlug;
+
+    try {
+      // Validate input data
+      if (input == null || !isValidString(input))
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get specific user based in input
+      var output = await _userService.getUserBySlug(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
   //#endregion GET APIs
 
   //#region POST APIs

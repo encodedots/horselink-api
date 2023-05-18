@@ -24,12 +24,13 @@ export default {
 
   /* TITLE */
 
-  USER_INFO_TITLE: "user-info",
-  HORSE_FOR_SALE_TITLE: "horse-for-sale",
+  USER_INFO_TITLE: "userinfo",
+  HORSE_FOR_SALE_TITLE: "horseforsale",
   SPONSORS_TITLE: "sponsors",
   CONTACTS_TITLE: "contacts",
   STALLIONS_TITLE: "stallions",
-  SOCIAL_MEDIA_TITLE: "social-media",
+  SOCIAL_MEDIA_TITLE: "socialmedia",
+  SHOP_HORSE_TITLE: "shophorseproducts",
 
   /* END TITLE */
 
