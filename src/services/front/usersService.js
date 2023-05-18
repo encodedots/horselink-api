@@ -220,7 +220,7 @@ export class UserService {
       var output = "";
       // Get a specific user details based in id
       output = await saleHorse.findAll({
-        where: { userId: input }
+        where: { userId: input, deletedAt: null }
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -314,17 +314,68 @@ export class UserService {
         ]
       });
 
-      titleArray.push({
-        [Constants.USER_INFO_TITLE]: userInfoTitle ? userInfoTitle?.title : "",
-        [Constants.HORSE_FOR_SALE_TITLE]: horseSaleTitle
-          ? horseSaleTitle?.title
-          : "",
-        [Constants.SPONSORS_TITLE]: sponsorTitle ? sponsorTitle?.title : "",
-        [Constants.SOCIAL_MEDIA_TITLE]: socialMediaDetails,
-        [Constants.CONTACTS_TITLE]: contacts
-      });
+      titleArray.push(
+        {
+          slug: Constants.USER_INFO_TITLE,
+          value: userInfoTitle ? userInfoTitle?.title : ""
+        },
+        {
+          slug: Constants.HORSE_FOR_SALE_TITLE,
+          value: horseSaleTitle ? horseSaleTitle?.title : ""
+        },
+        {
+          slug: Constants.STALLIONS_TITLE,
+          value: Constants.STALLIONS_TITLE
+        },
+        {
+          slug: Constants.SPONSORS_TITLE,
+          value: sponsorTitle ? sponsorTitle?.title : ""
+        },
+        {
+          slug: Constants.SHOP_HORSE_TITLE,
+          value: Constants.SHOP_HORSE_TITLE
+        },
+        {
+          slug: Constants.SOCIAL_MEDIA_TITLE,
+          value: socialMediaDetails ? socialMediaDetails : []
+        }
+      );
+
       // Return response
       return titleArray;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get specific user details based on slug and return it
+   * @param {*} input
+   * @returns
+   */
+  async getUserBySlug(input) {
+    try {
+      // Validate input data
+      if (input == null || !isValidString(input))
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+
+      // Get a specific user details based in id
+      output = await user.findOne({
+        where: { userNameSlug: input },
+        include: [
+          {
+            model: countries,
+            as: "countryDetails"
+          }
+        ]
+      });
+
+      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      // Return response
+      return output;
     } catch (e) {
       return frontServiceErrorResponse(e);
     }
