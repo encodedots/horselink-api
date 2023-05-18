@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 import model from "../models";
-const { adminUser } = model;
+const { userAuthTokens } = model;
 
 /**
  * Summary: This function check for the authentication of user every time any API call received in server this function will be call first and check for token which is passed in heade
@@ -17,22 +17,38 @@ export const authenticateJWT = async (req, res, next) => {
   };
 
   if (authHeader) {
-    const token = await authHeader.split(" ")[1];
-    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err) => {
+    const token = authHeader.split(" ")[1];
+
+    jwt.verify(token, process.env.JWT_SECRET_KEY, async (err, userData) => {
       if (err) {
         // Change token status when user not authorized
+        await userAuthTokens.update(
+          { status: "n" },
+          { where: { token: token } }
+        );
+
         messages.authMessage =
           "Your token is expired, Please login to continue";
         return res.status(403).send(messages);
       } else {
-        // if (userData && userData.email) {
-        var tokenDetail = await adminUser.findOne({
-          where: { token: token, isDeleted: "n", isActive: "y" }
-        });
-        if (!tokenDetail) {
-          return res.status(401).send(messages);
+        if (userData && userData.email) {
+          var tokenDetail = await userAuthTokens.findOne({
+            where: { token: token, email: userData.email, status: "y" }
+          });
+          if (!tokenDetail) {
+            // Change token status when user not authorized
+            await userAuthTokens.update(
+              { status: "n" },
+              { where: { token: token } }
+            );
+
+            return res.status(401).send(messages);
+          } else {
+            req.user = userData;
+            next();
+          }
         } else {
-          req.user = tokenDetail;
+          req.user = userData;
           next();
         }
       }

@@ -4,7 +4,7 @@ import model from '../../models';
 import { isValidString } from "../../utils/validation";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
 
-const { adminUser } = model;
+const { adminUser, userAuthTokens } = model;
 
 export class AdminService {
 
@@ -44,10 +44,17 @@ export class AdminService {
             // Create new authentication token
             output.token = await adminUserDetails.generateJWT();
 
-            await adminUser.update({
-                token: output.token,
-                lastLoginAt: new Date()
-            }, { where: { id: adminUserDetails.dataValues.id } });
+            // await adminUser.update({
+            //     token: output.token,
+            //     lastLoginAt: new Date()
+            // }, { where: { id: adminUserDetails.dataValues.id } });
+
+            var newToken = {
+                email: adminUserDetails.email,
+                token: output.token
+            };
+
+            await userAuthTokens.create(newToken);
 
             if (output == null)
                 return adminServiceErrorResponse(messages.SOMETHING_WENT_WRONG);

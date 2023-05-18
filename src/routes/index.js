@@ -9,6 +9,7 @@ import faqRouter from "./admin/faqRouter";
 import sponsorRouter from "./admin/sponsorRouter";
 import saleHorseRouter from "./admin/saleHorseRouter";
 import userSocialMediaRouter from "./admin/userSocialMediaRouter";
+import horseListRouter from "./admin/horseListRouter";
 //#endregion Admin Routes
 
 //#region Front Routes
@@ -34,6 +35,7 @@ export default (app) => {
   app.use("/api/v1/faq", faqRouter);
   app.use("/api/v1/sponsor", sponsorRouter);
   app.use("/api/v1/saleHorse", saleHorseRouter);
+  app.use("/api/v1/horseList", horseListRouter);
   app.use("/api/v1/userSocialMedia", userSocialMediaRouter);
   //#endregion Admin Routes
 

@@ -9,5 +9,6 @@ export default {
   USER_BACKGROUND_CROPPED_IMAGE: "user/background/croppedFiles/",
   SPONSOR_ORIGINAL_IMAGE: "user/sponsor/originalFiles/",
   SPONSOR_CROPPED_IMAGE: "user/sponsor/croppedFiles/",
-  SALE_HORSE_VIDEO: "user/saleHorse/"
+  SALE_HORSE_VIDEO: "user/saleHorse/",
+  HORSE_LIST_VIDEO: "user/horseList/"
 };

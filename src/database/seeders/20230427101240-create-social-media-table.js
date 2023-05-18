@@ -14,11 +14,12 @@ module.exports = {
      * }], {});
      */
     await socialMedia.bulkCreate([
-      { name: "Instagram", slug: "instagram", icon: "https://www.google.com/" },
-      { name: "Facebook", slug: "facebook", icon: "https://www.google.com/" },
-      { name: "Whatsapp", slug: "whatsapp", icon: "https://www.google.com/" },
-      { name: "Twitter", slug: "twitter", icon: "https://www.google.com/" },
-      { name: "LinkedIn", slug: "linkedin", icon: "https://www.google.com/" }
+      { name: "Instagram", slug: "instagram", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/Instagram.svg" },
+      { name: "Facebook", slug: "facebook", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/Facebook.svg" },
+      { name: "Whatsapp", slug: "whatsapp", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/whatsapp.png" },
+      { name: "Twitter", slug: "twitter", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/twitter.png" },
+      { name: "LinkedIn", slug: "linkedin", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/linkedin.png" },
+      { name: "Horse-Link", slug: "linkedin", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/horselink-round.svg" }
     ]);
   },
 
