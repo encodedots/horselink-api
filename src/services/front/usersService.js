@@ -39,7 +39,7 @@ export class UserService {
 
       var output = "";
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await user.findOne({
         where: { webId: input }
       });
@@ -80,7 +80,7 @@ export class UserService {
 
       var output = "";
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await userInfo.findOne({
         where: { userId: input },
         include: [
@@ -132,12 +132,12 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  Constants.LATITUDE +
-                  `)) * COS(RADIANS(longitude - ` +
-                  Constants.LONGITUDE +
-                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  Constants.LATITUDE +
-                  `)))))`
+                Constants.LATITUDE +
+                `)) * COS(RADIANS(longitude - ` +
+                Constants.LONGITUDE +
+                `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                Constants.LATITUDE +
+                `)))))`
               ),
               "distance_in_km"
             ]
@@ -218,7 +218,7 @@ export class UserService {
         return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
 
       var output = "";
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await saleHorse.findAll({
         where: { userId: input }
       });
@@ -281,7 +281,7 @@ export class UserService {
       var socialMediaDetails = [];
       var contacts = false;
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await user.findOne({
         where: { id: input }
       });
@@ -343,7 +343,7 @@ export class UserService {
 
       var output = "";
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       var userExist = await user.findOne({
         where: { webId: webId, isActive: "y", deletedAt: null }
       });
@@ -403,8 +403,8 @@ export class UserService {
           emailTemplateReplaceData["name"] = input.userName
             ? input.userName
             : userExist.userName
-            ? userExist.userName
-            : "There ";
+              ? userExist.userName
+              : "There ";
           emailTemplateReplaceData["verifyEmailUrl"] =
             process.env.SITE_REDIRECT_URL +
             "/verify-user-email?email=" +
@@ -531,7 +531,7 @@ export class UserService {
 
       var output = "";
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       var userExist = await user.findOne({
         where: { webId: webId, isActive: "y", deletedAt: null }
       });

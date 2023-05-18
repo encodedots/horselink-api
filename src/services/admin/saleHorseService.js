@@ -160,7 +160,7 @@ export class SaleHorseService {
         return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
       var output = "";
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await saleHorse.findAll({
         where: { userId: input },
         order: [["order", "ASC"]]

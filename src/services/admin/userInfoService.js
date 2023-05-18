@@ -17,7 +17,7 @@ export class UserInfoService {
         return adminServiceErrorResponse(messages.INVALID_PARAMETERS);
 
       var output = "";
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await userInfo.findOne({
         where: { userId: input },
         include: [

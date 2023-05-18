@@ -28,7 +28,7 @@ export class UserService {
 
       var output = "";
 
-      // Get a specific user details based in id
+      // Get a specific user details based on id
       output = await user.findOne({
         where: { id: input }
       });
