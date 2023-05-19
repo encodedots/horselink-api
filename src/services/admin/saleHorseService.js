@@ -1,6 +1,10 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-import { isEmptyObject, isValidInteger, isValidString } from "../../utils/validation";
+import {
+  isEmptyObject,
+  isValidInteger,
+  isValidString
+} from "../../utils/validation";
 import Constants from "../../utils/constants";
 import s3Routes from "../../utils/s3Routes";
 import { uploadFile, deleteFileFromS3 } from "../../utils/files";
@@ -26,11 +30,11 @@ export class SaleHorseService {
       // Get video for existing records
       var getOldSaleHorseData = await saleHorse.findAll({
         where: {
-          userId: id, fileName: { [Op.ne]: null }
+          userId: id,
+          fileName: { [Op.ne]: null }
         },
         attributes: ["fileName"]
       });
-
 
       // Delete existing records
       await saleHorse.destroy({ where: { userId: id } });
@@ -38,76 +42,91 @@ export class SaleHorseService {
       if (input.details && input.details.length > 0) {
         let horseData = input.details;
 
-        await Promise.all(horseData.map(async (element, i) => {
-          var data = JSON.parse(element.horseSaleData);
+        await Promise.all(
+          horseData.map(async (element, i) => {
+            var data = JSON.parse(element.horseSaleData);
 
-          // New object for horse sale details
-          if ((data.description != "" && data.category != "" && data.link != "") || input.titleLink) {
-            let newSaleHorse = {
-              userId: isValidInteger(id) ? id : 0,
-              title: isValidString(input.title) ? input.title.trim() : "",
-              titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
-              description: isValidString(data.description) ? data.description.trim() : "",
-              horseCategoryId: isValidInteger(data.category) ? data.category : null,
-              link: isValidString(data.link) ? data.link.trim() : "",
-              type: isValidString(data.type) && isValidString(data.description) ? data.type.trim() : "",
-              order: i + 1
-            };
+            // New object for horse sale details
+            if (
+              (data.description != "" &&
+                data.category != "" &&
+                data.link != "") ||
+              input.titleLink
+            ) {
+              let newSaleHorse = {
+                userId: isValidInteger(id) ? id : 0,
+                title: isValidString(input.title) ? input.title.trim() : "",
+                titleLink: isValidString(input.titleLink)
+                  ? input.titleLink.trim()
+                  : "",
+                description: isValidString(data.description)
+                  ? data.description.trim()
+                  : "",
+                horseCategoryId: isValidInteger(data.category)
+                  ? data.category
+                  : null,
+                link: isValidString(data.link) ? data.link.trim() : "",
+                type:
+                  isValidString(data.type) && isValidString(data.description)
+                    ? data.type.trim()
+                    : "",
+                order: i + 1
+              };
 
-            if (data.type == 'link') {
-              newSaleHorse.youtubeLink = data.youtubeLink
-            } else if (data.type == 'embed') {
-              newSaleHorse.youtubeEmbed = data.youtubeEmbed
-            } else if (data.type == 'device') {
-
-
-              // Upload from device (video details)
-              if (
-                data.originalFile &&
-                data.originalFile != null &&
-                !isEmptyObject(data.originalFile) &&
-                data.originalFile != ""
-              ) {
-                if (data.originalFile.length > 0) {
-                  var split_data = data.originalFile.split(Constants.AWSPATH);
-                  newSaleHorse.fileName = split_data[1];
-                  newSaleHorse.fileUrl = data.originalFile;
-                }
-              } else {
+              if (data.type == "link") {
+                newSaleHorse.youtubeLink = data.youtubeLink;
+              } else if (data.type == "embed") {
+                newSaleHorse.youtubeEmbed = data.youtubeEmbed;
+              } else if (data.type == "device") {
+                // Upload from device (video details)
                 if (
+                  data.originalFile &&
                   data.originalFile != null &&
-                  data.originalFile != undefined &&
-                  isEmptyObject(data.originalFile)
+                  !isEmptyObject(data.originalFile) &&
+                  data.originalFile != ""
                 ) {
+                  if (data.originalFile.length > 0) {
+                    var split_data = data.originalFile.split(Constants.AWSPATH);
+                    newSaleHorse.fileName = split_data[1];
+                    newSaleHorse.fileUrl = data.originalFile;
+                  }
+                } else {
                   if (
-                    inputFiles.details &&
-                    inputFiles.details[videoCount] &&
-                    inputFiles.details[videoCount].originalFile &&
-                    inputFiles.details[videoCount].originalFile != undefined &&
-                    inputFiles.details[videoCount].originalFile != null
+                    data.originalFile != null &&
+                    data.originalFile != undefined &&
+                    isEmptyObject(data.originalFile)
                   ) {
-                    var fileInputData = {
-                      file: inputFiles.details[videoCount].originalFile,
-                      filePath: s3Routes.SALE_HORSE_VIDEO + id + "/"
-                    };
-                    videoCount = videoCount + 1;
-                    var videoFile = await uploadVideo(fileInputData);
-                    newSaleHorse.fileName = videoFile.fileName;
-                    newSaleHorse.fileUrl = videoFile.fileUrl;
+                    if (
+                      inputFiles.details &&
+                      inputFiles.details[videoCount] &&
+                      inputFiles.details[videoCount].originalFile &&
+                      inputFiles.details[videoCount].originalFile !=
+                        undefined &&
+                      inputFiles.details[videoCount].originalFile != null
+                    ) {
+                      var fileInputData = {
+                        file: inputFiles.details[videoCount].originalFile,
+                        filePath: s3Routes.SALE_HORSE_VIDEO + id + "/"
+                      };
+                      videoCount = videoCount + 1;
+                      var videoFile = await uploadVideo(fileInputData);
+                      newSaleHorse.fileName = videoFile.fileName;
+                      newSaleHorse.fileUrl = videoFile.fileUrl;
+                    }
                   }
                 }
               }
-
+              output = await saleHorse.create(newSaleHorse);
             }
-            output = await saleHorse.create(newSaleHorse);
-          }
-        }))
-
+          })
+        );
       } else {
         let newSaleHorse = {
           userId: isValidInteger(id) ? id : 0,
           title: isValidString(input.title) ? input.title.trim() : "",
-          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          titleLink: isValidString(input.titleLink)
+            ? input.titleLink.trim()
+            : "",
           order: 1
         };
         output = await saleHorse.create(newSaleHorse);
@@ -143,7 +162,6 @@ export class SaleHorseService {
       // Return response
       return gethorseSaleData;
     } catch (e) {
-      console.log("e", e)
       return adminServiceErrorResponse(e);
     }
   }
@@ -175,7 +193,6 @@ export class SaleHorseService {
     }
   }
 }
-
 
 var uploadVideo = (fileInput) => {
   return new Promise(async (resolve, reject) => {

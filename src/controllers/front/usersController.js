@@ -229,6 +229,68 @@ export class UsersController {
   }
 
   /**
+   * Summary: This method returns horse list based on user id
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getHorseList(req, res) {
+    var input = req.params.id;
+
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get horse sale based on id
+      var output = await _userService.getHorseList(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This method returns horse product list based on user id
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async getHorseProductList(req, res) {
+    var input = req.params.id;
+
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+
+      // Call service to get horse sale based on id
+      var output = await _userService.getHorseProductList(input);
+      if (output && output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      // Return response data
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        Messages.RETRIEVE_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
    * Summary: This method returns specific user's detail based on slug.
    * @param {*} req
    * @param {*} res

@@ -19,7 +19,10 @@ const {
   userSocialMedia,
   userAuthTokens,
   socialMedia,
-  countries
+  countries,
+  horseList,
+  horseProduct,
+  colorTemplate
 } = model;
 const { Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
@@ -132,12 +135,12 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                Constants.LATITUDE +
-                `)) * COS(RADIANS(longitude - ` +
-                Constants.LONGITUDE +
-                `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                Constants.LATITUDE +
-                `)))))`
+                  Constants.LATITUDE +
+                  `)) * COS(RADIANS(longitude - ` +
+                  Constants.LONGITUDE +
+                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                  Constants.LATITUDE +
+                  `)))))`
               ),
               "distance_in_km"
             ]
@@ -278,8 +281,14 @@ export class UserService {
       var userInfoTitle = "";
       var horseSaleTitle = "";
       var sponsorTitle = "";
+      var horseListTitle = "";
       var socialMediaDetails = [];
       var contacts = false;
+      var horseSalelink = "",
+        horselistlink = "",
+        sponsorLink = "",
+        horseProductLink = "",
+        horseProductListTitle = "";
 
       // Get a specific user details based on id
       output = await user.findOne({
@@ -296,14 +305,55 @@ export class UserService {
         where: { userId: input }
       });
 
+      // Get horse for sale details
       horseSaleTitle = await saleHorse.findOne({
         where: { userId: input }
       });
 
+      if (
+        horseSaleTitle?.description == "" ||
+        (horseSaleTitle?.description == null &&
+          horseSaleTitle?.titleLink != null)
+      ) {
+        horseSalelink = horseSaleTitle?.titleLink;
+      }
+
+      // Get horse list details
+      horseListTitle = await horseList.findOne({
+        where: { userId: input }
+      });
+
+      if (
+        horseListTitle?.description == "" ||
+        (horseListTitle?.description == null &&
+          horseListTitle?.titleLink != null)
+      ) {
+        horselistlink = horseListTitle?.titleLink;
+      }
+
+      // Get sponsor details
       sponsorTitle = await sponsors.findOne({
         where: { userId: input }
       });
 
+      if (
+        sponsorTitle?.name == "" ||
+        (sponsorTitle?.name == null && sponsorTitle?.titleLink != null)
+      ) {
+        sponsorLink = sponsorTitle?.titleLink;
+      }
+
+      horseProductListTitle = await horseProduct.findOne({
+        where: { userId: input }
+      });
+
+      if (
+        horseProductListTitle?.titleLink != null &&
+        horseProductListTitle?.titleLink != ""
+      ) {
+        horseProductLink = horseProductListTitle?.titleLink;
+      }
+      // Get social media details
       socialMediaDetails = await userSocialMedia.findAll({
         where: { userId: input },
         include: [
@@ -317,23 +367,28 @@ export class UserService {
       titleArray.push(
         {
           slug: Constants.USER_INFO_TITLE,
-          value: userInfoTitle ? userInfoTitle?.title : ""
+          value: userInfoTitle ? userInfoTitle?.title : "",
+          link: ""
         },
         {
           slug: Constants.HORSE_FOR_SALE_TITLE,
-          value: horseSaleTitle ? horseSaleTitle?.title : ""
+          value: horseSaleTitle ? horseSaleTitle?.title : "",
+          link: horseSalelink
         },
         {
           slug: Constants.STALLIONS_TITLE,
-          value: Constants.STALLIONS_TITLE
+          value: horseListTitle ? horseListTitle?.title : "",
+          link: horselistlink
         },
         {
           slug: Constants.SPONSORS_TITLE,
-          value: sponsorTitle ? sponsorTitle?.title : ""
+          value: sponsorTitle ? sponsorTitle?.title : "",
+          link: sponsorLink
         },
         {
           slug: Constants.SHOP_HORSE_TITLE,
-          value: Constants.SHOP_HORSE_TITLE
+          value: horseProductListTitle ? horseProductListTitle?.title : "",
+          link: horseProductLink
         },
         {
           slug: Constants.SOCIAL_MEDIA_TITLE,
@@ -368,8 +423,64 @@ export class UserService {
           {
             model: countries,
             as: "countryDetails"
+          },
+          {
+            model: colorTemplate,
+            as: "colorTemplateDetails"
           }
         ]
+      });
+
+      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      // Return response
+      return output;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method gets horse list detais based on userid and return it
+   * @param {*} input
+   * @returns
+   */
+  async getHorseList(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+      // Get a specific horse list details based in id
+      output = await horseList.findAll({
+        where: { userId: input, deletedAt: null }
+      });
+
+      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+
+      // Return response
+      return output;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method gets horse product list detais based on userid and return it
+   * @param {*} input
+   * @returns
+   */
+  async getHorseProductList(input) {
+    try {
+      // Validate input data
+      if (!isValidInteger(input) || input < 1)
+        return frontServiceErrorResponse(messages.INVALID_PARAMETERS);
+
+      var output = "";
+      // Get a specific horse list details based in id
+      output = await horseProduct.findAll({
+        where: { userId: input, deletedAt: null }
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -454,8 +565,8 @@ export class UserService {
           emailTemplateReplaceData["name"] = input.userName
             ? input.userName
             : userExist.userName
-              ? userExist.userName
-              : "There ";
+            ? userExist.userName
+            : "There ";
           emailTemplateReplaceData["verifyEmailUrl"] =
             process.env.SITE_REDIRECT_URL +
             "/verify-user-email?email=" +

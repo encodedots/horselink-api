@@ -127,6 +127,18 @@ export class SaleHorseService {
       var pagesCount = Math.ceil(count / input.limit);
       var pages = isNaN(pagesCount) ? 0 : parseInt(pagesCount);
 
+      if (output && output.length > 0) {
+        await Promise.all(
+          output.map(async (element, i) => {
+            var data = await saleHorse.findAll({
+              where: { userId: element.userId }
+            });
+            if (data && data.length > 0) {
+              element.dataValues.count = data.length;
+            }
+          })
+        );
+      }
       // Return response
       return {
         records: output,
