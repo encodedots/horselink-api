@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 </head>
 
+
 <body style="margin: 0; padding: 0; box-sizing: border-box;">
     <div class="email-tavle" style="margin:30px auto 30px;">
         <table width="100%" border="0" align="center" cellpadding="0" cellspacing="0" style="background-color:#FFF;">
@@ -29,44 +30,26 @@
                             style="background: #fbfbfb; padding: 40px 20px 0 20px;">
                             <tr class="banner-min">
                                 <td
-                                    style="width: 50%; margin: 0; padding: 0 0 40px 0; vertical-align: top; text-align: center;">
+                                    style="width: 50%; margin: 0 0 0 0; padding: 0 0 40px 0; text-align: center; vertical-align: top;">
                                     <h2
                                         style="margin: 0; padding: 0; color: #000; font-weight: 500; font-family: Arial; line-height: normal;">
-                                        <%= staticContent.hello %>
+                                        Hello
                                             <%= replaceEmailTemplateData.userName %>!
                                     </h2>
                                     <h3
-                                        style="font-family: Arial; font-weight: 500; margin: 7px 0 0 0; padding: 0; color: #000; line-height: normal; display: block;width: 100%;">
-                                        <%= staticContent.description %>
+                                        style="font-family: Arial; font-weight: 500; margin: 7px 0 0 0; padding: 0; color: #000; line-height: normal;">
+                                        Thank you for signing up
                                     </h3>
-                                </td>
-                            </tr>
-                        </table>
-                        <table class="col-600" width="600" border="0" align="center" cellpadding="0" cellspacing="0"
-                            style="background-color:#fff; border-top: 1px solid #ddd;">
-                            <tr>
-                                <td>
-                                    <table border="0" align="center" cellpadding="0" cellspacing="0"
-                                        style="width: 100%; max-width: 100%; margin:0; padding:30px 20px;">
-                                        <tr>
-                                            <td>
-                                                <span
-                                                    style="color: #999592; width: 100%; text-align:left; display: inline-block; margin:0; padding:0 0 20px 0; font-size: 14px; line-height: 22px; font-family: Arial;">
-                                                    Solltest du diesen Account mit deiner Emailadresse nicht erstellt
-                                                    haben, melde dich gerne <a style="color: #FF7750;"
-                                                        href="<%= linkReplaceData.contactUrl %>">hier</a> bei uns.
-                                                </span>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>
-                                                <span
-                                                    style="color: #999592; text-align: left; display: inline-block; margin: 0; padding:0; font-size: 14px; line-height: 22px; font-family: Arial;">
-                                                    Dein Horsemapp-Team
-                                                </span>
-                                            </td>
-                                        </tr>
-                                    </table>
+                                    <h3
+                                        style="font-family: Arial; font-weight: 500; margin: 7px 0 0 0; padding: 0; color: #000; line-height: normal; display: block;width: 100%;">
+                                        Please click the following button to verify your account
+                                    </h3>
+                                    <a href="<%= replaceEmailTemplateData.verifyEmailUrl %>" class="btn" target="_blank"
+                                        style="cursor: pointer; height: 34px; line-height: 34px; margin: 20px 0 0 0; padding: 0 24px; font-weight: 500; font-size: 14px; letter-spacing: -0.01em; background: #6667AB !important; color: #fff !important; border: 1px solid #6667AB !important; box-shadow: none !important; border-radius: 30px; display: inline-block; text-decoration: initial;">
+                                        <span>
+                                        Verify account
+                                        </span>
+                                    </a>
                                 </td>
                             </tr>
                         </table>
@@ -88,6 +71,7 @@
                                 </td>
                             </tr>
                         </table>
+
                     </td>
                 </tr>
             </tbody>

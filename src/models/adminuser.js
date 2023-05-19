@@ -2,7 +2,7 @@
 const { Model } = require('sequelize');
 import Random from '../utils/random'
 import { hash } from "../utils/hashing";
-
+const jwt = require('jsonwebtoken');
 module.exports = (sequelize, DataTypes) => {
   class adminUser extends Model {
     /**
@@ -38,8 +38,15 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
 
-    password: DataTypes.STRING,
-
+    password: {
+      type: DataTypes.STRING,
+      validate: {
+        notEmpty: {
+          args: true,
+          msg: 'Please enter your password',
+        }
+    }
+    },
     resetPasswordToken: DataTypes.STRING,
 
     isActive: {
@@ -51,8 +58,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.ENUM('y', 'n'),
       defaultValue: 'n',
     },
-
-    last_login_at: DataTypes.DATE,
+    token:{
+      type: DataTypes.STRING
+    },
+    lastLoginAt: DataTypes.DATE,
 
     actionIpAddress: DataTypes.STRING
   }, {
@@ -71,6 +80,18 @@ module.exports = (sequelize, DataTypes) => {
 
   //   return plainTextToken;
   // };
+
+  adminUser.prototype.generateJWT = async function generateJWT() {
+    const today = new Date();
+    const expirationDate = new Date(today);
+    expirationDate.setDate(today.getDate() + 60);
+    let payload = {
+        email: this.email
+    };
+    return jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+      expiresIn: parseInt(expirationDate.getTime() / 1000, 10)
+    });
+  };
 
   return adminUser;
 };

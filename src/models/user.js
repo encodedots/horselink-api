@@ -1,5 +1,5 @@
-'use strict';
-const { Model } = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 
 module.exports = (sequelize, DataTypes) => {
   class user extends Model {
@@ -10,204 +10,207 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
-      // user.hasOne(models.businesses);
+      user.belongsTo(models.category, {
+        foreignKey: "categoryId",
+        as: "categoryDetails",
+        onDelete: "CASCADE"
+      });
 
-      // user.hasMany(models.userSportType);
+      user.belongsTo(models.colorTemplate, {
+        foreignKey: "colorTemplateId",
+        as: "colorTemplateDetails",
+        onDelete: "CASCADE"
+      });
 
-      // user.hasMany(models.userPostLikes);
-
-      // user.hasMany(models.userFollow, {
-      //   foreignKey: 'followedUserId',
-      //   as: 'followedUserDetails',
-      //   onDelete: 'SET NULL',
-      // });
-
-      // user.hasMany(models.userDocuments, {
-      //   foreignKey: 'userId',
-      //   as: 'userDocuments',
-      //   onDelete: 'SET NULL',
-      // });
-
-      // user.hasMany(models.notifications, {
-      //   foreignKey: 'userId',
-      //   as: 'notifications',
-      //   onDelete: 'CASCADE',
-      // });
+      user.belongsTo(models.countries, {
+        foreignKey: "country",
+        as: "countryDetails",
+        onDelete: "CASCADE"
+      });
     }
   }
-  user.init({
-    webId: {
-      type: DataTypes.STRING,
-    },
+  user.init(
+    {
+      webId: {
+        type: DataTypes.STRING
+      },
 
-    firstName: {
-      type: DataTypes.STRING,
-    },
+      firstName: {
+        type: DataTypes.STRING
+      },
 
-    lastName: {
-      type: DataTypes.STRING,
-    },
+      lastName: {
+        type: DataTypes.STRING
+      },
 
-    userName: {
-      type: DataTypes.STRING,
-    },
+      userName: {
+        type: DataTypes.STRING
+      },
 
-    userNameSlug: {
-      type: DataTypes.STRING,
-    },
+      userNameSlug: {
+        type: DataTypes.STRING
+      },
 
-    email: {
-      type: DataTypes.STRING,
-      unique: {
-        args: true,
-        msg: 'Email must be unique'
-      }
-    },
+      email: {
+        type: DataTypes.STRING,
+        unique: {
+          args: true,
+          msg: "Email must be unique"
+        }
+      },
 
-    password: {
-      type: DataTypes.STRING,
-    },
+      password: {
+        type: DataTypes.STRING
+      },
 
-    description: {
-      type: DataTypes.STRING,
-    },
+      description: {
+        type: DataTypes.STRING
+      },
 
-    memberNumber: {
-      type: DataTypes.STRING,
-    },
+      categoryId: {
+        type: DataTypes.INTEGER
+      },
+      latitude: {
+        type: DataTypes.STRING
+      },
+      longitude: {
+        type: DataTypes.STRING
+      },
+      originalFileName: {
+        type: DataTypes.STRING
+      },
 
-    originalFileName: {
-      type: DataTypes.STRING,
-    },
+      originalFileUrl: {
+        type: DataTypes.STRING
+      },
 
-    originalFileUrl: {
-      type: DataTypes.STRING,
-    },
+      croppedFileName: {
+        type: DataTypes.STRING
+      },
 
-    croppedFileName: {
-      type: DataTypes.STRING,
-    },
+      croppedFileUrl: {
+        type: DataTypes.STRING
+      },
+      backgroundOriginalFileName: {
+        type: DataTypes.STRING
+      },
+      backgroundOriginalFileUrl: {
+        type: DataTypes.STRING
+      },
+      backgroundCroppedFileName: {
+        type: DataTypes.STRING
+      },
+      backgroundCroppedFileUrl: {
+        type: DataTypes.STRING
+      },
+      street: {
+        type: DataTypes.STRING
+      },
 
-    croppedFileUrl: {
-      type: DataTypes.STRING,
-    },
+      town: {
+        type: DataTypes.STRING
+      },
 
-    street: {
-      type: DataTypes.STRING,
-    },
+      zipCode: {
+        type: DataTypes.INTEGER
+      },
 
-    town: {
-      type: DataTypes.STRING,
-    },
+      state: {
+        type: DataTypes.STRING
+      },
 
-    zipCode: {
-      type: DataTypes.STRING,
-    },
+      country: {
+        type: DataTypes.INTEGER
+      },
 
-    state: {
-      type: DataTypes.STRING,
-    },
+      telephone: {
+        type: DataTypes.BIGINT
+      },
 
-    country: {
-      type: DataTypes.STRING,
-    },
+      mobileNumber: {
+        type: DataTypes.STRING
+      },
+      tempEmail: {
+        type: DataTypes.STRING
+      },
+      isNewsLetter: {
+        type: DataTypes.ENUM("y", "n"),
+        defaultValue: "n"
+      },
 
-    telephone: {
-      type: DataTypes.STRING,
-    },
+      instagram: {
+        type: DataTypes.STRING
+      },
 
-    mobileNumber: {
-      type: DataTypes.STRING,
-    },
+      facebook: {
+        type: DataTypes.STRING
+      },
 
-    isNewsLetter: {
-      type: DataTypes.ENUM('y', 'n'),
-      defaultValue: 'n',
-    },
+      youtube: {
+        type: DataTypes.STRING
+      },
 
-    allowMessage: {
-      type: DataTypes.ENUM('y', 'n'),
-      defaultValue: 'n',
-    },
+      tiktok: {
+        type: DataTypes.STRING
+      },
 
-    instagram: {
-      type: DataTypes.STRING,
-    },
+      website: {
+        type: DataTypes.STRING
+      },
+      planName: {
+        type: DataTypes.STRING
+      },
+      colorTemplateId: {
+        type: DataTypes.INTEGER
+      },
+      resetPasswordToken: {
+        type: DataTypes.STRING
+      },
+      signUpToken: {
+        type: DataTypes.STRING
+      },
 
-    facebook: {
-      type: DataTypes.STRING,
-    },
+      isActive: {
+        type: DataTypes.ENUM("y", "n"),
+        defaultValue: "y"
+      },
+      status: {
+        type: DataTypes.ENUM("y", "n"),
+        defaultValue: "n"
+      },
+      isDeleted: {
+        type: DataTypes.ENUM("y", "n"),
+        defaultValue: "n"
+      },
 
-    youtube: {
-      type: DataTypes.STRING,
-    },
+      registerDate: {
+        type: DataTypes.DATE
+      },
 
-    tiktok: {
-      type: DataTypes.STRING,
-    },
+      registerIP: {
+        type: DataTypes.STRING
+      },
 
-    website: {
-      type: DataTypes.STRING,
-    },
+      doiDate: {
+        type: DataTypes.DATE
+      },
 
-    resetPasswordToken: {
-      type: DataTypes.STRING
-    },
+      doiIP: {
+        type: DataTypes.STRING
+      },
 
-    emailVerificationCode: {
-      type: DataTypes.STRING,
-    },
+      // registerType: {
+      //   type: DataTypes.ENUM('private', 'business'),
+      //   defaultValue: 'private',
+      // },
 
-    passwordVerificationCode: {
-      type: DataTypes.STRING,
+      actionIpAddress: DataTypes.STRING
     },
-
-    signUpToken: {
-      type: DataTypes.STRING,
-    },
-
-    // status y when click on the confirm of register mail otherwise n
-    status: {
-      type: DataTypes.ENUM('y', 'n'),
-      defaultValue: 'n',
-    },
-
-    isActive: {
-      type: DataTypes.ENUM('y', 'n'),
-      defaultValue: 'y',
-    },
-
-    isDeleted: {
-      type: DataTypes.ENUM('y', 'n'),
-      defaultValue: 'n',
-    },
-
-    registerDate: {
-      type: DataTypes.DATE,
-    },
-
-    registerIP: {
-      type: DataTypes.STRING,
-    },
-
-    doiDate: {
-      type: DataTypes.DATE,
-    },
-
-    doiIP: {
-      type: DataTypes.STRING,
-    },
-
-    registerType: {
-      type: DataTypes.ENUM('private', 'business'),
-      defaultValue: 'private',
-    },
-
-    actionIpAddress: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'user',
-    // paranoid: true
-  });
+    {
+      sequelize,
+      modelName: "user",
+      paranoid: true
+    }
+  );
   return user;
 };

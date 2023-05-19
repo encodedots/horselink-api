@@ -18,7 +18,8 @@ module.exports = {
         type: Sequelize.STRING
       },
       password: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        allowNull: false
       },
       resetPasswordToken: {
         type: Sequelize.STRING
@@ -33,7 +34,10 @@ module.exports = {
         values: ['y', 'n'],
         defaultValue: 'n',
       },
-      last_login_at: {
+      token:{
+        type: Sequelize.STRING
+      },
+      lastLoginAt: {
         type: Sequelize.DATE
       },
       actionIpAddress: {

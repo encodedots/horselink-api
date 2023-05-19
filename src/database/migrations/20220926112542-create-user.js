@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('users', {
+    await queryInterface.createTable("users", {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -9,15 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER
       },
       webId: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       firstName: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       lastName: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       userName: {
@@ -35,7 +35,7 @@ module.exports = {
       },
 
       password: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       description: {
@@ -43,11 +43,21 @@ module.exports = {
         allowNull: true
       },
 
-      memberNumber: {
-        type: Sequelize.STRING,
-        allowNull: true
+      categoryId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "categories",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
       },
-
+      latitude: {
+        type: Sequelize.STRING
+      },
+      longitude: {
+        type: Sequelize.STRING
+      },
       originalFileName: {
         type: Sequelize.STRING,
         allowNull: true
@@ -67,7 +77,22 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-
+      backgroundOriginalFileName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundOriginalFileUrl: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundCroppedFileName: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
+      backgroundCroppedFileUrl: {
+        type: Sequelize.STRING,
+        allowNull: true
+      },
       street: {
         type: Sequelize.STRING,
         allowNull: true
@@ -79,7 +104,7 @@ module.exports = {
       },
 
       zipCode: {
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         allowNull: true
       },
 
@@ -90,11 +115,17 @@ module.exports = {
 
       country: {
         type: Sequelize.INTEGER,
-        allowNull: true
+        allowNull: true,
+        references: {
+          model: "countries",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
       },
 
       telephone: {
-        type: Sequelize.STRING,
+        type: Sequelize.BIGINT,
         allowNull: true
       },
 
@@ -102,67 +133,68 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: true
       },
-
-      isNewsLetter: {
+      tempEmail: {
         type: Sequelize.STRING
       },
-
-      allowMessage: {
-        type: Sequelize.STRING
+      isNewsLetter: {
+        type: Sequelize.ENUM,
+        values: ["y", "n"],
+        defaultValue: "n"
       },
 
       instagram: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       facebook: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       youtube: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       tiktok: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
 
       website: {
-        type: Sequelize.STRING,
+        type: Sequelize.STRING
       },
-
+      planName: {
+        type: Sequelize.STRING
+      },
+      colorTemplateId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "colorTemplates",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
+      },
       resetPasswordToken: {
         type: Sequelize.STRING
       },
 
-      emailVerificationCode: {
-        type: Sequelize.STRING,
-      },
-
-      passwordVerificationCode: {
-        type: Sequelize.STRING,
-      },
-
       signUpToken: {
-        type: Sequelize.STRING,
-      },
-
-      status: {
-        type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'n',
+        type: Sequelize.STRING
       },
 
       isActive: {
         type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'y',
+        values: ["y", "n"],
+        defaultValue: "y"
+      },
+      status: {
+        type: Sequelize.ENUM("y", "n"),
+        defaultValue: "n"
       },
 
       isDeleted: {
         type: Sequelize.ENUM,
-        values: ['y', 'n'],
-        defaultValue: 'n',
+        values: ["y", "n"],
+        defaultValue: "n"
       },
 
       registerDate: {
@@ -200,10 +232,10 @@ module.exports = {
       deletedAt: {
         allowNull: true,
         type: Sequelize.DATE
-      },
+      }
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('users');
+    await queryInterface.dropTable("users");
   }
 };

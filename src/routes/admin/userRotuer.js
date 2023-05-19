@@ -1,28 +1,56 @@
-import express from 'express';
-import { UsersController } from '../../controllers/admin/usersController';
+import express from "express";
+import { UsersController } from "../../controllers/admin/usersController";
 
 // Multipart is used to get form-data request.
-var multipart = require('connect-multiparty');
+var multipart = require("connect-multiparty");
 var multipartMiddleware = multipart();
-
+import { authenticateJWT } from "../../middlewares/jwtAuthenticate";
 const router = express.Router();
 const usersController = new UsersController();
 
 //#region GET APIs
 
-router.get('/getUser/:id', usersController.getUser);
-router.get('/getUserlist', usersController.getUserlist);
+router.get("/getUser/:id", authenticateJWT, usersController.getUser);
+router.get("/getUserList", authenticateJWT, usersController.getUserList);
+router.get("/getUsers", authenticateJWT, usersController.getUsers);
 
 //#endregion GET APIs
 
-
 //#region POST APIs
 
-router.post('/getUsers', usersController.getUsers);
-router.post('/addUser', multipartMiddleware, usersController.createUser);
-router.post('/updateUser/:id', multipartMiddleware, usersController.updateUser);
-router.post('/deleteUser/:id', usersController.deleteUser);
+router.post(
+  "/create",
+  authenticateJWT,
+  multipartMiddleware,
+  usersController.createUser
+);
+router.post("/addContact/:id", authenticateJWT, usersController.addContact);
+router.post(
+  "/update/:id",
+  authenticateJWT,
+  multipartMiddleware,
+  usersController.updateUser
+);
+router.post(
+  "/updateStatus/:id",
+  authenticateJWT,
+  usersController.updateUserStatus
+);
 
 //#endregion POST APIs
+
+//#region DELETE APIs
+router.delete("/deleteUser/:id", authenticateJWT, usersController.deleteUser);
+router.delete(
+  "/deleteUserImage/:id",
+  authenticateJWT,
+  usersController.deleteUserProfileImage
+);
+router.delete(
+  "/deleteBackgroundImage/:id",
+  authenticateJWT,
+  usersController.deleteBackgroundImage
+);
+//#endregion DELETE APIs
 
 export default router;
