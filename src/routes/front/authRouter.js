@@ -8,7 +8,8 @@ const authController = new AuthController();
 router.post("/login", authController.login);
 
 router.post("/register", authController.register);
-
+router.post("/forgotpassword", authController.forgotPassword);
+router.post("/resetPassword", authController.resetPassword);
 router.post("/checkEmailUserName", authController.checkEmailUserName);
 router.post("/userActivate", authController.userActivate);
 router.post("/logout", [frontAuthenticateJWT], authController.logout);
