@@ -58,7 +58,12 @@ export class SponsorController {
       var inputFiles = req.files;
 
       // Validate input data
-      if (input.sponsors && !isValidArray(input.sponsors) && input.title && !isValidString(input.title))
+      if (
+        input.sponsors &&
+        !isValidArray(input.sponsors) &&
+        input.title &&
+        !isValidString(input.title)
+      )
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
       // Call service to add/update sponsor

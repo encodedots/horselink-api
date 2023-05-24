@@ -16,7 +16,7 @@ export class SaleHorseService {
         where: {
           deletedAt: null
         },
-        limit: 7
+        limit: 6
       });
 
       categoryTwo = await horseCategory.findAll({
@@ -24,7 +24,7 @@ export class SaleHorseService {
           deletedAt: null
         },
         limit: 10,
-        offset: 7
+        offset: 6
       });
 
       // Return response
@@ -45,7 +45,6 @@ export class SaleHorseService {
     try {
       var output = "";
       var whereObj = {};
-
       if (
         input.filter &&
         input.filter.type &&

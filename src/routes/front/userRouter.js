@@ -37,11 +37,7 @@ router.post(
   frontAuthenticateJWT,
   usersController.updateUserDeatils
 ); // :id - user web id
-router.post(
-  "/verifyUpdateEmail/:id",
-  frontAuthenticateJWT,
-  usersController.verifyUpdateEmail
-); // :id - user web id
+router.post("/verifyUpdateEmail/:id", usersController.verifyUpdateEmail); // :id - user web id
 //#endregion POST APIs
 
 //#region DELETE APIs
