@@ -26,7 +26,12 @@ export class HorseListController {
       var inputFiles = req.files;
 
       // Validate input data
-      if (input.details && !isValidArray(input.details) && input.title && !isValidString(input.title))
+      if (
+        input.details &&
+        !isValidArray(input.details) &&
+        input.title &&
+        !isValidString(input.title)
+      )
         return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
 
       // Call service to add/update user horse entry
@@ -47,7 +52,6 @@ export class HorseListController {
       );
     } catch (e) {
       // Send error message on fail
-      console.log("e", e)
       return adminSendErrorResponse(res, 201, e);
     }
   }

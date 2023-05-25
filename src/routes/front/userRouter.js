@@ -25,6 +25,10 @@ router.get(
 router.get("/getTitles/:userId", usersController.getTitles);
 
 router.get("/getUserBySlug/:userNameSlug", usersController.getUserBySlug);
+
+router.get("/getHorseList/:id", usersController.getHorseList);
+
+router.get("/getHorseProductList/:id", usersController.getHorseProductList);
 //#endregion GET APIs
 
 //#region POST APIs
@@ -33,11 +37,7 @@ router.post(
   frontAuthenticateJWT,
   usersController.updateUserDeatils
 ); // :id - user web id
-router.post(
-  "/verifyUpdateEmail/:id",
-  frontAuthenticateJWT,
-  usersController.verifyUpdateEmail
-); // :id - user web id
+router.post("/verifyUpdateEmail/:id", usersController.verifyUpdateEmail); // :id - user web id
 //#endregion POST APIs
 
 //#region DELETE APIs

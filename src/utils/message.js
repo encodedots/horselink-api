@@ -20,7 +20,13 @@ export default {
   INVALID_PARAMETERS: "Invalid parameters",
   PASSWORD_VALIDATION_ERROR:
     "Password must be at least one uppercase, lowercase, special character and number",
+  PASSWORD_RESET_EMAIL_SENT_SUCCESSFULLY:
+    "Password reset link sent! You'll receive an email if you are registered on our system.",
+  PASSWORD_RESET_SUCCESSFULLY: "Password has been reset successfully",
+  RESET_TOKEN_EXPIRED:
+    "Your token has been expired. Kindly check and try again",
   // Email Messages
+  EMAIL_SUBJECT_RESET_PASSWORD: "Password Reset",
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
   EMAIL_SUBJECT_VERIFY_EMAIL_ADDRESS: "Email Verification",
   EMAIL_SUBJECT_VERIFY_ACCOUNT: "Verify account for signup",

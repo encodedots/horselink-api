@@ -1,6 +1,10 @@
 import model from "../../models";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
-import { isEmptyObject, isValidInteger, isValidString } from "../../utils/validation";
+import {
+  isEmptyObject,
+  isValidInteger,
+  isValidString
+} from "../../utils/validation";
 import Constants from "../../utils/constants";
 import s3Routes from "../../utils/s3Routes";
 import { uploadFile, deleteFileFromS3 } from "../../utils/files";
@@ -9,7 +13,6 @@ const Op = Sequelize.Op;
 const { user, horseList } = model;
 
 export class HorseListService {
-
   /**
    * Summary: This method add or update horse list entry
    * @param {*} input - This paramter contains parameter related to horse list table
@@ -27,11 +30,11 @@ export class HorseListService {
       // Get video for existing records
       var getOldHorseData = await horseList.findAll({
         where: {
-          userId: id, fileName: { [Op.ne]: null }
+          userId: id,
+          fileName: { [Op.ne]: null }
         },
         attributes: ["fileName"]
       });
-
 
       // Delete existing records
       await horseList.destroy({ where: { userId: id } });
@@ -39,75 +42,91 @@ export class HorseListService {
       if (input.details && input.details.length > 0) {
         let horseData = input.details;
 
-        await Promise.all(horseData.map(async (element, i) => {
-          var data = JSON.parse(element.horseListData);
+        await Promise.all(
+          horseData.map(async (element, i) => {
+            var data = JSON.parse(element.horseListData);
 
-          // New object for horse list details
-          if ((data.description != "" && data.category != "" && data.link != "") || input.titleLink) {
-            let newHorseList = {
-              userId: isValidInteger(id) ? id : 0,
-              title: isValidString(input.title) ? input.title.trim() : "",
-              titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
-              description: isValidString(data.description) ? data.description.trim() : "",
-              horseCategoryId: isValidInteger(data.category) ? data.category : null,
-              link: isValidString(data.link) ? data.link.trim() : "",
-              type: isValidString(data.type) && isValidString(data.description) ? data.type.trim() : "",
-              order: i + 1
-            };
+            // New object for horse list details
+            if (
+              (data.description != "" &&
+                data.category != "" &&
+                data.link != "") ||
+              input.titleLink
+            ) {
+              let newHorseList = {
+                userId: isValidInteger(id) ? id : 0,
+                title: isValidString(input.title) ? input.title.trim() : "",
+                titleLink: isValidString(input.titleLink)
+                  ? input.titleLink.trim()
+                  : "",
+                description: isValidString(data.description)
+                  ? data.description.trim()
+                  : "",
+                horseCategoryId: isValidInteger(data.category)
+                  ? data.category
+                  : null,
+                link: isValidString(data.link) ? data.link.trim() : "",
+                type:
+                  isValidString(data.type) && isValidString(data.description)
+                    ? data.type.trim()
+                    : "",
+                order: i + 1
+              };
 
-            if (data.type == 'link') {
-              newHorseList.youtubeLink = data.youtubeLink
-            } else if (data.type == 'embed') {
-              newHorseList.youtubeEmbed = data.youtubeEmbed
-            } else if (data.type == 'device') {
-
-              // Upload from device (video details)
-              if (
-                data.originalFile &&
-                data.originalFile != null &&
-                !isEmptyObject(data.originalFile) &&
-                data.originalFile != ""
-              ) {
-                if (data.originalFile.length > 0) {
-                  var split_data = data.originalFile.split(Constants.AWSPATH);
-                  newHorseList.fileName = split_data[1];
-                  newHorseList.fileUrl = data.originalFile;
-                }
-              } else {
+              if (data.type == "link") {
+                newHorseList.youtubeLink = data.youtubeLink;
+              } else if (data.type == "embed") {
+                newHorseList.youtubeEmbed = data.youtubeEmbed;
+              } else if (data.type == "device") {
+                // Upload from device (video details)
                 if (
+                  data.originalFile &&
                   data.originalFile != null &&
-                  data.originalFile != undefined &&
-                  isEmptyObject(data.originalFile)
+                  !isEmptyObject(data.originalFile) &&
+                  data.originalFile != ""
                 ) {
+                  if (data.originalFile.length > 0) {
+                    var split_data = data.originalFile.split(Constants.AWSPATH);
+                    newHorseList.fileName = split_data[1];
+                    newHorseList.fileUrl = data.originalFile;
+                  }
+                } else {
                   if (
-                    inputFiles.details &&
-                    inputFiles.details[videoCount] &&
-                    inputFiles.details[videoCount].originalFile &&
-                    inputFiles.details[videoCount].originalFile != undefined &&
-                    inputFiles.details[videoCount].originalFile != null
+                    data.originalFile != null &&
+                    data.originalFile != undefined &&
+                    isEmptyObject(data.originalFile)
                   ) {
-                    var fileInputData = {
-                      file: inputFiles.details[videoCount].originalFile,
-                      filePath: s3Routes.HORSE_LIST_VIDEO + id + "/"
-                    };
-                    videoCount = videoCount + 1;
-                    var videoFile = await uploadVideo(fileInputData);
-                    newHorseList.fileName = videoFile.fileName;
-                    newHorseList.fileUrl = videoFile.fileUrl;
+                    if (
+                      inputFiles.details &&
+                      inputFiles.details[videoCount] &&
+                      inputFiles.details[videoCount].originalFile &&
+                      inputFiles.details[videoCount].originalFile !=
+                        undefined &&
+                      inputFiles.details[videoCount].originalFile != null
+                    ) {
+                      var fileInputData = {
+                        file: inputFiles.details[videoCount].originalFile,
+                        filePath: s3Routes.HORSE_LIST_VIDEO + id + "/"
+                      };
+                      videoCount = videoCount + 1;
+                      var videoFile = await uploadVideo(fileInputData);
+                      newHorseList.fileName = videoFile.fileName;
+                      newHorseList.fileUrl = videoFile.fileUrl;
+                    }
                   }
                 }
               }
-
+              output = await horseList.create(newHorseList);
             }
-            output = await horseList.create(newHorseList);
-          }
-        }))
-
+          })
+        );
       } else {
         let newHorseList = {
           userId: isValidInteger(id) ? id : 0,
           title: isValidString(input.title) ? input.title.trim() : "",
-          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          titleLink: isValidString(input.titleLink)
+            ? input.titleLink.trim()
+            : "",
           order: 1
         };
         output = await horseList.create(newHorseList);
@@ -144,7 +163,6 @@ export class HorseListService {
       // Return response
       return getHorseData;
     } catch (e) {
-      console.log("e1", e)
       return adminServiceErrorResponse(e);
     }
   }
@@ -176,7 +194,6 @@ export class HorseListService {
     }
   }
 }
-
 
 var uploadVideo = (fileInput) => {
   return new Promise(async (resolve, reject) => {

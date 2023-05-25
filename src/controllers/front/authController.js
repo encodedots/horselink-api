@@ -5,6 +5,7 @@ import {
   frontSendSuccessResponse
 } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
+import Random from "../../utils/random";
 
 const _authService = new AuthService();
 
@@ -206,6 +207,73 @@ export class AuthController {
       );
     } catch (e) {
       return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to sent forgot password link to received email id.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async forgotPassword(req, res) {
+    var input = req.body;
+
+    try {
+      // Validate input data
+      if (input == null || !isValidString(input.email))
+        return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+      // Call service to send forgot password mail
+      var output = await _authService.forgotPassword(input);
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      return frontSendSuccessResponse(
+        res,
+        200,
+        "",
+        messages.PASSWORD_RESET_EMAIL_SENT_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 201, e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to reset password for the specific user.
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+  async resetPassword(req, res) {
+    var input = req.body;
+
+    try {
+      // Validate input data
+      if (
+        input == null ||
+        !isValidString(input.webId) ||
+        !isValidString(input.password)
+      )
+        return frontSendErrorResponse(res, 201, messages.INVALID_PARAMETERS);
+
+      // Call service to reset password
+      var output = await _authService.resetPassword(input);
+      if (output == null)
+        return frontSendErrorResponse(res, 201, messages.SOMETHING_WENT_WRONG);
+
+      if (output["status"] == false)
+        return frontSendErrorResponse(res, 201, output["error"]);
+
+      return frontSendSuccessResponse(
+        res,
+        200,
+        output,
+        messages.PASSWORD_RESET_SUCCESSFULLY
+      );
+    } catch (e) {
+      return frontSendErrorResponse(res, 500, e);
     }
   }
 }

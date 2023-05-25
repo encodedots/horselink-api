@@ -4,11 +4,10 @@ import { frontServiceErrorResponse } from "../../utils/sendResponse";
 const { faqManagement } = model;
 
 export class FaqService {
-
   /**
    * Summary: This method get all faq list based on module(home/faq)
-   * @param {*} module 
-   * @returns 
+   * @param {*} module
+   * @returns
    */
   async getFaqList(module) {
     try {
@@ -16,7 +15,8 @@ export class FaqService {
       output = await faqManagement.findAll({
         where: {
           module: module,
-          deletedAt: null
+          deletedAt: null,
+          status: "y"
         }
       });
 

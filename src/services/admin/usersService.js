@@ -2,7 +2,11 @@ import model from "../../models";
 import { uploadFile, deleteFileFromS3 } from "../../utils/files";
 import { hash } from "../../utils/hashing";
 import messages from "../../utils/message";
-import { isEmptyObject, isValidInteger, isValidString } from "../../utils/validation";
+import {
+  isEmptyObject,
+  isValidInteger,
+  isValidString
+} from "../../utils/validation";
 import md5 from "md5";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
 import s3Routes from "../../utils/s3Routes";
@@ -114,8 +118,9 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
-            }, ${input.limit}`;
+          query += ` limit ${
+            (input.page ? input.page : 1) * input.limit - input.limit
+          }, ${input.limit}`;
         }
       }
 
@@ -199,8 +204,8 @@ export class UserService {
           FNAME: output.dataValues.firstName,
           LNAME: output.dataValues.lastName
         }
-      }
-      await mailchimp.subscribedUnsubscribedmailchimpData(postData, true)
+      };
+      await mailchimp.subscribedUnsubscribedmailchimpData(postData, true);
 
       let uploadImage = {};
       if (
@@ -314,8 +319,9 @@ export class UserService {
       };
 
       // TODO: Get lat/long based on address using geocoding API
-      // var addressInput = newUser.town;
-      // var addressLatLong = await getLatLongFromAddress(addressInput);
+      var addressInput = newUser.town;
+      var addressLatLong = await getLatLongFromAddress(addressInput);
+      console.log("addressLatLong", addressLatLong);
       // if (isValidArray(addressLatLong)) {
       //     newUser["latitude"] = addressLatLong[0].latitude;
       //     newUser["longitude"] = addressLatLong[0].longitude;
@@ -329,6 +335,7 @@ export class UserService {
       // Return response
       return output;
     } catch (e) {
+      console.log("e1", e);
       return adminServiceErrorResponse(e);
     }
   }
@@ -447,24 +454,24 @@ export class UserService {
       if (output == null)
         return adminServiceErrorResponse(messages.SOMETHING_WENT_WRONG);
 
-      let updatedData = {}
-      let mergeFields = {}
+      let updatedData = {};
+      let mergeFields = {};
 
       if (userData.email != input.email) {
-        updatedData.email_address = input.email
+        updatedData.email_address = input.email;
       }
       if (userData.firstName != input.firstName) {
-        mergeFields.FNAME = input.firstName
+        mergeFields.FNAME = input.firstName;
       }
       if (userData.lastName != input.lastName) {
-        mergeFields.LNAME = input.lastName
+        mergeFields.LNAME = input.lastName;
       }
       if (!isEmptyObject(mergeFields)) {
-        updatedData.merge_fields = mergeFields
+        updatedData.merge_fields = mergeFields;
       }
 
       if (!isEmptyObject(updatedData)) {
-        await mailchimp.updateUserMailchimpData(userData.email, updatedData)
+        await mailchimp.updateUserMailchimpData(userData.email, updatedData);
       }
 
       return output;
@@ -509,7 +516,7 @@ export class UserService {
       await user.update(setData, { where: { id: input } });
       var output = await user.destroy({ where: { id: input } });
 
-      await mailchimp.deleteUserMailchimpData(userData.email)
+      await mailchimp.deleteUserMailchimpData(userData.email);
 
       // Return response data
       return output;
@@ -520,17 +527,19 @@ export class UserService {
 
   /**
    * Summary: This method deletes user profile and background images from S3 bucket.
-   * @param {*} userData 
-   * @param {*} isProfile 
-   * @param {*} isBackground 
-   * @returns 
+   * @param {*} userData
+   * @param {*} isProfile
+   * @param {*} isBackground
+   * @returns
    */
   async deleteUserImage(userData, isProfile, isBackground) {
     try {
-
       // Delete profile image from s3 bucket
       if (isProfile) {
-        if (userData.dataValues.originalFileName != "" && userData.dataValues.originalFileName != null) {
+        if (
+          userData.dataValues.originalFileName != "" &&
+          userData.dataValues.originalFileName != null
+        ) {
           // Delete original file from s3
           var deleteImageParams = {
             key: userData.dataValues.originalFileName
@@ -538,7 +547,10 @@ export class UserService {
           await deleteFileFromS3(deleteImageParams);
         }
 
-        if (userData.dataValues.croppedFileName != "" && userData.dataValues.croppedFileName != null) {
+        if (
+          userData.dataValues.croppedFileName != "" &&
+          userData.dataValues.croppedFileName != null
+        ) {
           // Delete cropped file from s3
           var deleteCroppedImageParams = {
             key: userData.dataValues.croppedFileName
@@ -549,7 +561,10 @@ export class UserService {
 
       // Delete background image from s3 bucket
       if (isBackground) {
-        if (userData.dataValues.backgroundOriginalFileName != "" && userData.dataValues.backgroundOriginalFileName != null) {
+        if (
+          userData.dataValues.backgroundOriginalFileName != "" &&
+          userData.dataValues.backgroundOriginalFileName != null
+        ) {
           // Delete background original file from s3
           var deleteImageParams = {
             key: userData.dataValues.backgroundOriginalFileName
@@ -557,7 +572,10 @@ export class UserService {
           await deleteFileFromS3(deleteImageParams);
         }
 
-        if (userData.dataValues.backgroundCroppedFileName != "" && userData.dataValues.backgroundCroppedFileName != null) {
+        if (
+          userData.dataValues.backgroundCroppedFileName != "" &&
+          userData.dataValues.backgroundCroppedFileName != null
+        ) {
           // Delete background cropped file from s3
           var deleteCroppedImageParams = {
             key: userData.dataValues.backgroundCroppedFileName

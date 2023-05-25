@@ -72,11 +72,16 @@ export class SponsorService {
           sponsorData.map(async (element, i) => {
             var data = JSON.parse(element.sponsordata);
             // New object for sponsor details
-            if ((data.name != "" && data.code != "" && data.link != "") || input.titleLink) {
+            if (
+              (data.name != "" && data.code != "" && data.link != "") ||
+              input.titleLink
+            ) {
               let newSponsor = {
                 userId: isValidInteger(id) ? id : 0,
                 title: isValidString(input.title) ? input.title.trim() : "",
-                titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+                titleLink: isValidString(input.titleLink)
+                  ? input.titleLink.trim()
+                  : "",
                 name: isValidString(data.name) ? data.name.trim() : "",
                 code: isValidString(data.code) ? data.code.trim() : "",
                 link: isValidString(data.link) ? data.link.trim() : "",
@@ -157,7 +162,9 @@ export class SponsorService {
         let newSponsor = {
           userId: isValidInteger(id) ? id : 0,
           title: isValidString(input.title) ? input.title.trim() : "",
-          titleLink: isValidString(input.titleLink) ? input.titleLink.trim() : "",
+          titleLink: isValidString(input.titleLink)
+            ? input.titleLink.trim()
+            : "",
           order: 1
         };
 
@@ -194,8 +201,7 @@ export class SponsorService {
       var croppedImageArray = getCroppedData.filter(
         (e) =>
           !croppedURL.find(
-            (a) =>
-              e.dataValues.croppedFileName == a.dataValues.croppedFileName
+            (a) => e.dataValues.croppedFileName == a.dataValues.croppedFileName
           )
       );
       if (croppedImageArray && croppedImageArray.length > 0) {

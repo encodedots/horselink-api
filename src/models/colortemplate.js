@@ -16,6 +16,9 @@ module.exports = (sequelize, DataTypes) => {
       name: {
         type: DataTypes.STRING
       },
+      code: {
+        type: DataTypes.STRING
+      },
       actionIpAddress: DataTypes.STRING
     },
     {

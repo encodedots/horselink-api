@@ -7,6 +7,7 @@ import { frontServiceErrorResponse } from "../../utils/sendResponse";
 import { isValidString } from "../../utils/validation";
 import md5 from "md5";
 import sendEmail from "../../utils/sendEmail";
+import random from "../../utils/random";
 const jwt = require("jsonwebtoken");
 var slugify = require("../../utils/slugifyUrl");
 var refreshTokens = [];
@@ -337,6 +338,138 @@ export class AuthService {
       return true;
     } catch (error) {
       return frontServiceErrorResponse(error);
+    }
+  }
+
+  /**
+   * Summary: This method check for user if exist based on received email and sends reset password link on mail id.
+   * @param {*} input
+   */
+  async forgotPassword(input) {
+    try {
+      // Validate input data
+      if (input == null || !isValidString(input.email))
+        return frontServiceErrorResponse(message.INVALID_PARAMETERS);
+      // Get front user by email address
+      const frontUserDetails = await user.findOne({
+        where: { email: input.email }
+      });
+      if (!frontUserDetails)
+        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
+
+      // Set reset password token for user
+      const plainTextToken = random(40);
+      await user.update(
+        { resetPasswordToken: plainTextToken },
+        { where: { email: input.email } }
+      );
+
+      // Set data to send in an email
+      var subject = message.EMAIL_SUBJECT_RESET_PASSWORD;
+
+      let sendEmailData = {
+        subject: subject,
+        templateName: "reset-password.ejs",
+        emailToUser: input.email.trim()
+      };
+
+      // Set data that needs to be replaced in email html
+      let emailTemplateReplaceData = {};
+      emailTemplateReplaceData["name"] =
+        frontUserDetails.dataValues["userName"];
+      emailTemplateReplaceData["resetPasswordUrl"] =
+        process.env.SITE_REDIRECT_URL +
+        "/auth/reset-password?webId=" +
+        frontUserDetails.dataValues.webId +
+        "&token=" +
+        plainTextToken;
+
+      // Send an email
+      sendEmail.generateHtmlForEmail(sendEmailData, emailTemplateReplaceData);
+
+      return true;
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method is used to reset the specific user's password based on received details.
+   * @param {*} input
+   * @returns
+   */
+  async resetPassword(input) {
+    try {
+      // Validate input data
+      if (
+        input == null ||
+        !isValidString(input.webId) ||
+        !isValidString(input.password)
+      )
+        return frontServiceErrorResponse(message.INVALID_PARAMETERS);
+
+      // Check if request is valid by comparing token into system
+      const frontUserDetails = await user.findOne({
+        where: { webId: input.webId }
+      });
+      if (!frontUserDetails)
+        return frontServiceErrorResponse(message.NOT_FOUND);
+
+      if (
+        (frontUserDetails && frontUserDetails.resetPasswordToken == "") ||
+        frontUserDetails.resetPasswordToken == null
+      ) {
+        return frontServiceErrorResponse(message.RESET_TOKEN_EXPIRED);
+      }
+      // Get password hash and update user password
+      var passwordHash = hash(input.password);
+      var output = await user.update(
+        { resetPasswordToken: "", password: passwordHash },
+        { where: { id: frontUserDetails.id } }
+      );
+      if (output == null)
+        return frontServiceErrorResponse(message.SOMETHING_WENT_WRONG);
+
+      // Generate an access token
+      // If this token is stolen, then they will have access to the account forever and the actual user won't be able to revoke access.
+      // To prevent that, we sets expiration time so the token expire after a specific period.
+      var expireTime = "24h";
+      var token = jwt.sign(
+        { _id: frontUserDetails.id, email: frontUserDetails.email },
+        process.env.JWT_SECRET_KEY,
+        { expiresIn: expireTime }
+      );
+
+      var newToken = {
+        email: frontUserDetails.dataValues.email,
+        token: token
+      };
+      await userAuthTokens.create(newToken);
+
+      // Generate an refresh token
+      // We are managing refresh token, so that is user token get expired while he/she is working, we can renew the token to prevent data/work loss for user.
+      // This is used to increase usability without damaging any data. The actual token will expire after specific time. After that refresh token will be used to renew it.
+      var refreshToken = jwt.sign(
+        {
+          _id: frontUserDetails.dataValues.id,
+          email: frontUserDetails.dataValues.email
+        },
+        process.env.JWT_REFRESH_SECRET_KEY
+      );
+      refreshTokens.push(refreshToken);
+
+      const loginUserDetails = await user.findOne({
+        where: { id: frontUserDetails.id }
+      });
+
+      // Return response
+      return {
+        token: token,
+        refreshToken: refreshToken,
+        user: loginUserDetails
+      };
+    } catch (e) {
+      return frontServiceErrorResponse(e);
     }
   }
 }
