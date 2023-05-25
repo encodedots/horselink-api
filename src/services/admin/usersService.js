@@ -118,9 +118,8 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${
-            (input.page ? input.page : 1) * input.limit - input.limit
-          }, ${input.limit}`;
+          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
+            }, ${input.limit}`;
         }
       }
 
@@ -319,9 +318,9 @@ export class UserService {
       };
 
       // TODO: Get lat/long based on address using geocoding API
-      var addressInput = newUser.town;
-      var addressLatLong = await getLatLongFromAddress(addressInput);
-      console.log("addressLatLong", addressLatLong);
+      // var addressInput = newUser.town;
+      // var addressLatLong = await getLatLongFromAddress(addressInput);
+      // console.log("addressLatLong", addressLatLong);
       // if (isValidArray(addressLatLong)) {
       //     newUser["latitude"] = addressLatLong[0].latitude;
       //     newUser["longitude"] = addressLatLong[0].longitude;
