@@ -62,6 +62,10 @@ export class SaleHorseService {
           {
             model: user,
             as: "userDetails",
+            where: {
+              deletedAt: null,
+              isDeleted: "n"
+            },
             include: [
               {
                 model: countries,
@@ -108,6 +112,10 @@ export class SaleHorseService {
           {
             model: user,
             as: "userDetails",
+            where: {
+              deletedAt: null,
+              isDeleted: "n"
+            },
             include: [
               {
                 model: countries,

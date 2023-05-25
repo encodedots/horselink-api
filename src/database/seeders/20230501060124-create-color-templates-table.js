@@ -17,10 +17,10 @@ module.exports = {
      * Summary: This is bulk create for countries.
      */
     await colorTemplate.bulkCreate([
-      { name: "Black", code: "#000000" },
-      { name: "White", code: "#FFFFFF" },
+      { name: "Black", code: "#000000cc" },
+      { name: "White", code: "#ffffffcc" },
       { name: "Transparent", code: "#FFFFFF00" },
-      { name: "Orange", code: "#FA6800" },
+      { name: "Orange", code: "#ffca4bcc" },
       { name: "Pink", code: "#fcdbeacc" }
     ]);
   },

@@ -116,7 +116,7 @@ export class UserService {
       // Get all user with pagination and filter
       output = await user.findAll({
         where: {
-          isActive: "y",
+          isDeleted: "n",
           deletedAt: null
         },
         include: [
@@ -157,7 +157,7 @@ export class UserService {
       // Get count of all users based on filter
       var count = await user.count({
         where: {
-          isActive: "y",
+          isDeleted: "n",
           deletedAt: null
         },
         include: [
@@ -199,7 +199,8 @@ export class UserService {
       var output = "";
       // Get a sponsor details based on id
       output = await sponsors.findAll({
-        where: { userId: input }
+        where: { userId: input },
+        order: [["order", "asc"]]
       });
 
       // Return response
@@ -223,7 +224,8 @@ export class UserService {
       var output = "";
       // Get a specific user details based on id
       output = await saleHorse.findAll({
-        where: { userId: input, deletedAt: null }
+        where: { userId: input, deletedAt: null },
+        order: [["order", "asc"]]
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -356,6 +358,7 @@ export class UserService {
       // Get social media details
       socialMediaDetails = await userSocialMedia.findAll({
         where: { userId: input },
+        order: [["id", "asc"]],
         include: [
           {
             model: socialMedia,
@@ -454,7 +457,8 @@ export class UserService {
       var output = "";
       // Get a specific horse list details based in id
       output = await horseList.findAll({
-        where: { userId: input, deletedAt: null }
+        where: { userId: input, deletedAt: null },
+        order: [["order", "asc"]]
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -727,6 +731,9 @@ export class UserService {
           email: userExist.email
         }
       });
+
+      await mailchimp.deleteUserMailchimpData(userExist.email);
+
       // Return response
       return output;
     } catch (e) {
