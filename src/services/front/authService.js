@@ -53,7 +53,7 @@ export class AuthService {
         return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
       // Check if user is active
       if (frontUserDetails.isActive !== "y")
-        return frontServiceErrorResponse(message.ACCOUNT_SUSPENDED);
+        return frontServiceErrorResponse(message.ACCOUNT_DEACTIVATED);
 
       // Check if user details are deleted, As we do soft delete it will have y/n flag here
       if (frontUserDetails.isDeleted !== "n")
