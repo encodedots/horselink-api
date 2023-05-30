@@ -64,7 +64,8 @@ export class SaleHorseService {
             as: "userDetails",
             where: {
               deletedAt: null,
-              isDeleted: "n"
+              isDeleted: "n",
+              isActive: "y"
             },
             include: [
               {
@@ -114,7 +115,8 @@ export class SaleHorseService {
             as: "userDetails",
             where: {
               deletedAt: null,
-              isDeleted: "n"
+              isDeleted: "n",
+              isActive: "y"
             },
             include: [
               {
