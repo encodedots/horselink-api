@@ -4,6 +4,8 @@
 export default {
   // Authentication messages
   ACCOUNT_SUSPENDED: "Your account has been suspended. Contact admin",
+  ACCOUNT_DEACTIVATED:
+    "Your account has been deactivated. Please contact admin",
   ACCOUNT_DELETED: "Your account has been deleted. Contact admin",
   INCORRECT_LOGIN_CREDENTIALS:
     "Incorrect login credentials. Kindly check and try again",

@@ -117,7 +117,8 @@ export class UserService {
       output = await user.findAll({
         where: {
           isDeleted: "n",
-          deletedAt: null
+          deletedAt: null,
+          isActive: "y"
         },
         include: [
           {
@@ -158,7 +159,8 @@ export class UserService {
       var count = await user.count({
         where: {
           isDeleted: "n",
-          deletedAt: null
+          deletedAt: null,
+          isActive: "y"
         },
         include: [
           {
