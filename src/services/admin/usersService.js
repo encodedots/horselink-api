@@ -5,7 +5,8 @@ import messages from "../../utils/message";
 import {
   isEmptyObject,
   isValidInteger,
-  isValidString
+  isValidString,
+  isValidArray
 } from "../../utils/validation";
 import md5 from "md5";
 import { adminServiceErrorResponse } from "../../utils/sendResponse";
@@ -118,8 +119,9 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
-            }, ${input.limit}`;
+          query += ` limit ${
+            (input.page ? input.page : 1) * input.limit - input.limit
+          }, ${input.limit}`;
         }
       }
 
@@ -318,13 +320,13 @@ export class UserService {
       };
 
       // TODO: Get lat/long based on address using geocoding API
-      // var addressInput = newUser.town;
-      // var addressLatLong = await getLatLongFromAddress(addressInput);
-      // console.log("addressLatLong", addressLatLong);
-      // if (isValidArray(addressLatLong)) {
-      //     newUser["latitude"] = addressLatLong[0].latitude;
-      //     newUser["longitude"] = addressLatLong[0].longitude;
-      // }
+      var addressInput = newUser.town;
+      var addressLatLong = await getLatLongFromAddress(addressInput);
+      console.log("addressLatLong", addressLatLong);
+      if (isValidArray(addressLatLong)) {
+        newUser["latitude"] = addressLatLong[0].latitude;
+        newUser["longitude"] = addressLatLong[0].longitude;
+      }
 
       output = await user.update(newUser, { where: { id: id } });
 

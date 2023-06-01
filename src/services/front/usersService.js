@@ -44,7 +44,7 @@ export class UserService {
 
       // Get a specific user details based on id
       output = await user.findOne({
-        where: { webId: input }
+        where: { webId: input, isActive: "y" }
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -296,7 +296,7 @@ export class UserService {
 
       // Get a specific user details based on id
       output = await user.findOne({
-        where: { id: input }
+        where: { id: input, isActive: "y" }
       });
 
       if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
@@ -423,7 +423,7 @@ export class UserService {
 
       // Get a specific user details based in id
       output = await user.findOne({
-        where: { userNameSlug: input },
+        where: { userNameSlug: input, isActive: "y", isDeleted: "n" },
         include: [
           {
             model: countries,
