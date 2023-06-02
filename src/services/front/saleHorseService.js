@@ -1,7 +1,7 @@
 import messages from "../../utils/message";
 import model from "../../models";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
-const { saleHorse, horseCategory, user, countries } = model;
+const { saleHorse, horseCategory, user, countries, category } = model;
 import Constants from "../../utils/constants";
 export class SaleHorseService {
   /**
@@ -71,6 +71,10 @@ export class SaleHorseService {
               {
                 model: countries,
                 as: "countryDetails"
+              },
+              {
+                model: category,
+                as: "categoryDetails"
               }
             ]
           },
@@ -122,6 +126,10 @@ export class SaleHorseService {
               {
                 model: countries,
                 as: "countryDetails"
+              },
+              {
+                model: category,
+                as: "categoryDetails"
               }
             ]
           },
@@ -155,6 +163,109 @@ export class SaleHorseService {
         pageSize: input.limit,
         currentPage: input.page,
         pages: pages
+      };
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get all horse list or user list category wise
+   * @returns
+   */
+  async getUserHorseList(input) {
+    try {
+      var output = "";
+
+      if (input == "saleHorse") {
+        // Get all sale horse with pagination and filter
+        output = await saleHorse.findAll({
+          where: {
+            deletedAt: null
+          },
+          include: [
+            {
+              model: user,
+              as: "userDetails",
+              where: {
+                deletedAt: null,
+                isDeleted: "n",
+                isActive: "y"
+              },
+              include: [
+                {
+                  model: countries,
+                  as: "countryDetails"
+                },
+                {
+                  model: category,
+                  as: "categoryDetails"
+                }
+              ]
+            },
+            {
+              model: horseCategory,
+              as: "horseCategoryDetails"
+            }
+          ],
+          attributes: {
+            include: [
+              [
+                model.sequelize.literal(
+                  `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
+                    Constants.LATITUDE +
+                    `)) * COS(RADIANS(longitude - ` +
+                    Constants.LONGITUDE +
+                    `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                    Constants.LATITUDE +
+                    `)))))`
+                ),
+                "distance_in_km"
+              ]
+            ]
+          },
+          order: [["distance_in_km", "ASC"]]
+        });
+      } else {
+        // Get all user with pagination and filter
+        output = await user.findAll({
+          where: {
+            isDeleted: "n",
+            deletedAt: null,
+            isActive: "y"
+          },
+          include: [
+            {
+              model: category,
+              as: "categoryDetails"
+            },
+            {
+              model: countries,
+              as: "countryDetails"
+            }
+          ],
+          attributes: {
+            include: [
+              [
+                model.sequelize.literal(
+                  `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
+                    Constants.LATITUDE +
+                    `)) * COS(RADIANS(longitude - ` +
+                    Constants.LONGITUDE +
+                    `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                    Constants.LATITUDE +
+                    `)))))`
+                ),
+                "distance_in_km"
+              ]
+            ]
+          },
+          order: [["distance_in_km", "ASC"]]
+        });
+      }
+      // Return response
+      return {
+        records: output
       };
     } catch (e) {
       return frontServiceErrorResponse(e);
