@@ -3,6 +3,8 @@ import model from "../../models";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
 const { saleHorse, horseCategory, user, countries, category } = model;
 import Constants from "../../utils/constants";
+const { Sequelize } = require("sequelize");
+const Op = Sequelize.Op;
 export class SaleHorseService {
   /**
    * Summary: This method get all horse categories
@@ -41,7 +43,7 @@ export class SaleHorseService {
    * Summary: This method get all horse list category wise
    * @returns
    */
-  async getHorseList(input) {
+  async getHorseList(input, latitude, longitude) {
     try {
       var output = "";
       var whereObj = {};
@@ -89,11 +91,11 @@ export class SaleHorseService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)) * COS(RADIANS(longitude - ` +
-                  Constants.LONGITUDE +
+                  longitude +
                   `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)))))`
               ),
               "distance_in_km"
@@ -173,7 +175,7 @@ export class SaleHorseService {
    * Summary: This method get all horse list or user list category wise
    * @returns
    */
-  async getUserHorseList(input) {
+  async getUserHorseList(input, latitude, longitude) {
     try {
       var output = "";
 
@@ -181,7 +183,10 @@ export class SaleHorseService {
         // Get all sale horse with pagination and filter
         output = await saleHorse.findAll({
           where: {
-            deletedAt: null
+            deletedAt: null,
+            horseCategoryId: {
+              [Op.ne]: null
+            }
           },
           include: [
             {
@@ -213,11 +218,11 @@ export class SaleHorseService {
               [
                 model.sequelize.literal(
                   `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                    Constants.LATITUDE +
+                    latitude +
                     `)) * COS(RADIANS(longitude - ` +
-                    Constants.LONGITUDE +
+                    longitude +
                     `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                    Constants.LATITUDE +
+                    latitude +
                     `)))))`
                 ),
                 "distance_in_km"
@@ -232,7 +237,10 @@ export class SaleHorseService {
           where: {
             isDeleted: "n",
             deletedAt: null,
-            isActive: "y"
+            isActive: "y",
+            categoryId: {
+              [Op.ne]: null
+            }
           },
           include: [
             {
@@ -249,11 +257,11 @@ export class SaleHorseService {
               [
                 model.sequelize.literal(
                   `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                    Constants.LATITUDE +
+                    latitude +
                     `)) * COS(RADIANS(longitude - ` +
-                    Constants.LONGITUDE +
+                    longitude +
                     `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                    Constants.LATITUDE +
+                    latitude +
                     `)))))`
                 ),
                 "distance_in_km"

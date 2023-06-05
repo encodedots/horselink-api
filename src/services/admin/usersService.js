@@ -322,7 +322,6 @@ export class UserService {
       // TODO: Get lat/long based on address using geocoding API
       var addressInput = newUser.town;
       var addressLatLong = await getLatLongFromAddress(addressInput);
-      console.log("addressLatLong", addressLatLong);
       if (isValidArray(addressLatLong)) {
         newUser["latitude"] = addressLatLong[0].latitude;
         newUser["longitude"] = addressLatLong[0].longitude;
@@ -336,7 +335,6 @@ export class UserService {
       // Return response
       return output;
     } catch (e) {
-      console.log("e1", e);
       return adminServiceErrorResponse(e);
     }
   }

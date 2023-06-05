@@ -9,7 +9,7 @@ import {
   isEmptyObject,
   isValidString
 } from "../../utils/validation";
-
+import Constants from "../../utils/constants";
 const _userService = new UserService();
 
 export class UsersController {
@@ -86,8 +86,15 @@ export class UsersController {
   async getUserList(req, res) {
     try {
       var input = req.query;
+
+      var latitude = req.headers.latitude
+        ? req.headers.latitude
+        : Constants.LATITUDE;
+      var longitude = req.headers.longitude
+        ? req.headers.longitude
+        : Constants.LONGITUDE;
       // Call service to get all users
-      var output = await _userService.getUserList(input);
+      var output = await _userService.getUserList(input, latitude, longitude);
 
       if (output["status"] == false)
         return frontSendErrorResponse(res, 201, output["error"]);

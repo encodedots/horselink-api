@@ -105,7 +105,7 @@ export class UserService {
    * Summary: This method get all registered user
    * @returns
    */
-  async getUserList(input) {
+  async getUserList(input, latitude, longitude) {
     try {
       var output = "";
       var whereObj = {};
@@ -136,11 +136,11 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)) * COS(RADIANS(longitude - ` +
-                  Constants.LONGITUDE +
+                  longitude +
                   `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)))))`
               ),
               "distance_in_km"
