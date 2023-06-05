@@ -1,8 +1,10 @@
 import messages from "../../utils/message";
 import model from "../../models";
 import { frontServiceErrorResponse } from "../../utils/sendResponse";
-const { saleHorse, horseCategory, user, countries } = model;
+const { saleHorse, horseCategory, user, countries, category } = model;
 import Constants from "../../utils/constants";
+const { Sequelize } = require("sequelize");
+const Op = Sequelize.Op;
 export class SaleHorseService {
   /**
    * Summary: This method get all horse categories
@@ -41,7 +43,7 @@ export class SaleHorseService {
    * Summary: This method get all horse list category wise
    * @returns
    */
-  async getHorseList(input) {
+  async getHorseList(input, latitude, longitude) {
     try {
       var output = "";
       var whereObj = {};
@@ -71,6 +73,10 @@ export class SaleHorseService {
               {
                 model: countries,
                 as: "countryDetails"
+              },
+              {
+                model: category,
+                as: "categoryDetails"
               }
             ]
           },
@@ -85,11 +91,11 @@ export class SaleHorseService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)) * COS(RADIANS(longitude - ` +
-                  Constants.LONGITUDE +
+                  longitude +
                   `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  Constants.LATITUDE +
+                  latitude +
                   `)))))`
               ),
               "distance_in_km"
@@ -122,6 +128,10 @@ export class SaleHorseService {
               {
                 model: countries,
                 as: "countryDetails"
+              },
+              {
+                model: category,
+                as: "categoryDetails"
               }
             ]
           },
@@ -155,6 +165,115 @@ export class SaleHorseService {
         pageSize: input.limit,
         currentPage: input.page,
         pages: pages
+      };
+    } catch (e) {
+      return frontServiceErrorResponse(e);
+    }
+  }
+
+  /**
+   * Summary: This method get all horse list or user list category wise
+   * @returns
+   */
+  async getUserHorseList(input, latitude, longitude) {
+    try {
+      var output = "";
+
+      if (input == "saleHorse") {
+        // Get all sale horse with pagination and filter
+        output = await saleHorse.findAll({
+          where: {
+            deletedAt: null,
+            horseCategoryId: {
+              [Op.ne]: null
+            }
+          },
+          include: [
+            {
+              model: user,
+              as: "userDetails",
+              where: {
+                deletedAt: null,
+                isDeleted: "n",
+                isActive: "y"
+              },
+              include: [
+                {
+                  model: countries,
+                  as: "countryDetails"
+                },
+                {
+                  model: category,
+                  as: "categoryDetails"
+                }
+              ]
+            },
+            {
+              model: horseCategory,
+              as: "horseCategoryDetails"
+            }
+          ],
+          attributes: {
+            include: [
+              [
+                model.sequelize.literal(
+                  `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
+                    latitude +
+                    `)) * COS(RADIANS(longitude - ` +
+                    longitude +
+                    `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                    latitude +
+                    `)))))`
+                ),
+                "distance_in_km"
+              ]
+            ]
+          },
+          order: [["distance_in_km", "ASC"]]
+        });
+      } else {
+        // Get all user with pagination and filter
+        output = await user.findAll({
+          where: {
+            isDeleted: "n",
+            deletedAt: null,
+            isActive: "y",
+            categoryId: {
+              [Op.ne]: null
+            }
+          },
+          include: [
+            {
+              model: category,
+              as: "categoryDetails"
+            },
+            {
+              model: countries,
+              as: "countryDetails"
+            }
+          ],
+          attributes: {
+            include: [
+              [
+                model.sequelize.literal(
+                  `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
+                    latitude +
+                    `)) * COS(RADIANS(longitude - ` +
+                    longitude +
+                    `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                    latitude +
+                    `)))))`
+                ),
+                "distance_in_km"
+              ]
+            ]
+          },
+          order: [["distance_in_km", "ASC"]]
+        });
+      }
+      // Return response
+      return {
+        records: output
       };
     } catch (e) {
       return frontServiceErrorResponse(e);
