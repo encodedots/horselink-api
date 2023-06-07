@@ -33,8 +33,17 @@ export class AuthService {
       const frontUserDetails = await user.findOne({
         where: { userName: input.userName }
       });
+
       if (!frontUserDetails)
-        return frontServiceErrorResponse(message.INCORRECT_LOGIN_CREDENTIALS);
+        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
+
+      // Check if user is active
+      if (frontUserDetails.isActive !== "y")
+        return frontServiceErrorResponse(message.ACCOUNT_DEACTIVATED);
+
+      // Check if user details are deleted, As we do soft delete it will have y/n flag here
+      if (frontUserDetails.isDeleted !== "n")
+        return frontServiceErrorResponse(message.ACCOUNT_DELETED);
 
       // Compare user password
       const checkPassword = hash_compare(
@@ -47,17 +56,6 @@ export class AuthService {
       if (frontUserDetails.status && frontUserDetails.status !== "y") {
         return frontServiceErrorResponse(message.VERIFY_ACCOUNT);
       }
-
-      // Check if user is active
-      if (frontUserDetails.deletedAt !== null)
-        return frontServiceErrorResponse(message.USER_DOES_NOT_EXIST);
-      // Check if user is active
-      if (frontUserDetails.isActive !== "y")
-        return frontServiceErrorResponse(message.ACCOUNT_DEACTIVATED);
-
-      // Check if user details are deleted, As we do soft delete it will have y/n flag here
-      if (frontUserDetails.isDeleted !== "n")
-        return frontServiceErrorResponse(message.ACCOUNT_DELETED);
 
       // Generate an access token
       // If this token is stolen, then they will have access to the account forever and the actual user won't be able to revoke access.
