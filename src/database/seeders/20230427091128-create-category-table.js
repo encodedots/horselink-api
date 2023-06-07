@@ -17,7 +17,7 @@ module.exports = {
       { name: "Rider", slug: "rider" },
       { name: "Stable", slug: "stable" },
       { name: "Breeder", slug: "breeder" },
-      { name: "Brand", slug: "brand" },
+      { name: "Retail", slug: "retail" },
       { name: "Business", slug: "business" },
       { name: "Association", slug: "association" },
       { name: "Health", slug: "health" },
