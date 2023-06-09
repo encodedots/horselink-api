@@ -436,7 +436,8 @@ export class UserService {
         ]
       });
 
-      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+      if (output == null)
+        return frontServiceErrorResponse(messages.PROFILE_NOT_FOUND);
 
       // Return response
       return output;
@@ -533,9 +534,8 @@ export class UserService {
         if (userName != null)
           return frontServiceErrorResponse(messages.USER_NAME_ALREADY_EXISTS);
 
-        var userSlug = await slugify.slugifyUsername(input.userName);
         updateArray.userName = input.userName;
-        updateArray.userNameSlug = userSlug;
+        updateArray.userNameSlug = input.userName;
       }
 
       // Get user by email address

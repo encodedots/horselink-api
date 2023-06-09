@@ -145,15 +145,15 @@ export class AuthService {
       if (userEmail != null)
         return frontServiceErrorResponse(message.EMAIL_USER_ALREADY_EXIST);
 
-      var userSlug = await slugify.slugifyUsername(input.userName);
-
       // New user data object
       let newUser = {
         webId: md5(Date.now()).toString(),
         firstName: isValidString(input.firstName) ? input.firstName.trim() : "",
         lastName: isValidString(input.lastName) ? input.lastName.trim() : "",
         userName: isValidString(input.userName) ? input.userName.trim() : "",
-        userNameSlug: userSlug ? userSlug.trim() : "",
+        userNameSlug: isValidString(input.userName)
+          ? input.userName.trim()
+          : "",
         email: isValidString(input.email) ? input.email.trim() : "",
         password: isValidString(input.password)
           ? hash(input.password.trim())
