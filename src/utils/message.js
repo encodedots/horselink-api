@@ -27,6 +27,8 @@ export default {
   PASSWORD_RESET_SUCCESSFULLY: "Password has been reset successfully",
   RESET_TOKEN_EXPIRED:
     "Your token has been expired. Kindly check and try again",
+  PROFILE_NOT_FOUND: "User profile does not exist",
+
   // Email Messages
   EMAIL_SUBJECT_RESET_PASSWORD: "Password Reset",
   EMAIL_SUBJECT_CHARITY_REQUEST: "Free charity account request",
