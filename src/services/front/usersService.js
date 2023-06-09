@@ -436,7 +436,8 @@ export class UserService {
         ]
       });
 
-      if (output == null) return frontServiceErrorResponse(messages.NOT_FOUND);
+      if (output == null)
+        return frontServiceErrorResponse(messages.PROFILE_NOT_FOUND);
 
       // Return response
       return output;
