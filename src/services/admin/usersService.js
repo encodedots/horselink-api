@@ -172,8 +172,6 @@ export class UserService {
       if (userEmail != null)
         return adminServiceErrorResponse(messages.EMAIL_USER_ALREADY_EXIST);
 
-      var userSlug = await slugify.slugifyUsername(input.userName);
-
       // New user data object
       let newUser = {
         webId: md5(Date.now()).toString(),
@@ -187,7 +185,9 @@ export class UserService {
         description: isValidString(input.description)
           ? input.description.trim()
           : "",
-        userNameSlug: userSlug ? userSlug.trim() : "",
+        userNameSlug: isValidString(input.userName)
+          ? input.userName.trim()
+          : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
         categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
         colorTemplateId: isValidInteger(input.colorTemplateId)
@@ -356,8 +356,6 @@ export class UserService {
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
-      var userSlug = await slugify.slugifyUsername(input.userName);
-
       // Set specific user information to save
       var updateUser = {
         firstName: isValidString(input.firstName) ? input.firstName.trim() : "",
@@ -367,7 +365,9 @@ export class UserService {
         description: isValidString(input.description)
           ? input.description.trim()
           : "",
-        userNameSlug: userSlug ? userSlug.trim() : "",
+        userNameSlug: isValidString(input.userName)
+          ? input.userName.trim()
+          : "",
         planName: isValidString(input.planName) ? input.planName.trim() : "",
         categoryId: isValidInteger(input.categoryId) ? input.categoryId : 0,
         colorTemplateId: isValidInteger(input.colorTemplateId)

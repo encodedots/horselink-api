@@ -533,9 +533,8 @@ export class UserService {
         if (userName != null)
           return frontServiceErrorResponse(messages.USER_NAME_ALREADY_EXISTS);
 
-        var userSlug = await slugify.slugifyUsername(input.userName);
         updateArray.userName = input.userName;
-        updateArray.userNameSlug = userSlug;
+        updateArray.userNameSlug = input.userName;
       }
 
       // Get user by email address
