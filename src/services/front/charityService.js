@@ -6,7 +6,6 @@ import { isValidString } from "../../utils/validation";
 import sendEmail from "../../utils/sendEmail";
 
 export class CharityService {
-
   /**
    * Summary: This method sent mail to admin email and store details in charity table
    * @param {*} input
@@ -19,8 +18,12 @@ export class CharityService {
       let charityDetails = {
         userName: isValidString(input.userName) ? input.userName.trim() : "",
         email: isValidString(input.email) ? input.email.trim() : "",
-        charityName: isValidString(input.charityName) ? input.charityName.trim() : "",
-        charityWebsite: isValidString(input.charityWebsite) ? input.charityWebsite.trim() : ""
+        charityName: isValidString(input.charityName)
+          ? input.charityName.trim()
+          : "",
+        charityWebsite: isValidString(input.charityWebsite)
+          ? "www." + input.charityWebsite.trim()
+          : ""
       };
 
       output = await charity.create(charityDetails);
@@ -36,7 +39,8 @@ export class CharityService {
       emailTemplateReplaceData["userName"] = input.userName;
       emailTemplateReplaceData["email"] = input.email;
       emailTemplateReplaceData["charityName"] = input.charityName;
-      emailTemplateReplaceData["charityWebsite"] = input.charityWebsite;
+      emailTemplateReplaceData["charityWebsite"] =
+        "www." + input.charityWebsite;
       sendEmail.generateHtmlForEmail(sendEmailData, emailTemplateReplaceData);
 
       // Return response

@@ -67,7 +67,8 @@ export class SaleHorseService {
             where: {
               deletedAt: null,
               isDeleted: "n",
-              isActive: "y"
+              isActive: "y",
+              status: "y"
             },
             include: [
               {
@@ -122,7 +123,8 @@ export class SaleHorseService {
             where: {
               deletedAt: null,
               isDeleted: "n",
-              isActive: "y"
+              isActive: "y",
+              status: "y"
             },
             include: [
               {
@@ -195,7 +197,8 @@ export class SaleHorseService {
               where: {
                 deletedAt: null,
                 isDeleted: "n",
-                isActive: "y"
+                isActive: "y",
+                status: "y"
               },
               include: [
                 {
@@ -238,6 +241,7 @@ export class SaleHorseService {
             isDeleted: "n",
             deletedAt: null,
             isActive: "y",
+            status: "y",
             categoryId: {
               [Op.ne]: null
             }

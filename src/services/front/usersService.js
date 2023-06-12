@@ -118,7 +118,8 @@ export class UserService {
         where: {
           isDeleted: "n",
           deletedAt: null,
-          isActive: "y"
+          isActive: "y",
+          status: "y"
         },
         include: [
           {
@@ -160,7 +161,8 @@ export class UserService {
         where: {
           isDeleted: "n",
           deletedAt: null,
-          isActive: "y"
+          isActive: "y",
+          status: "y"
         },
         include: [
           {
@@ -423,7 +425,12 @@ export class UserService {
 
       // Get a specific user details based in id
       output = await user.findOne({
-        where: { userNameSlug: input, isActive: "y", isDeleted: "n" },
+        where: {
+          userNameSlug: input,
+          isActive: "y",
+          isDeleted: "n",
+          status: "y"
+        },
         include: [
           {
             model: countries,
