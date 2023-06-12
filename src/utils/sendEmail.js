@@ -88,8 +88,9 @@ exports.generateHtmlForEmail = async function (
   let attachments = [
     {
       filename: "logo.png",
-      path: process.env.EMAIL_TEMPLATE_IMAGE_LOCATION + "images/logo.png",
-      cid: "header_logo" //same cid value as in the html img src
+      path:
+        process.env.EMAIL_TEMPLATE_IMAGE_LOCATION + "images/horselink-logo.png",
+      cid: "horselink-logo" //same cid value as in the html img src
     }
   ];
 
