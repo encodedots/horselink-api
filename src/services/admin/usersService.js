@@ -193,7 +193,8 @@ export class UserService {
         colorTemplateId: isValidInteger(input.colorTemplateId)
           ? input.colorTemplateId
           : 0,
-        isNewsLetter: "y"
+        isNewsLetter: "y",
+        status: "y"
       };
 
       output = await user.create(newUser);
