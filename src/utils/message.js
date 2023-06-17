@@ -36,6 +36,8 @@ export default {
   EMAIL_SUBJECT_VERIFY_ACCOUNT: "Verify account for signup",
   ACCOUNT_ALREADY_VERIFIED: "Your account is already verified",
   ACCOUNT_VERIFIED: "Your account is verified",
+  ACCOUNT_NOT_VERIFIED: "Account is not verified yet",
+  ACCOUNT_NOT_ACTIVATED: "This account is not activated",
   USER_EMAIL_UPDATED_SUCCESSFULLY: "Email updated successfully",
   CONTACT_REQUEST: "Contact request",
   REPORT_REQUEST: "Report request",

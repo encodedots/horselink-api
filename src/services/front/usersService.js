@@ -427,9 +427,7 @@ export class UserService {
       output = await user.findOne({
         where: {
           userNameSlug: input,
-          isActive: "y",
-          isDeleted: "n",
-          status: "y"
+          isDeleted: "n"
         },
         include: [
           {
@@ -445,6 +443,14 @@ export class UserService {
 
       if (output == null)
         return frontServiceErrorResponse(messages.PROFILE_NOT_FOUND);
+
+      if (output.status == "n") {
+        return frontServiceErrorResponse(messages.ACCOUNT_NOT_VERIFIED);
+      }
+
+      if (output.isActive == "n") {
+        return frontServiceErrorResponse(messages.ACCOUNT_NOT_ACTIVATED);
+      }
 
       // Return response
       return output;
