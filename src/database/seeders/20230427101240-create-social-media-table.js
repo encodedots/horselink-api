@@ -19,7 +19,8 @@ module.exports = {
       { name: "Whatsapp", slug: "whatsapp", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/whatsapp.png" },
       { name: "Twitter", slug: "twitter", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/twitter.png" },
       { name: "LinkedIn", slug: "linkedin", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/linkedin.png" },
-      { name: "Horse-Link", slug: "linkedin", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/horselink-round.svg" }
+      { name: "Horse-Link", slug: "horselink", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/horselink-round.svg" },
+      { name: "YouTube", slug: "youtube", icon: "https://horse-link.s3.ap-south-1.amazonaws.com/socialMedia/youtube.svg" }
     ]);
   },
 
