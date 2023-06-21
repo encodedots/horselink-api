@@ -51,6 +51,7 @@ router.delete(
   authenticateJWT,
   usersController.deleteBackgroundImage
 );
+router.delete("/deleteData/:id/:type", authenticateJWT, usersController.deleteData); // :id - user web id
 //#endregion DELETE APIs
 
 export default router;

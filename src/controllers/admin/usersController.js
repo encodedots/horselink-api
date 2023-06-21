@@ -380,5 +380,47 @@ export class UsersController {
       return adminSendErrorResponse(res, 201, e);
     }
   }
+
+     /**
+   * Summary: This method delete the user based on id
+   * @param {*} req
+   * @param {*} res
+   * @returns
+   */
+     async deleteData(req, res) {
+      var id = req.params.id;
+      var input = req.params.type;
+  
+      console.log("id",id);
+      console.log("input",input);
+      try {
+        // Validate input data
+        if (id == null || !isValidInteger(id) || !isValidString(input))
+          return adminSendErrorResponse(res, 201, Messages.INVALID_PARAMETERS);
+  
+        // Call service to delete the user based on id
+        var output = await _userService.deleteData(id,input);
+        if (output == null)
+          return adminSendErrorResponse(res, 201, Messages.SOMETHING_WENT_WRONG);
+  
+        if (output["status"] == false)
+          return adminSendErrorResponse(
+            res,
+            201,
+            output["error"],
+            output["data"]
+          );
+  
+        // Return response data
+        return adminSendSuccessResponse(
+          res,
+          200,
+          output,
+          Messages.DELETED_SUCCESSFULLY
+        );
+      } catch (e) {
+        return adminSendErrorResponse(res, 201, e);
+      }
+    }
   //#endregion DELETE APIs
 }
