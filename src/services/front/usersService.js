@@ -311,6 +311,16 @@ export class UserService {
         where: { userId: input }
       });
 
+      if (userInfoTitle) {
+        titleArray.push(
+          {
+            slug: Constants.USER_INFO_TITLE,
+            value: userInfoTitle ? userInfoTitle?.title : "",
+            link: ""
+          }
+        )
+      }
+
       // Get horse for sale details
       horseSaleTitle = await saleHorse.findOne({
         where: { userId: input }
@@ -318,12 +328,19 @@ export class UserService {
 
       if (
         horseSaleTitle?.description == "" ||
-        (horseSaleTitle?.description == null &&
-          horseSaleTitle?.titleLink != null)
+        (horseSaleTitle?.description == null)
       ) {
         horseSalelink = horseSaleTitle?.titleLink;
       }
-
+      if (horseSaleTitle) {
+        titleArray.push(
+          {
+            slug: Constants.HORSE_FOR_SALE_TITLE,
+            value: horseSaleTitle &&  horseSaleTitle.title ? horseSaleTitle?.title :"Horse For Sale",
+            link: horseSalelink
+          }
+        )
+      }
       // Get horse list details
       horseListTitle = await horseList.findOne({
         where: { userId: input }
@@ -331,12 +348,19 @@ export class UserService {
 
       if (
         horseListTitle?.description == "" ||
-        (horseListTitle?.description == null &&
-          horseListTitle?.titleLink != null)
+        (horseListTitle?.description == null)
       ) {
         horselistlink = horseListTitle?.titleLink;
       }
-
+      if (horseListTitle) {
+        titleArray.push(
+          {
+            slug: Constants.STALLIONS_TITLE,
+            value: horseListTitle &&  horseListTitle.title ? horseListTitle?.title :"Horse List",
+            link: horselistlink
+          }
+        )
+      }
       // Get sponsor details
       sponsorTitle = await sponsors.findOne({
         where: { userId: input }
@@ -347,6 +371,15 @@ export class UserService {
         (sponsorTitle?.name == null && sponsorTitle?.titleLink != null)
       ) {
         sponsorLink = sponsorTitle?.titleLink;
+      }
+      if (sponsorTitle) {
+        titleArray.push(
+          {
+            slug: Constants.SPONSORS_TITLE,
+            value: sponsorTitle ? sponsorTitle?.title : "",
+            link: sponsorLink
+          }
+        )
       }
 
       horseProductListTitle = await horseProduct.findOne({
@@ -359,6 +392,16 @@ export class UserService {
       ) {
         horseProductLink = horseProductListTitle?.titleLink;
       }
+
+      if (horseProductListTitle) {
+        titleArray.push(
+          {
+            slug: Constants.SHOP_HORSE_TITLE,
+            value: horseProductListTitle ? horseProductListTitle?.title : "",
+            link: horseProductLink
+          }
+        )
+      }
       // Get social media details
       socialMediaDetails = await userSocialMedia.findAll({
         where: { userId: input },
@@ -370,38 +413,12 @@ export class UserService {
           }
         ]
       });
-
-      titleArray.push(
-        {
-          slug: Constants.USER_INFO_TITLE,
-          value: userInfoTitle ? userInfoTitle?.title : "",
-          link: ""
-        },
-        {
-          slug: Constants.HORSE_FOR_SALE_TITLE,
-          value: horseSaleTitle ? horseSaleTitle?.title : "",
-          link: horseSalelink
-        },
-        {
-          slug: Constants.STALLIONS_TITLE,
-          value: horseListTitle ? horseListTitle?.title : "",
-          link: horselistlink
-        },
-        {
-          slug: Constants.SPONSORS_TITLE,
-          value: sponsorTitle ? sponsorTitle?.title : "",
-          link: sponsorLink
-        },
-        {
-          slug: Constants.SHOP_HORSE_TITLE,
-          value: horseProductListTitle ? horseProductListTitle?.title : "",
-          link: horseProductLink
-        },
-        {
-          slug: Constants.SOCIAL_MEDIA_TITLE,
-          value: socialMediaDetails ? socialMediaDetails : []
-        }
-      );
+          titleArray.push(
+            {
+              slug: Constants.SOCIAL_MEDIA_TITLE,
+              value: socialMediaDetails ? socialMediaDetails : []
+            }
+          )
 
       // Return response
       return titleArray;
