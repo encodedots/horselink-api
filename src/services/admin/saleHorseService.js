@@ -49,9 +49,7 @@ export class SaleHorseService {
             // New object for horse sale details
             if (
               (data.description != "" &&
-                data.category != "" &&
-                data.link != "") ||
-              input.titleLink
+                data.category != "")
             ) {
               let newSaleHorse = {
                 userId: isValidInteger(id) ? id : 0,
@@ -158,7 +156,7 @@ export class SaleHorseService {
       var gethorseSaleData = await saleHorse.findAll({
         where: { userId: id }
       });
-
+      
       // Return response
       return gethorseSaleData;
     } catch (e) {

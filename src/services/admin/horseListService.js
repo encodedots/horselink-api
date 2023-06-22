@@ -49,9 +49,7 @@ export class HorseListService {
             // New object for horse list details
             if (
               (data.description != "" &&
-                data.category != "" &&
-                data.link != "") ||
-              input.titleLink
+                data.category != "")
             ) {
               let newHorseList = {
                 userId: isValidInteger(id) ? id : 0,
