@@ -45,5 +45,7 @@ export default {
   MAILCHIMP_SUBSCRIBED_STATUS: "subscribed",
   MAILCHIMP_UNSUBSCRIBED_STATUS: "unsubscribed",
 
+  TYPE_MOBILE : "Mobile",
+  TYPE_DESKTOP : "Desktop",
   AWSPATH: "https://horse-link.s3.ap-south-1.amazonaws.com/"
 };
