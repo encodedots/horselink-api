@@ -49,7 +49,7 @@ export class HorseListService {
             // New object for horse list details
             if (
               (data.description != "" &&
-                data.category != "")
+                data.category != "" && data.subCategory != "")
             ) {
               let newHorseList = {
                 userId: isValidInteger(id) ? id : 0,
@@ -63,6 +63,9 @@ export class HorseListService {
                 horseCategoryId: isValidInteger(data.category)
                   ? data.category
                   : null,
+                horseSubCategoryId: isValidInteger(data.subCategory)
+                ? data.subCategory
+                : null,
                 link: isValidString(data.link) ? data.link.trim() : "",
                 type:
                   isValidString(data.type) && isValidString(data.description)

@@ -27,6 +27,15 @@ module.exports = {
         onDelete: "cascade",
         onUpdate: "cascade"
       },
+      horseSubCategoryId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: "horseCategories",
+          key: "id"
+        },
+        onDelete: "cascade",
+        onUpdate: "cascade"
+      },
       title: {
         type: Sequelize.STRING
       },
