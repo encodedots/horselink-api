@@ -16,23 +16,24 @@ export class SaleHorseService {
         categoryTwo = [];
       categoryOne = await horseCategory.findAll({
         where: {
-          deletedAt: null
+          deletedAt: null,
+          type:"main"
         },
-        limit: 6
+        order:[["name", "ASC"]]
       });
 
       categoryTwo = await horseCategory.findAll({
         where: {
-          deletedAt: null
+          deletedAt: null,
+          type:"sub"
         },
-        limit: 10,
-        offset: 6
+        order:[["name", "ASC"]]
       });
 
       // Return response
       return {
-        categoryOne: categoryOne,
-        categoryTwo: categoryTwo
+        categoryOne: categoryTwo,
+        categoryTwo: categoryOne
       };
     } catch (e) {
       return frontServiceErrorResponse(e);
@@ -47,19 +48,39 @@ export class SaleHorseService {
     try {
       var output = "";
       var whereObj = {};
+      if (input.filter && input.filter.deviceType == Constants.TYPE_DESKTOP) {
+        
       if (
         input.filter &&
-        input.filter.type &&
-        input.filter.type != "All horses"
+        input.filter.horseCategoryId &&
+        input.filter.horseCategoryId != 0 && input.filter.horseCategoryId != -1 
       ) {
-        whereObj.name = input.filter.type;
+        whereObj.horseCategoryId = input.filter.horseCategoryId
       }
+      if (
+        input.filter &&
+        input.filter.horseSubCategoryId &&
+        input.filter.horseSubCategoryId != 0 && input.filter.horseSubCategoryId != -1
+      ) {
+        whereObj.horseSubCategoryId = input.filter.horseSubCategoryId
+      }
+
+    }
+    if (input.filter && input.filter.deviceType == Constants.TYPE_MOBILE) {
+      if (
+        input.filter &&
+        input.filter.horseSubCategoryId &&
+        input.filter.horseSubCategoryId != 0 && input.filter.horseSubCategoryId != -1
+      ) {
+        whereObj[Op.or] = [{ horseCategoryId: input.filter.horseSubCategoryId }, { horseSubCategoryId: input.filter.horseSubCategoryId }]
+      }
+    }
+    
+      whereObj.deletedAt = null;
 
       // Get all sale horse with pagination and filter
       output = await saleHorse.findAll({
-        where: {
-          deletedAt: null
-        },
+        where: whereObj,
         include: [
           {
             model: user,
@@ -83,8 +104,11 @@ export class SaleHorseService {
           },
           {
             model: horseCategory,
-            as: "horseCategoryDetails",
-            where: whereObj
+            as: "horseCategoryDetails"
+          },
+          {
+            model: horseCategory,
+            as: "horseSubCategoryDetails"
           }
         ],
         attributes: {
@@ -113,9 +137,7 @@ export class SaleHorseService {
 
       // Get count of all users based on filter
       var count = await saleHorse.count({
-        where: {
-          deletedAt: null
-        },
+        where: whereObj,
         include: [
           {
             model: user,
@@ -139,8 +161,10 @@ export class SaleHorseService {
           },
           {
             model: horseCategory,
-            as: "horseCategoryDetails",
-            where: whereObj
+            as: "horseCategoryDetails"
+          },{
+            model: horseCategory,
+            as: "horseSubCategoryDetails"
           }
         ]
       });

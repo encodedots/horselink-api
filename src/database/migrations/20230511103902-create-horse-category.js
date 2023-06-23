@@ -16,6 +16,9 @@ module.exports = {
       slug: {
         type: Sequelize.STRING
       },
+      type:{
+        type: Sequelize.STRING
+      },
       isActive: {
         type: Sequelize.ENUM,
         values: ["y", "n"],

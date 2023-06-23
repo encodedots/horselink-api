@@ -21,6 +21,13 @@ module.exports = (sequelize, DataTypes) => {
         as: "horseCategoryDetails",
         onDelete: "CASCADE"
       });
+
+      // define association here
+      saleHorse.belongsTo(models.horseCategory, {
+          foreignKey: "horseSubCategoryId",
+          as: "horseSubCategoryDetails",
+          onDelete: "CASCADE"
+      });
     }
   }
   saleHorse.init(
@@ -29,6 +36,9 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER
       },
       horseCategoryId: {
+        type: DataTypes.INTEGER
+      },
+      horseSubCategoryId:{
         type: DataTypes.INTEGER
       },
       title: {
