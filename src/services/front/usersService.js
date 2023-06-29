@@ -137,12 +137,12 @@ export class UserService {
             [
               model.sequelize.literal(
                 `111.111 * DEGREES(ACOS(LEAST(1.0, COS(RADIANS(latitude)) * COS(RADIANS(` +
-                  latitude +
-                  `)) * COS(RADIANS(longitude - ` +
-                  longitude +
-                  `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
-                  latitude +
-                  `)))))`
+                latitude +
+                `)) * COS(RADIANS(longitude - ` +
+                longitude +
+                `)) + SIN(RADIANS(latitude)) * SIN(RADIANS(` +
+                latitude +
+                `)))))`
               ),
               "distance_in_km"
             ]
@@ -442,7 +442,7 @@ export class UserService {
       });
 
       if (output == null)
-        return frontServiceErrorResponse(messages.PROFILE_NOT_FOUND);
+        return frontServiceErrorResponse(messages.PROFILE_NOT_FOUND, { 'msg': 'not_found' });
 
       if (output.status == "n") {
         return frontServiceErrorResponse(messages.ACCOUNT_NOT_VERIFIED);
@@ -584,8 +584,8 @@ export class UserService {
           emailTemplateReplaceData["name"] = input.userName
             ? input.userName
             : userExist.userName
-            ? userExist.userName
-            : "There ";
+              ? userExist.userName
+              : "There ";
           emailTemplateReplaceData["verifyEmailUrl"] =
             process.env.SITE_REDIRECT_URL +
             "/verify-user-email?email=" +
