@@ -91,16 +91,33 @@ export class CommonService {
    */
   async getHorseCategoryList() {
     try {
-      var output = "";
-      output = await horseCategory.findAll({
-        where: {
-          isActive: "y",
-          deletedAt: null
-        }
-      });
 
-      // Return response
-      return output;
+      var categoryMain = [],
+      categorySub = [];
+    categoryMain = await horseCategory.findAll({
+      where: {
+        isActive: "y",
+        deletedAt: null,
+        type:"main"
+      },
+      order:[["name", "ASC"]]
+    });
+
+    categorySub = await horseCategory.findAll({
+      where: {
+        isActive: "y",
+        deletedAt: null,
+        type:"sub"
+      },
+      order:[["name", "ASC"]]
+    });
+
+    // Return response
+    return {
+      categorySub: categorySub,
+      categoryMain: categoryMain
+    };
+
     } catch (e) {
       return adminServiceErrorResponse(e);
     }

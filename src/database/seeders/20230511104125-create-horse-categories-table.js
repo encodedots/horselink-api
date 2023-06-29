@@ -9,17 +9,17 @@ module.exports = {
      * Add seed commands here.
     */
     await horseCategory.bulkCreate([
-      { name: "Foals", slug: "foals" },
-      { name: "Yearlings", slug: "yearlings" },
-      { name: "Unbroken", slug: "unbroken" },
-      { name: "Riding", slug: "riding" },
-      { name: "Mares", slug: "mares" },
-      { name: "Stallions", slug: "stallions" },
-      { name: "Dressage", slug: "dressage" },
-      { name: "Show Jumping", slug: "show-jumping" },
-      { name: "Eventing", slug: "eventing" },
-      { name: "Racing", slug: "racing" },
-      { name: "Other", slug: "other" }
+      { name: "Dressage", slug: "dressage" , type:"main" },
+      { name: "Eventing", slug: "eventing", type:"main" },
+      { name: "Foals", slug: "foals" , type:"sub"},
+      { name: "Mares", slug: "mares" , type:"sub"},
+      { name: "Other", slug: "other" , type:"main" },
+      { name: "Racing", slug: "racing", type:"main" },
+      { name: "Riding", slug: "riding" , type:"sub" },
+      { name: "Show Jumping", slug: "show-jumping", type:"main" },
+      { name: "Stallions", slug: "stallions" , type:"sub" },
+      { name: "Unbroken", slug: "unbroken" , type:"sub" },
+      { name: "Yearlings", slug: "yearlings" , type:"sub" }
     ]);
   },
 

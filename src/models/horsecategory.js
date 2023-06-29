@@ -29,6 +29,9 @@ module.exports = (sequelize, DataTypes) => {
       slug: {
         type: DataTypes.STRING
       },
+      type:{
+        type: DataTypes.STRING
+      },
       isActive: {
         type: DataTypes.ENUM("y", "n"),
         defaultValue: "y"
