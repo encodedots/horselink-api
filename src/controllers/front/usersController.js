@@ -314,7 +314,7 @@ export class UsersController {
       // Call service to get specific user based in input
       var output = await _userService.getUserBySlug(input);
       if (output && output["status"] == false)
-        return frontSendErrorResponse(res, 201, output["error"]);
+        return frontSendErrorResponse(res, 201, output["error"], output["data"]);
 
       // Return response data
       return frontSendSuccessResponse(
