@@ -190,7 +190,6 @@ export class UsersController {
       // Validate input data
       if (
         input == null ||
-        !isValidInteger(input.mobileNumber) ||
         !isValidString(input.town) ||
         !isValidInteger(input.zipCode) ||
         !isValidString(input.state) ||
