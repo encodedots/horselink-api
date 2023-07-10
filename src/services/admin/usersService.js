@@ -13,7 +13,7 @@ import { adminServiceErrorResponse } from "../../utils/sendResponse";
 import s3Routes from "../../utils/s3Routes";
 import constants from "../../utils/constants";
 var slugify = require("../../utils/slugifyUrl");
-const { user,userInfo,saleHorse,horseList,sponsors,userSocialMedia,horseProduct } = model;
+const { user, userInfo, saleHorse, horseList, sponsors, userSocialMedia, horseProduct } = model;
 const { QueryTypes, Sequelize } = require("sequelize");
 const Op = Sequelize.Op;
 var mailchimp = require("../../utils/mailchimp");
@@ -76,7 +76,7 @@ export class UserService {
   async getUsers(input) {
     try {
       var output = "";
-      var query = `select u.id, u.firstName, u.lastName, u.userName, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where u.isDeleted = 'n' `;
+      var query = `select u.id, u.firstName, u.lastName, u.userName, u.userNameSlug, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where u.isDeleted = 'n' `;
 
       var countQuery = query;
 
@@ -119,9 +119,8 @@ export class UserService {
 
         // Limit Data
         if (input.limit !== undefined && input.page !== undefined) {
-          query += ` limit ${
-            (input.page ? input.page : 1) * input.limit - input.limit
-          }, ${input.limit}`;
+          query += ` limit ${(input.page ? input.page : 1) * input.limit - input.limit
+            }, ${input.limit}`;
         }
       }
 
@@ -683,92 +682,92 @@ export class UserService {
     }
   }
 
-  async deleteData(id,input){
+  async deleteData(id, input) {
     try {
       var userData = await user.findOne({
-          where:{
-            id : id
-          }
-      }); 
+        where: {
+          id: id
+        }
+      });
       if (userData == null)
         return adminServiceErrorResponse(messages.NOT_FOUND);
 
       if (input) {
         if (input == "user-info") {
           var getUserInfo = await userInfo.findOne({
-            where: { userId: userData.id } 
+            where: { userId: userData.id }
           });
           if (getUserInfo) {
             await userInfo.destroy({ where: { userId: userData.id } });
-          }else{
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
 
         }
         if (input == "horse-for-sale") {
-       
+
           var getAllSaleHorse = await saleHorse.findAll({
-            where: { userId: userData.id } 
+            where: { userId: userData.id }
           });
           if (getAllSaleHorse && getAllSaleHorse.length > 0) {
-               await saleHorse.destroy({ where: { userId: userData.id } });
-               getAllSaleHorse.forEach(async (element) => {
-                if (element.dataValues.fileName != null) {
-                  var deleteImageParams = {
-                    key: element.dataValues.fileName
-                  };
-                  await deleteFileFromS3(deleteImageParams);
-                }
-  
-               });
-          }else{
+            await saleHorse.destroy({ where: { userId: userData.id } });
+            getAllSaleHorse.forEach(async (element) => {
+              if (element.dataValues.fileName != null) {
+                var deleteImageParams = {
+                  key: element.dataValues.fileName
+                };
+                await deleteFileFromS3(deleteImageParams);
+              }
+
+            });
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
         }
 
         if (input == "horse-list") {
-       
+
           var getAllhorseList = await horseList.findAll({
-            where: { userId: userData.id } 
-          }); 
+            where: { userId: userData.id }
+          });
           if (getAllhorseList && getAllhorseList.length > 0) {
-               await horseList.destroy({ where: { userId: userData.id } });
-               getAllhorseList.forEach(async (element) => {
-                if (element.dataValues.fileName != null) {
-                  var deleteImageParams = {
-                    key: element.dataValues.fileName
-                  };
-                  await deleteFileFromS3(deleteImageParams);
-                }
-               });
-          }else{
+            await horseList.destroy({ where: { userId: userData.id } });
+            getAllhorseList.forEach(async (element) => {
+              if (element.dataValues.fileName != null) {
+                var deleteImageParams = {
+                  key: element.dataValues.fileName
+                };
+                await deleteFileFromS3(deleteImageParams);
+              }
+            });
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
         }
 
-                
+
         if (input == "sponsors") {
-       
+
           var getSponsorsData = await sponsors.findAll({
-            where: { userId: userData.id } 
-          }); 
+            where: { userId: userData.id }
+          });
           if (getSponsorsData && getSponsorsData.length > 0) {
-               await sponsors.destroy({ where: { userId: userData.id } });
-               getSponsorsData.forEach(async (element) => {
-                if (element.dataValues.fileName != null) {
-                  var deleteImageParams = {
-                    key: element.dataValues.fileName
-                  };
-                  await deleteFileFromS3(deleteImageParams);
-                }
-                if (element.dataValues.croppedFileName != null) {
-                  var deleteImageParams = {
-                    key: element.dataValues.croppedFileName
-                  };
-                  await deleteFileFromS3(deleteImageParams);
-                }
-               });
-          }else{
+            await sponsors.destroy({ where: { userId: userData.id } });
+            getSponsorsData.forEach(async (element) => {
+              if (element.dataValues.fileName != null) {
+                var deleteImageParams = {
+                  key: element.dataValues.fileName
+                };
+                await deleteFileFromS3(deleteImageParams);
+              }
+              if (element.dataValues.croppedFileName != null) {
+                var deleteImageParams = {
+                  key: element.dataValues.croppedFileName
+                };
+                await deleteFileFromS3(deleteImageParams);
+              }
+            });
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
 
@@ -776,26 +775,26 @@ export class UserService {
 
         if (input == "social-media") {
           var getSocialMedia = await userSocialMedia.findAll({
-            where: { userId: userData.id } 
-          }); 
+            where: { userId: userData.id }
+          });
           if (getSocialMedia && getSocialMedia.length > 0) {
-               await userSocialMedia.destroy({ where: { userId: userData.id } });
-          }else{
+            await userSocialMedia.destroy({ where: { userId: userData.id } });
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
         }
 
         if (input == "horse-product") {
           var getHorseProduct = await horseProduct.findOne({
-            where: { userId: userData.id } 
-          }); 
-          if(getHorseProduct){
+            where: { userId: userData.id }
+          });
+          if (getHorseProduct) {
             await horseProduct.destroy({ where: { userId: userData.id } });
-          }else{
+          } else {
             return adminServiceErrorResponse(messages.NOT_FOUND);
           }
         }
-        
+
       }
 
       return true;
