@@ -76,7 +76,7 @@ export class UserService {
   async getUsers(input) {
     try {
       var output = "";
-      var query = `select u.id, u.firstName, u.lastName, u.userName, u.userNameSlug, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where u.isDeleted = 'n' `;
+      var query = `select u.id, u.firstName, u.lastName, u.userName, u.userNameSlug, u.email, u.mobileNumber, u.telephone, u.croppedFileUrl, u.originalFileUrl, u.isActive, u.status, u.createdAt, u.updatedAt, u.isDeleted from ${constants.USERS} as u where u.isDeleted = 'n' `;
 
       var countQuery = query;
 
